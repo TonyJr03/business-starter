@@ -1,18 +1,76 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
+import { businessConfig } from '@/config';
+import { getCategories, getProducts } from '@/services/products';
+import Badge from '@/components/ui/Badge.astro';
+
+const categories = await getCategories();
+const allProducts = await getProducts({ onlyAvailable: false });
+
+const productsByCategory = categories.map((cat) => ({
+  category: cat,
+  products: allProducts.filter((p) => p.categoryId === cat.id),
+}));
 ---
 
-<MainLayout title="Menú">
-  <section class="py-24 px-4 text-center">
+<MainLayout
+  title="Menú"
+  description={`Conoce nuestro menú completo en ${businessConfig.name}. Cafés, bebidas y bocados.`}
+>
+  <!-- Encabezado -->
+  <section class="py-20 px-4 text-center" style="background-color: var(--color-secondary);">
     <div class="max-w-2xl mx-auto">
       <h1 class="text-4xl font-bold mb-4" style="color: var(--color-primary);">Nuestro Menú</h1>
-      <p class="text-gray-600 text-lg mb-3">Próximamente nuestro catálogo completo.</p>
-      <p class="text-sm text-gray-400 inline-flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full">
-        <svg xmlns="http://www.w3.org/2000/svg" class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 110 20A10 10 0 0112 2z" />
-        </svg>
-        El catálogo se implementará en el Sprint 3.
-      </p>
+      <p class="text-gray-600 text-lg">Todo lo que tenemos para ofrecerte hoy.</p>
+    </div>
+  </section>
+
+  <!-- Catalógo por categorías -->
+  <section class="py-16 px-4">
+    <div class="max-w-4xl mx-auto space-y-16">
+      {productsByCategory.map(({ category, products }) => (
+        <div>
+          <!-- Cabecera de categoría -->
+          <div class="flex items-center gap-4 mb-8">
+            <h2 class="text-2xl font-bold" style="color: var(--color-primary);">{category.name}</h2>
+            <div class="flex-1 h-px bg-gray-200"></div>
+          </div>
+
+          {category.description && (
+            <p class="text-gray-500 text-sm -mt-4 mb-8">{category.description}</p>
+          )}
+
+          <!-- Lista de productos -->
+          <ul class="divide-y divide-gray-100">
+            {products.map((product) => (
+              <li class="flex items-start justify-between gap-4 py-4">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class:list={[
+                      'font-medium text-gray-900',
+                      !product.isAvailable && 'opacity-40 line-through',
+                    ]}>
+                      {product.name}
+                    </span>
+                    {product.badge && product.isAvailable && (
+                      <Badge type={product.badge} />
+                    )}
+                    {!product.isAvailable && (
+                      <span class="text-xs text-red-400 font-medium">Agotado</span>
+                    )}
+                  </div>
+                  {product.description && (
+                    <p class="text-sm text-gray-500 mt-0.5">{product.description}</p>
+                  )}
+                </div>
+                <span class="font-semibold text-gray-800 whitespace-nowrap">
+                  ${product.price}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   </section>
 </MainLayout>

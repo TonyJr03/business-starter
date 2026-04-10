@@ -1,19 +1,26 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
-import { siteConfig } from '@/config';
+import { businessConfig } from '@/config';
+import { getWhatsAppUrl } from '@/lib/whatsapp';
 
-const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber.replace(/\D/g, '')}`;
+const whatsappUrl = getWhatsAppUrl();
 ---
 
-<MainLayout title="Inicio">
+<MainLayout
+  title="Inicio"
+  description={businessConfig.shortDescription}
+>
   <!-- Hero -->
   <section class="py-24 px-4 text-center" style="background-color: var(--color-secondary);">
     <div class="max-w-3xl mx-auto">
+      <p class="text-sm font-semibold uppercase tracking-widest mb-4" style="color: var(--color-accent);">
+        {businessConfig.tagline}
+      </p>
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6" style="color: var(--color-primary);">
-        {siteConfig.name}
+        {businessConfig.name}
       </h1>
       <p class="text-lg sm:text-xl text-gray-600 mb-10 leading-relaxed">
-        {siteConfig.shortDescription}
+        {businessConfig.shortDescription}
       </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a
@@ -24,11 +31,13 @@ const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber.replace(/\D/g, ''
           Ver Menú
         </a>
         <a
-          href="/contacto"
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
           class="inline-block rounded-full border-2 px-8 py-3 text-base font-semibold transition-colors hover:text-white hover:border-transparent hover:bg-gray-800"
           style="border-color: var(--color-primary); color: var(--color-primary);"
         >
-          Contáctanos
+          Escríbenos
         </a>
       </div>
     </div>
@@ -36,14 +45,19 @@ const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber.replace(/\D/g, ''
 
   <!-- Sobre nosotros -->
   <section class="py-20 px-4">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold mb-6 text-center" style="color: var(--color-primary);">Sobre Nosotros</h2>
-      <p class="text-gray-600 leading-relaxed text-center text-lg mb-4">
-        {siteConfig.description}
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-6" style="color: var(--color-primary);">Sobre Nosotros</h2>
+      <p class="text-gray-600 leading-relaxed text-lg mb-4">
+        {businessConfig.description}
       </p>
-      <p class="text-gray-500 text-center">
-        Visítanos en <span class="font-medium text-gray-700">{siteConfig.address}</span>, {siteConfig.municipality}, {siteConfig.city}.
+      <p class="text-gray-500">
+        Visítanos en
+        <span class="font-medium text-gray-700">{businessConfig.address.street}</span>,
+        {businessConfig.address.municipality}, {businessConfig.address.city}.
       </p>
+      <a href="/nosotros" class="inline-block mt-6 text-sm font-semibold underline underline-offset-4" style="color: var(--color-primary);">
+        Conoce nuestra historia →
+      </a>
     </div>
   </section>
 
@@ -52,7 +66,7 @@ const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber.replace(/\D/g, ''
     <div class="max-w-lg mx-auto">
       <h2 class="text-3xl font-bold mb-8 text-center" style="color: var(--color-primary);">Horarios</h2>
       <ul class="divide-y divide-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
-        {siteConfig.openingHours.map((entry) => (
+        {businessConfig.openingHours.map((entry) => (
           <li class="flex justify-between items-center px-6 py-3">
             <span class="font-medium text-gray-800">{entry.day}</span>
             {entry.isClosed
@@ -62,6 +76,21 @@ const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber.replace(/\D/g, ''
           </li>
         ))}
       </ul>
+    </div>
+  </section>
+
+  <!-- CTA ofertas -->
+  <section class="py-20 px-4 text-center">
+    <div class="max-w-xl mx-auto">
+      <h2 class="text-2xl font-bold mb-3" style="color: var(--color-primary);">¿Buscas algo especial?</h2>
+      <p class="text-gray-500 mb-6">Revisa nuestras promociones del mes.</p>
+      <a
+        href="/ofertas"
+        class="inline-block rounded-full px-8 py-3 text-base font-semibold text-white transition-opacity hover:opacity-90"
+        style="background-color: var(--color-accent);"
+      >
+        Ver ofertas
+      </a>
     </div>
   </section>
 </MainLayout>
