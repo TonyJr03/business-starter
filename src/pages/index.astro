@@ -1,17 +1,67 @@
 ---
+import MainLayout from '@/layouts/MainLayout.astro';
+import { siteConfig } from '@/config';
 
+const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber.replace(/\D/g, '')}`;
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<MainLayout title="Inicio">
+  <!-- Hero -->
+  <section class="py-24 px-4 text-center" style="background-color: var(--color-secondary);">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6" style="color: var(--color-primary);">
+        {siteConfig.name}
+      </h1>
+      <p class="text-lg sm:text-xl text-gray-600 mb-10 leading-relaxed">
+        {siteConfig.shortDescription}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/menu"
+          class="inline-block rounded-full px-8 py-3 text-base font-semibold text-white transition-opacity hover:opacity-90"
+          style="background-color: var(--color-primary);"
+        >
+          Ver Menú
+        </a>
+        <a
+          href="/contacto"
+          class="inline-block rounded-full border-2 px-8 py-3 text-base font-semibold transition-colors hover:text-white hover:border-transparent hover:bg-gray-800"
+          style="border-color: var(--color-primary); color: var(--color-primary);"
+        >
+          Contáctanos
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sobre nosotros -->
+  <section class="py-20 px-4">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold mb-6 text-center" style="color: var(--color-primary);">Sobre Nosotros</h2>
+      <p class="text-gray-600 leading-relaxed text-center text-lg mb-4">
+        {siteConfig.description}
+      </p>
+      <p class="text-gray-500 text-center">
+        Visítanos en <span class="font-medium text-gray-700">{siteConfig.address}</span>, {siteConfig.municipality}, {siteConfig.city}.
+      </p>
+    </div>
+  </section>
+
+  <!-- Horarios -->
+  <section class="py-20 px-4" style="background-color: var(--color-surface);">
+    <div class="max-w-lg mx-auto">
+      <h2 class="text-3xl font-bold mb-8 text-center" style="color: var(--color-primary);">Horarios</h2>
+      <ul class="divide-y divide-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
+        {siteConfig.openingHours.map((entry) => (
+          <li class="flex justify-between items-center px-6 py-3">
+            <span class="font-medium text-gray-800">{entry.day}</span>
+            {entry.isClosed
+              ? <span class="text-red-500 text-sm font-semibold">Cerrado</span>
+              : <span class="text-gray-600 text-sm">{entry.open} – {entry.close}</span>
+            }
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</MainLayout>
