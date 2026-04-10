@@ -1,0 +1,63 @@
+---
+interface Props {
+  variant?: 'primary' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  href,
+  type = 'button',
+  class: className,
+  ...rest
+} = Astro.props;
+
+const base =
+  'inline-flex items-center justify-center font-semibold rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+
+const variantClasses: Record<string, string> = {
+  primary: 'text-white hover:opacity-90',
+  outline: 'border-2 hover:text-white hover:border-transparent hover:bg-gray-800',
+  ghost: 'hover:bg-gray-100 text-gray-700',
+};
+
+const sizeClasses: Record<string, string> = {
+  sm: 'px-5 py-1.5 text-sm',
+  md: 'px-8 py-3 text-base',
+  lg: 'px-10 py-4 text-lg',
+};
+
+const inlineStyle =
+  variant === 'primary'
+    ? 'background-color: var(--color-primary);'
+    : variant === 'outline'
+      ? 'border-color: var(--color-primary); color: var(--color-primary);'
+      : '';
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      class:list={[base, variantClasses[variant], sizeClasses[size], className]}
+      style={inlineStyle}
+      {...rest}
+    >
+      <slot />
+    </a>
+  ) : (
+    <button
+      type={type}
+      class:list={[base, variantClasses[variant], sizeClasses[size], className]}
+      style={inlineStyle}
+      {...rest}
+    >
+      <slot />
+    </button>
+  )
+}
