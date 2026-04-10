@@ -1,5 +1,5 @@
 ---
-import { siteConfig, footerNav } from '@/config';
+import { businessConfig, footerNav } from '@/config';
 
 const currentYear = new Date().getFullYear();
 ---
@@ -9,15 +9,15 @@ const currentYear = new Date().getFullYear();
     <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
       <!-- Columna 1: info del negocio -->
       <div class="lg:col-span-2">
-        <p class="text-xl font-bold text-white mb-3">{siteConfig.name}</p>
-        <p class="text-sm leading-relaxed text-gray-400 max-w-sm">{siteConfig.shortDescription}</p>
+        <p class="text-xl font-bold text-white mb-3">{businessConfig.name}</p>
+        <p class="text-sm leading-relaxed text-gray-400 max-w-sm">{businessConfig.shortDescription}</p>
 
         <!-- Redes sociales -->
-        {Object.keys(siteConfig.socialLinks).length > 0 && (
+        {Object.keys(businessConfig.socialLinks).length > 0 && (
           <div class="flex gap-4 mt-5">
-            {siteConfig.socialLinks.instagram && (
+            {businessConfig.socialLinks.instagram && (
               <a
-                href={siteConfig.socialLinks.instagram}
+                href={businessConfig.socialLinks.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -28,9 +28,9 @@ const currentYear = new Date().getFullYear();
                 </svg>
               </a>
             )}
-            {siteConfig.socialLinks.facebook && (
+            {businessConfig.socialLinks.facebook && (
               <a
-                href={siteConfig.socialLinks.facebook}
+                href={businessConfig.socialLinks.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
@@ -41,9 +41,9 @@ const currentYear = new Date().getFullYear();
                 </svg>
               </a>
             )}
-            {siteConfig.socialLinks.twitter && (
+            {businessConfig.socialLinks.twitter && (
               <a
-                href={siteConfig.socialLinks.twitter}
+                href={businessConfig.socialLinks.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Twitter / X"
@@ -54,9 +54,9 @@ const currentYear = new Date().getFullYear();
                 </svg>
               </a>
             )}
-            {siteConfig.socialLinks.tiktok && (
+            {businessConfig.socialLinks.tiktok && (
               <a
-                href={siteConfig.socialLinks.tiktok}
+                href={businessConfig.socialLinks.tiktok}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="TikTok"
@@ -67,9 +67,9 @@ const currentYear = new Date().getFullYear();
                 </svg>
               </a>
             )}
-            {siteConfig.socialLinks.telegram && (
+            {businessConfig.socialLinks.telegram && (
               <a
-                href={siteConfig.socialLinks.telegram}
+                href={businessConfig.socialLinks.telegram}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Telegram"
@@ -85,11 +85,11 @@ const currentYear = new Date().getFullYear();
       </div>
 
       <!-- Columnas de footerNav -->
-      {footerNav.map((section) => (
+      {footerNav.map((section: typeof footerNav[0]) => (
         <div>
           <p class="text-sm font-semibold uppercase tracking-wider text-white mb-4">{section.title}</p>
           <ul class="flex flex-col gap-2">
-            {section.links.map((link) => (
+            {section.links.map((link: typeof footerNav[0]['links'][0]) => (
               <li>
                 <a
                   href={link.href}
@@ -109,7 +109,7 @@ const currentYear = new Date().getFullYear();
     <!-- Barra inferior -->
     <div class="mt-10 border-t border-gray-800 pt-6 text-center">
       <p class="text-xs text-gray-500">
-        &copy; {currentYear} {siteConfig.name}. Todos los derechos reservados.
+        &copy; {currentYear} {businessConfig.name}. Todos los derechos reservados.
       </p>
     </div>
   </div>

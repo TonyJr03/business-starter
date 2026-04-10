@@ -13,8 +13,8 @@ src/
 ├── layouts/          → Layouts de página completos (Astro)
 ├── pages/            → Rutas del sitio (file-based routing de Astro)
 ├── components/
+│   ├── common/       → Componentes compartidos: Header, Footer, SectionHeader, etc.
 │   ├── ui/           → Primitivas de UI genéricas (sin lógica de negocio)
-│   ├── common/       → Componentes compartidos que conocen el sistema de diseño
 │   ├── sections/     → Secciones de página completas, activables/desactivables
 │   ├── catalog/      → Módulo catálogo: cards, grids, filtros
 │   ├── cart/         → Módulo carrito (fase 2)
@@ -83,13 +83,13 @@ Primitivas de UI genéricas y reutilizables. No tienen lógica de negocio ni con
 ---
 
 ### `src/components/common/`
-Componentes compartidos que sí conocen el sistema de diseño del proyecto, pero no tienen lógica de módulo ni dependencias de servicios.
+Componentes compartidos entre secciones que conocen el sistema de diseño del proyecto, pero no tienen lógica de módulo ni dependencias de servicios.
 
-- **Naming:** PascalCase → `SectionHeader.astro`, `EmptyState.astro`
+- **Naming:** PascalCase → `SectionHeader.astro`, `Header.astro`, `Footer.astro`
 - Pueden usar CSS vars del sistema de diseño
-- No importan desde `@/config` ni `@/services`
+- Pueden importar desde `@/config` (sin `@/services`)
 
-**Ejemplos:** `SectionHeader`, `EmptyState`, `PageHeader`, `LoadingState`
+**Ejemplos:** `Header`, `Footer`, `SectionHeader`, `EmptyState`, `PageHeader`, `LoadingState`
 
 ---
 
