@@ -1,0 +1,407 @@
+---
+/**
+ * /styleguide — referencia visual interna del sistema de diseño.
+ *
+ * SOLO PARA DESARROLLO. No enlazar en navegación pública.
+ * Eliminar o proteger con auth antes de producción.
+ */
+import MainLayout from '@/layouts/MainLayout.astro';
+import Button     from '@/components/ui/Button.astro';
+import Badge      from '@/components/ui/Badge.astro';
+import Card       from '@/components/ui/Card.astro';
+import Input      from '@/components/ui/Input.astro';
+import Textarea   from '@/components/ui/Textarea.astro';
+import Section    from '@/components/ui/Section.astro';
+
+// ─── Tokens de color para renderizar la paleta ───────────────────────────────
+const colorGroups = [
+  {
+    label: 'Marca',
+    tokens: [
+      { name: '--color-primary',   label: 'Primary'   },
+      { name: '--color-secondary', label: 'Secondary' },
+      { name: '--color-accent',    label: 'Accent'    },
+    ],
+  },
+  {
+    label: 'Fondos',
+    tokens: [
+      { name: '--color-bg',             label: 'bg'             },
+      { name: '--color-surface',        label: 'surface'        },
+      { name: '--color-surface-raised', label: 'surface-raised' },
+    ],
+  },
+  {
+    label: 'Bordes',
+    tokens: [
+      { name: '--color-border',        label: 'border'        },
+      { name: '--color-border-subtle', label: 'border-subtle' },
+    ],
+  },
+  {
+    label: 'Texto',
+    tokens: [
+      { name: '--color-text',        label: 'text'        },
+      { name: '--color-text-muted',  label: 'text-muted'  },
+      { name: '--color-text-subtle', label: 'text-subtle' },
+    ],
+  },
+  {
+    label: 'Feedback',
+    tokens: [
+      { name: '--color-success', label: 'success' },
+      { name: '--color-warning', label: 'warning' },
+      { name: '--color-error',   label: 'error'   },
+      { name: '--color-info',    label: 'info'    },
+    ],
+  },
+] as const;
+---
+
+<MainLayout title="Style Guide" description="Referencia visual interna del sistema de diseño.">
+
+  <!-- ── Cabecera ──────────────────────────────────────────────────────────── -->
+  <div class="border-b" style="background-color: var(--color-surface); border-color: var(--color-border);">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex items-center justify-between gap-4 flex-wrap">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-widest mb-1" style="color: var(--color-accent);">
+          Business Starter
+        </p>
+        <h1 class="text-3xl font-bold" style="color: var(--color-primary);">Style Guide</h1>
+        <p class="text-sm mt-1" style="color: var(--color-text-muted);">
+          Referencia visual interna — no enlazar en producción.
+        </p>
+      </div>
+      <span
+        class="text-xs font-semibold px-3 py-1 rounded-full"
+        style="background-color: var(--color-warning); color: white;"
+      >
+        DEV ONLY
+      </span>
+    </div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex flex-col gap-20">
+
+    <!-- ── 1. Tipografía ───────────────────────────────────────────────────── -->
+    <section>
+      <h2 class="sg-section-title">1. Tipografía</h2>
+
+      <div class="sg-card flex flex-col gap-6">
+        <div class="pb-6 border-b" style="border-color: var(--color-border-subtle);">
+          <p class="sg-label">Escala de headings</p>
+          <div class="flex flex-col gap-3 mt-3">
+            {(['h1','h2','h3','h4','h5','h6'] as const).map((tag, i) => {
+              const sizes = ['text-5xl','text-4xl','text-3xl','text-2xl','text-xl','text-lg'];
+              return (
+                <div class="flex items-baseline gap-4">
+                  <span class="w-8 text-xs shrink-0" style="color: var(--color-text-subtle);">{tag}</span>
+                  <p class:list={[sizes[i], 'font-bold leading-tight']} style="color: var(--color-text); font-family: var(--font-heading);">
+                    El café cubano que enamora
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div class="pb-6 border-b" style="border-color: var(--color-border-subtle);">
+          <p class="sg-label">Cuerpo de texto</p>
+          <div class="flex flex-col gap-3 mt-3">
+            <p class="text-lg leading-relaxed" style="color: var(--color-text);">
+              <span class="sg-chip">text-lg</span> La esquina es el rincón del buen café habanero donde cada taza cuenta una historia.
+            </p>
+            <p class="text-base leading-relaxed" style="color: var(--color-text);">
+              <span class="sg-chip">text-base</span> La esquina es el rincón del buen café habanero donde cada taza cuenta una historia.
+            </p>
+            <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
+              <span class="sg-chip">text-sm muted</span> Texto secundario y descriptivo para metadatos, labels y contenido de apoyo.
+            </p>
+            <p class="text-xs" style="color: var(--color-text-subtle);">
+              <span class="sg-chip">text-xs subtle</span> Placeholders, etiquetas desactivadas, notas al pie.
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <p class="sg-label">Utilidades</p>
+          <div class="flex flex-col gap-2 mt-3">
+            <p class="text-sm font-semibold uppercase tracking-widest" style="color: var(--color-accent);">
+              TAGLINE / EYEBROW — tracking-widest, uppercase
+            </p>
+            <p class="text-sm font-medium" style="color: var(--color-primary);">
+              Enlace de acción — font-medium, color primary
+            </p>
+            <p class="text-sm line-through" style="color: var(--color-text-muted);">
+              Precio tachado — agotado o descuento
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 2. Paleta de colores ────────────────────────────────────────────── -->
+    <section>
+      <h2 class="sg-section-title">2. Paleta de tokens</h2>
+
+      <div class="flex flex-col gap-8">
+        {colorGroups.map((group) => (
+          <div>
+            <p class="sg-label mb-3">{group.label}</p>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {group.tokens.map((token) => (
+                <div class="rounded-lg overflow-hidden border" style="border-color: var(--color-border);">
+                  <div
+                    class="h-14 w-full"
+                    style={`background-color: var(${token.name});`}
+                  />
+                  <div class="px-3 py-2" style="background-color: var(--color-bg);">
+                    <p class="text-xs font-semibold" style="color: var(--color-text);">{token.label}</p>
+                    <p class="text-xs font-mono mt-0.5" style="color: var(--color-text-subtle);">{token.name}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── 3. Botones ─────────────────────────────────────────────────────── -->
+    <section>
+      <h2 class="sg-section-title">3. Botones</h2>
+
+      <div class="sg-card flex flex-col gap-8">
+        <div>
+          <p class="sg-label mb-4">Variantes</p>
+          <div class="flex flex-wrap gap-4 items-center">
+            <Button variant="primary">Primary</Button>
+            <Button variant="outline">Outline</Button>
+            <Button variant="ghost">Ghost</Button>
+            <Button variant="primary" disabled>Disabled</Button>
+          </div>
+        </div>
+
+        <div class="pt-6 border-t" style="border-color: var(--color-border-subtle);">
+          <p class="sg-label mb-4">Tamaños</p>
+          <div class="flex flex-wrap gap-4 items-center">
+            <Button variant="primary" size="sm">Small</Button>
+            <Button variant="primary" size="md">Medium</Button>
+            <Button variant="primary" size="lg">Large</Button>
+          </div>
+        </div>
+
+        <div class="pt-6 border-t" style="border-color: var(--color-border-subtle);">
+          <p class="sg-label mb-4">Como enlace</p>
+          <div class="flex flex-wrap gap-4 items-center">
+            <Button href="#" variant="primary">Enlace primary</Button>
+            <Button href="#" variant="outline">Enlace outline</Button>
+            <Button href="#" variant="ghost">Enlace ghost</Button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 4. Badges ──────────────────────────────────────────────────────── -->
+    <section>
+      <h2 class="sg-section-title">4. Badges</h2>
+
+      <div class="sg-card">
+        <p class="sg-label mb-4">Todas las variantes</p>
+        <div class="flex flex-wrap gap-3 items-center">
+          <Badge variant="new" />
+          <Badge variant="popular" />
+          <Badge variant="offer" />
+          <Badge variant="success" />
+          <Badge variant="warning" />
+          <Badge variant="error" />
+          <Badge variant="info" />
+          <Badge variant="default" />
+          <Badge variant="new" label="Custom label" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 5. Cards ───────────────────────────────────────────────────────── -->
+    <section>
+      <h2 class="sg-section-title">5. Cards</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {(['default', 'elevated', 'flat', 'outline'] as const).map((variant) => (
+          <Card variant={variant}>
+            <div class="p-5">
+              <p class="sg-chip mb-3">{variant}</p>
+              <h3 class="text-sm font-semibold mb-1" style="color: var(--color-text);">Título de la card</h3>
+              <p class="text-sm" style="color: var(--color-text-muted);">
+                Contenido descriptivo de apoyo para ilustrar el uso del componente.
+              </p>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      <div class="mt-4">
+        <Card variant="elevated" href="#">
+          <div class="p-5">
+            <p class="sg-chip mb-3">elevated + href (clicable)</p>
+            <h3 class="text-sm font-semibold mb-1" style="color: var(--color-text);">Card como enlace</h3>
+            <p class="text-sm" style="color: var(--color-text-muted);">Toda la card es clicable cuando se pasa href.</p>
+          </div>
+        </Card>
+      </div>
+    </section>
+
+    <!-- ── 6. Inputs ──────────────────────────────────────────────────────── -->
+    <section>
+      <h2 class="sg-section-title">6. Inputs</h2>
+
+      <div class="sg-card grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <Input
+          id="sg-base"
+          label="Campo base"
+          placeholder="Escribe aquí..."
+        />
+        <Input
+          id="sg-helper"
+          label="Con texto de ayuda"
+          placeholder="ejemplo@correo.com"
+          type="email"
+          helperText="Usaremos esto solo para contactarte."
+        />
+        <Input
+          id="sg-required"
+          label="Campo requerido"
+          placeholder="Nombre completo"
+          required
+        />
+        <Input
+          id="sg-error"
+          label="Estado de error"
+          placeholder="Tu número"
+          type="tel"
+          value="+53 abc"
+          error="Ingresa un número de teléfono válido."
+        />
+        <Input
+          id="sg-disabled"
+          label="Desactivado"
+          value="Valor de solo lectura"
+          disabled
+        />
+        <Input
+          id="sg-password"
+          label="Contraseña"
+          type="password"
+          placeholder="••••••••"
+        />
+      </div>
+    </section>
+
+    <!-- ── 7. Textareas ───────────────────────────────────────────────────── -->
+    <section>
+      <h2 class="sg-section-title">7. Textarea</h2>
+
+      <div class="sg-card grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <Textarea
+          id="sg-textarea-base"
+          label="Mensaje"
+          placeholder="Escribe tu mensaje aquí..."
+          rows={4}
+        />
+        <Textarea
+          id="sg-textarea-helper"
+          label="Descripción"
+          placeholder="Describe tu negocio en pocas palabras..."
+          helperText="Máximo 500 caracteres recomendados."
+          rows={4}
+        />
+        <Textarea
+          id="sg-textarea-error"
+          label="Comentarios"
+          value="Texto con problema"
+          error="Este campo no puede estar vacío."
+          rows={3}
+        />
+        <Textarea
+          id="sg-textarea-required"
+          label="Consulta (requerido)"
+          placeholder="¿En qué podemos ayudarte?"
+          required
+          rows={4}
+        />
+      </div>
+    </section>
+
+    <!-- ── 8. Secciones base ──────────────────────────────────────────────── -->
+    <section>
+      <h2 class="sg-section-title">8. Section wrapper</h2>
+      <p class="text-sm mb-6" style="color: var(--color-text-muted);">
+        El componente <code class="sg-code">Section</code> maneja fondo, padding y contenedor centrado.
+        Úsalo como wrapper en lugar de repetir clases de layout.
+      </p>
+    </section>
+
+  </div><!-- /container -->
+
+  <!-- Muestras de Section fuera del contenedor para apreciar el ancho completo -->
+  {(['default', 'surface', 'secondary', 'primary'] as const).map((bg) => (
+    <Section bg={bg} size="sm">
+      <p class="text-sm font-mono" style={bg === 'primary' ? 'color: rgba(255,255,255,0.8)' : 'color: var(--color-text-muted);'}>
+        &lt;Section bg="{bg}" size="sm" /&gt;
+      </p>
+    </Section>
+  ))}
+
+  <div class="h-16" />
+
+</MainLayout>
+
+<style>
+  /* Helpers internos del styleguide — no se exportan al UI kit */
+  .sg-section-title {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+    color: var(--color-text);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--color-primary);
+    display: inline-block;
+  }
+
+  .sg-card {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-card);
+  }
+
+  .sg-label {
+    font-size: var(--text-xs);
+    font-weight: var(--weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wider);
+    color: var(--color-text-subtle);
+  }
+
+  .sg-chip {
+    display: inline-block;
+    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+    background-color: var(--color-surface);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.1rem 0.4rem;
+  }
+
+  .sg-code {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    background-color: var(--color-surface);
+    color: var(--color-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.1rem 0.35rem;
+  }
+</style>
