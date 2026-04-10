@@ -1,32 +1,58 @@
 ---
-import type { ProductBadge } from '@/types';
+/**
+ * Badge — etiqueta de estado o categoría pequeña y compacta.
+ *
+ * Incluye las variantes del catálogo ('new', 'popular', 'offer') y variantes
+ * semánticas genéricas ('success', 'warning', 'error', 'info', 'default').
+ *
+ * @prop variant - Estilo y label por defecto del badge
+ * @prop label   - Texto personalizado (sobrescribe el label por defecto del variant)
+ * @prop class   - Clases adicionales
+ */
+
+type BadgeVariant =
+  | 'new' | 'popular' | 'offer'
+  | 'success' | 'warning' | 'error' | 'info' | 'default';
 
 interface Props {
-  type: ProductBadge;
-  class?: string;
+  variant:  BadgeVariant;
+  label?:   string;
+  class?:   string;
 }
 
-const { type, class: className } = Astro.props;
+const { variant, label, class: className } = Astro.props;
 
-const labels: Record<ProductBadge, string> = {
-  new: 'Nuevo',
+const defaultLabels: Record<BadgeVariant, string> = {
+  new:     'Nuevo',
   popular: 'Popular',
-  offer: 'Oferta',
+  offer:   'Oferta',
+  success: 'Activo',
+  warning: 'Pendiente',
+  error:   'Agotado',
+  info:    'Info',
+  default: 'Badge',
 };
 
-const styles: Record<ProductBadge, string> = {
-  new: 'bg-blue-100 text-blue-700',
-  popular: 'bg-amber-100 text-amber-700',
-  offer: 'bg-red-100 text-red-600',
+const styles: Record<BadgeVariant, string> = {
+  new:     'bg-blue-100   text-blue-700',
+  popular: 'bg-amber-100  text-amber-700',
+  offer:   'bg-red-100    text-red-600',
+  success: 'bg-green-100  text-green-700',
+  warning: 'bg-yellow-100 text-yellow-700',
+  error:   'bg-red-50     text-red-500',
+  info:    'bg-sky-100    text-sky-700',
+  default: 'bg-gray-100   text-gray-600',
 };
+
+const text = label ?? defaultLabels[variant];
 ---
 
 <span
   class:list={[
-    'inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full',
-    styles[type],
+    'inline-flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-full',
+    styles[variant],
     className,
   ]}
 >
-  {labels[type]}
+  {text}
 </span>

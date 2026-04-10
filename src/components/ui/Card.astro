@@ -1,0 +1,52 @@
+---
+/**
+ * Card — contenedor visual con bordes, sombras y radius del sistema de diseño.
+ *
+ * No incluye padding por defecto para permitir contenido edge-to-edge (imágenes).
+ * Añade padding en el contenido interno: <div class="p-5"> ... </div>
+ *
+ * @prop variant  - Estilo visual de la card
+ * @prop href     - Si se provee, renderiza como <a> (card clicable)
+ * @prop class    - Clases adicionales
+ */
+
+interface Props {
+  variant?: 'default' | 'elevated' | 'flat' | 'outline';
+  href?:    string;
+  class?:   string;
+  [key: string]: unknown;
+}
+
+const {
+  variant = 'default',
+  href,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const base = 'rounded-[var(--radius-lg)] overflow-hidden';
+
+const variants: Record<string, string> = {
+  default:  'bg-white border border-(--color-border) shadow-(--shadow-card)',
+  elevated: 'bg-white shadow-(--shadow-md) hover:shadow-(--shadow-lg) transition-shadow duration-200',
+  flat:     'bg-(--color-surface)',
+  outline:  'bg-white border-2 border-(--color-border)',
+};
+---
+
+{href ? (
+  <a
+    href={href}
+    class:list={[base, variants[variant], 'block', className]}
+    {...rest}
+  >
+    <slot />
+  </a>
+) : (
+  <div
+    class:list={[base, variants[variant], className]}
+    {...rest}
+  >
+    <slot />
+  </div>
+)}

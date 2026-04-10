@@ -1,0 +1,99 @@
+---
+/**
+ * Input — campo de texto con label, estados de error y texto de ayuda.
+ *
+ * Renderiza siempre un <label> asociado al <input> para accesibilidad.
+ * El asterisco de requerido es aria-hidden para evitar verbosidad en lectores.
+ *
+ * @prop label      - Texto del label (requerido)
+ * @prop id         - ID del input y for del label (requerido)
+ * @prop name       - name del input (por defecto igual al id)
+ * @prop type       - Tipo de input HTML
+ * @prop placeholder - Placeholder del input
+ * @prop required   - Marca el campo como requerido
+ * @prop disabled   - Desactiva el campo
+ * @prop value      - Valor inicial
+ * @prop error      - Mensaje de error (aparece en rojo, activa aria-invalid)
+ * @prop helperText - Texto de ayuda (solo visible si no hay error)
+ * @prop class      - Clases adicionales sobre el wrapper
+ */
+
+interface Props {
+  label:        string;
+  id:           string;
+  name?:        string;
+  type?:        'text' | 'email' | 'tel' | 'number' | 'password' | 'search' | 'url';
+  placeholder?: string;
+  required?:    boolean;
+  disabled?:    boolean;
+  value?:       string;
+  error?:       string;
+  helperText?:  string;
+  class?:       string;
+}
+
+const {
+  label,
+  id,
+  name,
+  type        = 'text',
+  placeholder,
+  required,
+  disabled,
+  value,
+  error,
+  helperText,
+  class: className,
+} = Astro.props;
+
+const errorId     = `${id}-error`;
+const helperId    = `${id}-helper`;
+const describedBy = error ? errorId : helperText ? helperId : undefined;
+---
+
+<div class:list={['flex flex-col gap-1.5', className]}>
+  <label
+    for={id}
+    class="text-sm font-medium"
+    style="color: var(--color-text);"
+  >
+    {label}
+    {required && (
+      <span aria-hidden="true" class="ml-0.5" style="color: var(--color-error);">*</span>
+    )}
+  </label>
+
+  <input
+    id={id}
+    name={name ?? id}
+    type={type}
+    placeholder={placeholder}
+    required={required}
+    disabled={disabled}
+    value={value}
+    aria-describedby={describedBy}
+    aria-invalid={error ? 'true' : undefined}
+    class:list={[
+      'w-full px-4 py-2.5 text-sm rounded-md',
+      'border transition-colors',
+      'focus:outline-none focus:ring-2 focus:ring-offset-0',
+      'placeholder:text-(--color-text-subtle)',
+      'disabled:opacity-50 disabled:cursor-not-allowed',
+      error
+        ? 'border-(--color-error)   focus:ring-(--color-error)'
+        : 'border-(--color-border)  hover:border-(--color-primary) focus:ring-(--color-primary) focus:border-(--color-primary)',
+    ]}
+    style="background-color: var(--color-bg); color: var(--color-text);"
+  />
+
+  {error && (
+    <p id={errorId} role="alert" class="text-xs" style="color: var(--color-error);">
+      {error}
+    </p>
+  )}
+  {!error && helperText && (
+    <p id={helperId} class="text-xs" style="color: var(--color-text-muted);">
+      {helperText}
+    </p>
+  )}
+</div>

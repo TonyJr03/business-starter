@@ -1,32 +1,43 @@
 ---
 interface Props {
-  variant?: 'primary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  href?: string;
-  type?: 'button' | 'submit' | 'reset';
-  class?: string;
+  variant?:  'primary' | 'outline' | 'ghost';
+  size?:     'sm' | 'md' | 'lg';
+  href?:     string;
+  type?:     'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  class?:    string;
   [key: string]: unknown;
 }
 
 const {
-  variant = 'primary',
-  size = 'md',
+  variant  = 'primary',
+  size     = 'md',
   href,
-  type = 'button',
+  type     = 'button',
+  disabled,
   class: className,
   ...rest
 } = Astro.props;
 
-const base =
-  'inline-flex items-center justify-center font-semibold rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+const base = [
+  'inline-flex items-center justify-center gap-2 cursor-pointer',
+  'font-semibold rounded-full transition-all',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+  'focus-visible:ring-(--color-primary)',
+  'disabled:pointer-events-none disabled:opacity-50',
+].join(' ');
 
-const variantClasses: Record<string, string> = {
-  primary: 'text-white hover:opacity-90',
-  outline: 'border-2 hover:text-white hover:border-transparent hover:bg-gray-800',
-  ghost: 'hover:bg-gray-100 text-gray-700',
+const variants: Record<string, string> = {
+  primary: 'text-white hover:opacity-90 active:opacity-80',
+  outline: [
+    'border-2 bg-transparent',
+    'hover:text-white hover:bg-(--color-primary) hover:border-(--color-primary)',
+    'active:opacity-90',
+  ].join(' '),
+  ghost: 'bg-transparent hover:bg-(--color-secondary) active:opacity-80',
 };
 
-const sizeClasses: Record<string, string> = {
+const sizes: Record<string, string> = {
   sm: 'px-5 py-1.5 text-sm',
   md: 'px-8 py-3 text-base',
   lg: 'px-10 py-4 text-lg',
@@ -37,27 +48,26 @@ const inlineStyle =
     ? 'background-color: var(--color-primary);'
     : variant === 'outline'
       ? 'border-color: var(--color-primary); color: var(--color-primary);'
-      : '';
+      : 'color: var(--color-primary);';
 ---
 
-{
-  href ? (
-    <a
-      href={href}
-      class:list={[base, variantClasses[variant], sizeClasses[size], className]}
-      style={inlineStyle}
-      {...rest}
-    >
-      <slot />
-    </a>
-  ) : (
-    <button
-      type={type}
-      class:list={[base, variantClasses[variant], sizeClasses[size], className]}
-      style={inlineStyle}
-      {...rest}
-    >
-      <slot />
-    </button>
-  )
-}
+{href ? (
+  <a
+    href={href}
+    class:list={[base, variants[variant], sizes[size], className]}
+    style={inlineStyle}
+    {...rest}
+  >
+    <slot />
+  </a>
+) : (
+  <button
+    type={type}
+    disabled={disabled}
+    class:list={[base, variants[variant], sizes[size], className]}
+    style={inlineStyle}
+    {...rest}
+  >
+    <slot />
+  </button>
+)}

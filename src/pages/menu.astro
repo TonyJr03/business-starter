@@ -53,7 +53,7 @@ const productsByCategory = categories.map((cat) => ({
                       {product.name}
                     </span>
                     {product.badge && product.isAvailable && (
-                      <Badge type={product.badge} />
+                      <Badge variant={product.badge} />
                     )}
                     {!product.isAvailable && (
                       <span class="text-xs text-red-400 font-medium">Agotado</span>

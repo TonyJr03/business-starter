@@ -1,0 +1,54 @@
+---
+/**
+ * Section — wrapper de sección con ancho máximo, padding vertical y fondo configurable.
+ *
+ * Maneja el contenedor exterior (full-width con fondo) y el interior centrado
+ * (max-w-6xl con padding horizontal responsive). Úsalo como envoltorio de secciones
+ * en páginas en lugar de repetir las clases de layout.
+ *
+ * @prop bg    - Color de fondo de la sección
+ * @prop size  - Padding vertical
+ * @prop id    - ID para anclas de navegación
+ * @prop class - Clases adicionales sobre el <section> exterior
+ */
+
+interface Props {
+  bg?:    'default' | 'surface' | 'secondary' | 'primary';
+  size?:  'sm' | 'md' | 'lg';
+  id?:    string;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  bg    = 'default',
+  size  = 'md',
+  id,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const bgStyles: Record<string, string> = {
+  default:   'background-color: var(--color-bg);',
+  surface:   'background-color: var(--color-surface);',
+  secondary: 'background-color: var(--color-secondary);',
+  primary:   'background-color: var(--color-primary); color: white;',
+};
+
+const paddings: Record<string, string> = {
+  sm: 'py-8',
+  md: 'py-16',
+  lg: 'py-24',
+};
+---
+
+<section
+  id={id}
+  class:list={['w-full', paddings[size], className]}
+  style={bgStyles[bg]}
+  {...rest}
+>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <slot />
+  </div>
+</section>
