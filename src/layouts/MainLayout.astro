@@ -38,27 +38,24 @@ const canonicalUrl = Astro.url.href;
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
     {ogImage && <meta name="twitter:image" content={ogImage} />}
+    <!-- Tokens de marca: sobreescriben los defaults de tokens.css por negocio -->
     <style define:vars={{
-      colorPrimary: themeConfig.colors.primary,
+      colorPrimary:   themeConfig.colors.primary,
       colorSecondary: themeConfig.colors.secondary,
-      colorAccent: themeConfig.colors.accent,
-      colorBackground: themeConfig.colors.background,
-      colorSurface: themeConfig.colors.surface,
-      colorText: themeConfig.colors.text,
-      colorTextMuted: themeConfig.colors.textMuted,
+      colorAccent:    themeConfig.colors.accent,
+      fontHeading:    themeConfig.fonts.heading,
+      fontBody:       themeConfig.fonts.body,
     }}>
       :root {
-        --color-primary: var(--colorPrimary);
+        --color-primary:   var(--colorPrimary);
         --color-secondary: var(--colorSecondary);
-        --color-accent: var(--colorAccent);
-        --color-background: var(--colorBackground);
-        --color-surface: var(--colorSurface);
-        --color-text: var(--colorText);
-        --color-text-muted: var(--colorTextMuted);
+        --color-accent:    var(--colorAccent);
+        --font-heading:    var(--fontHeading);
+        --font-body:       var(--fontBody);
       }
     </style>
   </head>
-  <body class="bg-white text-gray-900 font-sans min-h-screen flex flex-col">
+  <body class="min-h-screen flex flex-col">
     <Header />
     <main class="flex-1">
       <slot />

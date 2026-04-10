@@ -1,13 +1,42 @@
+@import "./tokens.css";
 @import "tailwindcss";
 
 @layer base {
   html {
     scroll-behavior: smooth;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
   }
 
   body {
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-tight);
+    color: var(--color-text);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
 }
