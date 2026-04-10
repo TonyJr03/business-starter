@@ -1,0 +1,47 @@
+---
+import { siteConfig, themeConfig } from '@/config';
+import '@/styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const pageTitle = `${title} | ${siteConfig.name}`;
+const pageDescription = description ?? siteConfig.description;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style define:vars={{
+      colorPrimary: themeConfig.colors.primary,
+      colorSecondary: themeConfig.colors.secondary,
+      colorAccent: themeConfig.colors.accent,
+      colorBackground: themeConfig.colors.background,
+      colorSurface: themeConfig.colors.surface,
+      colorText: themeConfig.colors.text,
+      colorTextMuted: themeConfig.colors.textMuted,
+    }}>
+      :root {
+        --color-primary: var(--colorPrimary);
+        --color-secondary: var(--colorSecondary);
+        --color-accent: var(--colorAccent);
+        --color-background: var(--colorBackground);
+        --color-surface: var(--colorSurface);
+        --color-text: var(--colorText);
+        --color-text-muted: var(--colorTextMuted);
+      }
+    </style>
+  </head>
+  <body class="bg-white text-gray-900 font-sans">
+    <slot />
+  </body>
+</html>
