@@ -16,10 +16,8 @@ const { title, subtitle, align = 'center', class: className } = Astro.props;
   {
     subtitle && (
       <p
-        class:list={[
-          'mt-3 text-gray-500 text-lg max-w-2xl',
-          align === 'center' && 'mx-auto',
-        ]}
+        class:list={['mt-3 text-lg max-w-2xl', align === 'center' && 'mx-auto']}
+        style="color: var(--color-text-muted);"
       >
         {subtitle}
       </p>
