@@ -1,0 +1,83 @@
+---
+/**
+ * FeatureSection — grid de características, valores o propuestas de valor.
+ *
+ * Dominio-neutral: acepta cualquier conjunto de ítems con ícono, título
+ * y descripción. El ícono puede ser un emoji, un carácter o dejarse vacío.
+ *
+ * @prop title    - Título de la sección (opcional)
+ * @prop subtitle - Descripción de la sección (opcional)
+ * @prop items    - Lista de características (requerido)
+ * @prop columns  - Columnas en pantallas grandes: 2 | 3 | 4 (default: 3)
+ * @prop bg       - Fondo de sección
+ * @prop size     - Padding vertical
+ */
+import Section from '@/components/ui/Section.astro';
+
+export interface FeatureItem {
+  icon?:        string;
+  title:        string;
+  description:  string;
+}
+
+interface Props {
+  title?:    string;
+  subtitle?: string;
+  items:     FeatureItem[];
+  columns?:  2 | 3 | 4;
+  bg?:       'default' | 'surface' | 'secondary';
+  size?:     'sm' | 'md' | 'lg';
+}
+
+const {
+  title,
+  subtitle,
+  items,
+  columns = 3,
+  bg      = 'surface',
+  size    = 'md',
+} = Astro.props;
+
+const gridClass: Record<number, string> = {
+  2: 'grid-cols-1 sm:grid-cols-2',
+  3: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+  4: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
+};
+---
+
+<Section bg={bg} size={size}>
+
+  {(title || subtitle) && (
+    <div class="text-center mb-12 max-w-2xl mx-auto">
+      {title && (
+        <h2 class="text-3xl font-bold mb-3" style="color: var(--color-primary);">
+          {title}
+        </h2>
+      )}
+      {subtitle && (
+        <p class="text-base leading-relaxed" style="color: var(--color-text-muted);">
+          {subtitle}
+        </p>
+      )}
+    </div>
+  )}
+
+  <ul class:list={['grid gap-6', gridClass[columns]]}>
+    {items.map((item) => (
+      <li class="flex flex-col gap-3 rounded-lg p-6 bg-white shadow-(--shadow-card)">
+        {item.icon && (
+          <span class="text-3xl leading-none" aria-hidden="true">
+            {item.icon}
+          </span>
+        )}
+        <h3 class="text-base font-semibold" style="color: var(--color-text);">
+          {item.title}
+        </h3>
+        <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
+          {item.description}
+        </p>
+      </li>
+    ))}
+  </ul>
+
+</Section>

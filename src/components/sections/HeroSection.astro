@@ -1,40 +1,107 @@
 ---
+/**
+ * HeroSection — sección hero configurable, desacoplada del dominio.
+ *
+ * @prop tagline      - Frase corta sobre el título (opcional)
+ * @prop title        - Título principal (requerido)
+ * @prop subtitle     - Párrafo descriptivo (opcional)
+ * @prop primaryCta   - Botón de acción principal (opcional)
+ * @prop secondaryCta - Botón de acción secundaria (opcional)
+ * @prop align        - Alineación del contenido: 'center' | 'left'
+ * @prop bg           - Fondo: 'secondary' | 'primary' | 'surface' | 'default'
+ * @prop size         - Padding vertical: 'sm' | 'md' | 'lg'
+ */
 import Button from '@/components/ui/Button.astro';
-import { businessConfig } from '@/config';
+
+interface Cta {
+  label: string;
+  href:  string;
+}
 
 interface Props {
-  title?: string;
-  subtitle?: string;
-  primaryCta?: { label: string; href: string };
-  secondaryCta?: { label: string; href: string };
+  title:         string;
+  tagline?:      string;
+  subtitle?:     string;
+  primaryCta?:   Cta;
+  secondaryCta?: Cta;
+  align?:        'center' | 'left';
+  bg?:           'secondary' | 'primary' | 'surface' | 'default';
+  size?:         'sm' | 'md' | 'lg';
 }
 
 const {
-  title = businessConfig.name,
-  subtitle = businessConfig.shortDescription,
-  primaryCta = { label: 'Ver Menú', href: '/menu' },
-  secondaryCta = { label: 'Contáctanos', href: '/contacto' },
+  title,
+  tagline,
+  subtitle,
+  primaryCta,
+  secondaryCta,
+  align = 'center',
+  bg    = 'secondary',
+  size  = 'lg',
 } = Astro.props;
+
+const bgStyles: Record<string, string> = {
+  secondary: 'background-color: var(--color-secondary);',
+  primary:   'background-color: var(--color-primary); color: white;',
+  surface:   'background-color: var(--color-surface);',
+  default:   'background-color: var(--color-bg);',
+};
+
+const paddings: Record<string, string> = {
+  sm: 'py-12',
+  md: 'py-20',
+  lg: 'py-28',
+};
+
+const alignClass = align === 'center' ? 'text-center items-center' : 'text-left items-start';
+const onPrimary  = bg === 'primary';
 ---
 
-<section class="py-24 px-4 text-center" style="background-color: var(--color-secondary);">
-  <div class="max-w-3xl mx-auto">
+<section
+  class:list={['w-full px-4', paddings[size]]}
+  style={bgStyles[bg]}
+>
+  <div class:list={['max-w-3xl mx-auto flex flex-col gap-6', alignClass]}>
+
+    {tagline && (
+      <p
+        class="text-sm font-semibold uppercase tracking-widest"
+        style={onPrimary ? 'color: rgba(255,255,255,0.8);' : 'color: var(--color-accent);'}
+      >
+        {tagline}
+      </p>
+    )}
+
     <h1
-      class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6"
-      style="color: var(--color-primary);"
+      class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight"
+      style={onPrimary ? 'color: white;' : 'color: var(--color-primary);'}
     >
       {title}
     </h1>
-    <p class="text-lg sm:text-xl text-gray-600 mb-10 leading-relaxed">
-      {subtitle}
-    </p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <Button href={primaryCta.href} variant="primary" size="md">
-        {primaryCta.label}
-      </Button>
-      <Button href={secondaryCta.href} variant="outline" size="md">
-        {secondaryCta.label}
-      </Button>
-    </div>
+
+    {subtitle && (
+      <p
+        class="text-lg sm:text-xl leading-relaxed max-w-2xl"
+        style={onPrimary ? 'color: rgba(255,255,255,0.85);' : 'color: var(--color-text-muted);'}
+      >
+        {subtitle}
+      </p>
+    )}
+
+    {(primaryCta || secondaryCta) && (
+      <div class:list={['flex flex-col sm:flex-row gap-4 pt-2', align === 'center' && 'justify-center']}>
+        {primaryCta && (
+          <Button href={primaryCta.href} variant={onPrimary ? 'outline' : 'primary'} size="md">
+            {primaryCta.label}
+          </Button>
+        )}
+        {secondaryCta && (
+          <Button href={secondaryCta.href} variant="outline" size="md">
+            {secondaryCta.label}
+          </Button>
+        )}
+      </div>
+    )}
+
   </div>
 </section>

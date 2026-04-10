@@ -1,96 +1,99 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
+import HeroSection from '@/components/sections/HeroSection.astro';
+import FeatureSection from '@/components/sections/FeatureSection.astro';
+import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
+import Section from '@/components/ui/Section.astro';
 import { businessConfig } from '@/config';
-import { getWhatsAppUrl } from '@/lib/whatsapp';
+import type { FeatureItem } from '@/components/sections/FeatureSection.astro';
 
-const whatsappUrl = getWhatsAppUrl();
+// ── Datos de la sección de características ─────────────────────────────────
+// Personaliza estos ítems para cada negocio.
+const features: FeatureItem[] = [
+  {
+    icon: '✨',
+    title: 'Calidad artesanal',
+    description: 'Cada producto elaborado con los mejores ingredientes locales y con el cuidado de siempre.',
+  },
+  {
+    icon: '📍',
+    title: businessConfig.address.city,
+    description: `Encuéntranos en ${businessConfig.address.street}, ${businessConfig.address.municipality}.`,
+  },
+  {
+    icon: '🕐',
+    title: 'Abierto toda la semana',
+    description: 'Horario extendido para que disfrutes cuando lo necesites.',
+  },
+];
 ---
 
 <MainLayout
   title="Inicio"
   description={businessConfig.shortDescription}
 >
-  <!-- Hero -->
-  <section class="py-24 px-4 text-center" style="background-color: var(--color-secondary);">
-    <div class="max-w-3xl mx-auto">
-      <p class="text-sm font-semibold uppercase tracking-widest mb-4" style="color: var(--color-accent);">
-        {businessConfig.tagline}
-      </p>
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6" style="color: var(--color-primary);">
-        {businessConfig.name}
-      </h1>
-      <p class="text-lg sm:text-xl text-gray-600 mb-10 leading-relaxed">
-        {businessConfig.shortDescription}
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a
-          href="/menu"
-          class="inline-block rounded-full px-8 py-3 text-base font-semibold text-white transition-opacity hover:opacity-90"
-          style="background-color: var(--color-primary);"
+
+  <!-- ── Hero ────────────────────────────────────────────────────────────── -->
+  <HeroSection
+    tagline={businessConfig.tagline}
+    title={businessConfig.name}
+    subtitle={businessConfig.shortDescription}
+    primaryCta={{ label: 'Ver Menú', href: '/menu' }}
+    secondaryCta={{ label: 'Contáctanos', href: '/contacto' }}
+    bg="secondary"
+    size="lg"
+  />
+
+  <!-- ── Características ─────────────────────────────────────────────────── -->
+  <FeatureSection
+    title="¿Por qué elegirnos?"
+    subtitle={businessConfig.description}
+    items={features}
+    columns={3}
+    bg="surface"
+    size="md"
+  />
+
+  <!-- ── Horarios ────────────────────────────────────────────────────────── -->
+  {businessConfig.openingHours.length > 0 && (
+    <Section bg="default" size="md">
+      <div class="max-w-lg mx-auto">
+        <h2 class="text-3xl font-bold mb-8 text-center" style="color: var(--color-primary);">
+          Horarios
+        </h2>
+        <ul
+          class="rounded-xl overflow-hidden shadow-(--shadow-card) border border-(--color-border)"
+          style="background-color: var(--color-bg);"
         >
-          Ver Menú
-        </a>
-        <a
-          href={whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-block rounded-full border-2 px-8 py-3 text-base font-semibold transition-colors hover:text-white hover:border-transparent hover:bg-gray-800"
-          style="border-color: var(--color-primary); color: var(--color-primary);"
-        >
-          Escríbenos
-        </a>
+          {businessConfig.openingHours.map((entry) => (
+            <li
+              class="flex justify-between items-center px-6 py-3"
+              style="border-bottom: 1px solid var(--color-border-subtle);"
+            >
+              <span class="text-sm font-medium" style="color: var(--color-text);">
+                {entry.day}
+              </span>
+              {entry.isClosed
+                ? <span class="text-xs font-semibold" style="color: var(--color-error);">Cerrado</span>
+                : <span class="text-sm" style="color: var(--color-text-muted);">{entry.open} – {entry.close}</span>
+              }
+            </li>
+          ))}
+        </ul>
       </div>
-    </div>
-  </section>
+    </Section>
+  )}
 
-  <!-- Sobre nosotros -->
-  <section class="py-20 px-4">
-    <div class="max-w-4xl mx-auto text-center">
-      <h2 class="text-3xl font-bold mb-6" style="color: var(--color-primary);">Sobre Nosotros</h2>
-      <p class="text-gray-600 leading-relaxed text-lg mb-4">
-        {businessConfig.description}
-      </p>
-      <p class="text-gray-500">
-        Visítanos en
-        <span class="font-medium text-gray-700">{businessConfig.address.street}</span>,
-        {businessConfig.address.municipality}, {businessConfig.address.city}.
-      </p>
-      <a href="/nosotros" class="inline-block mt-6 text-sm font-semibold underline underline-offset-4" style="color: var(--color-primary);">
-        Conoce nuestra historia →
-      </a>
-    </div>
-  </section>
+  <!-- ── CTA WhatsApp — visible solo si hay número configurado ───────────── -->
+  {businessConfig.contact.whatsappNumber && (
+    <CtaWhatsappSection
+      title="¿Listo para pedir?"
+      subtitle="Escríbenos directamente por WhatsApp y te atendemos al momento."
+      buttonLabel="Escribir ahora"
+      message={`Hola ${businessConfig.name}, me gustaría hacer una consulta.`}
+      bg="secondary"
+      size="md"
+    />
+  )}
 
-  <!-- Horarios -->
-  <section class="py-20 px-4" style="background-color: var(--color-surface);">
-    <div class="max-w-lg mx-auto">
-      <h2 class="text-3xl font-bold mb-8 text-center" style="color: var(--color-primary);">Horarios</h2>
-      <ul class="divide-y divide-gray-200 rounded-xl overflow-hidden shadow-sm bg-white">
-        {businessConfig.openingHours.map((entry) => (
-          <li class="flex justify-between items-center px-6 py-3">
-            <span class="font-medium text-gray-800">{entry.day}</span>
-            {entry.isClosed
-              ? <span class="text-red-500 text-sm font-semibold">Cerrado</span>
-              : <span class="text-gray-600 text-sm">{entry.open} – {entry.close}</span>
-            }
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
-
-  <!-- CTA ofertas -->
-  <section class="py-20 px-4 text-center">
-    <div class="max-w-xl mx-auto">
-      <h2 class="text-2xl font-bold mb-3" style="color: var(--color-primary);">¿Buscas algo especial?</h2>
-      <p class="text-gray-500 mb-6">Revisa nuestras promociones del mes.</p>
-      <a
-        href="/ofertas"
-        class="inline-block rounded-full px-8 py-3 text-base font-semibold text-white transition-opacity hover:opacity-90"
-        style="background-color: var(--color-accent);"
-      >
-        Ver ofertas
-      </a>
-    </div>
-  </section>
 </MainLayout>
