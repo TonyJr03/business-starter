@@ -40,18 +40,26 @@ const canonicalUrl = Astro.url.href;
     {ogImage && <meta name="twitter:image" content={ogImage} />}
     <!-- Tokens de marca: sobreescriben los defaults de tokens.css por negocio -->
     <style define:vars={{
-      colorPrimary:   themeConfig.colors.primary,
-      colorSecondary: themeConfig.colors.secondary,
-      colorAccent:    themeConfig.colors.accent,
-      fontHeading:    themeConfig.fonts.heading,
-      fontBody:       themeConfig.fonts.body,
+      colorPrimary:        themeConfig.colors.primary,
+      colorSecondary:      themeConfig.colors.secondary,
+      colorAccent:         themeConfig.colors.accent,
+      colorFooterBg:       themeConfig.colors.footerBg,
+      colorFooterText:     themeConfig.colors.footerText,
+      colorFooterMuted:    themeConfig.colors.footerTextMuted,
+      colorFooterBorder:   themeConfig.colors.footerBorder,
+      fontHeading:         themeConfig.fonts.heading,
+      fontBody:            themeConfig.fonts.body,
     }}>
       :root {
-        --color-primary:   var(--colorPrimary);
-        --color-secondary: var(--colorSecondary);
-        --color-accent:    var(--colorAccent);
-        --font-heading:    var(--fontHeading);
-        --font-body:       var(--fontBody);
+        --color-primary:            var(--colorPrimary);
+        --color-secondary:          var(--colorSecondary);
+        --color-accent:             var(--colorAccent);
+        --color-footer-bg:          var(--colorFooterBg);
+        --color-footer-text:        var(--colorFooterText);
+        --color-footer-text-muted:  var(--colorFooterMuted);
+        --color-footer-border:      var(--colorFooterBorder);
+        --font-heading:             var(--fontHeading);
+        --font-body:                var(--fontBody);
       }
     </style>
   </head>

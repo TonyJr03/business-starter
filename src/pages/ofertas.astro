@@ -16,7 +16,7 @@ const whatsappUrl = getWhatsAppUrl();
   <section class="py-20 px-4 text-center" style="background-color: var(--color-secondary);">
     <div class="max-w-2xl mx-auto">
       <h1 class="text-4xl font-bold mb-4" style="color: var(--color-primary);">Ofertas y Promociones</h1>
-      <p class="text-gray-600 text-lg">Nuestras promociones especiales del mes.</p>
+      <p class="text-lg" style="color: var(--color-text-muted);">Nuestras promociones especiales del mes.</p>
     </div>
   </section>
 
@@ -24,15 +24,15 @@ const whatsappUrl = getWhatsAppUrl();
   <section class="py-16 px-4">
     <div class="max-w-3xl mx-auto">
       {promotions.length === 0 ? (
-        <p class="text-center text-gray-400 py-16">No hay promociones activas en este momento.</p>
+        <p class="text-center py-16" style="color: var(--color-text-subtle);">No hay promociones activas en este momento.</p>
       ) : (
         <ul class="space-y-6">
           {promotions.map((promo) => (
-            <li class="rounded-xl border border-gray-100 bg-white shadow-sm overflow-hidden">
+            <li class="rounded-xl overflow-hidden border shadow-sm" style="background-color: var(--color-bg); border-color: var(--color-border);">
               <div class="p-6">
                 <div class="flex items-start justify-between gap-4 flex-wrap">
                   <div>
-                    <h2 class="text-xl font-bold text-gray-900">{promo.title}</h2>
+                    <h2 class="text-xl font-bold" style="color: var(--color-text);">{promo.title}</h2>
                     {promo.discountLabel && (
                       <span
                         class="inline-block mt-1 text-xs font-bold px-2.5 py-0.5 rounded-full text-white"
@@ -43,14 +43,14 @@ const whatsappUrl = getWhatsAppUrl();
                     )}
                   </div>
                   {(promo.startsAt || promo.endsAt) && (
-                    <p class="text-xs text-gray-400 whitespace-nowrap">
+                    <p class="text-xs whitespace-nowrap" style="color: var(--color-text-subtle);">
                       {promo.startsAt && `Desde ${promo.startsAt}`}
                       {promo.startsAt && promo.endsAt && ' — '}
                       {promo.endsAt && `hasta ${promo.endsAt}`}
                     </p>
                   )}
                 </div>
-                <p class="mt-3 text-gray-600 leading-relaxed">{promo.description}</p>
+                <p class="mt-3 leading-relaxed" style="color: var(--color-text-muted);">{promo.description}</p>
                 <a
                   href={whatsappUrl}
                   target="_blank"

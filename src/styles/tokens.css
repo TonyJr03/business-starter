@@ -46,6 +46,12 @@
   --color-error:         #DC2626;
   --color-info:          #2563EB;
 
+  /* Footer — sobreescribibles por negocio desde themeConfig */
+  --color-footer-bg:         #111827; /* Fondo del footer */
+  --color-footer-text:       #FFFFFF; /* Texto en negrita / nombre */
+  --color-footer-text-muted: #9CA3AF; /* Texto secundario, iconos */
+  --color-footer-border:     #1F2937; /* Separadores internos */
+
   /* ─── 3. Escala de spacing ─────────────────────────────────────────────────
      Base 4px. Paralela a la escala de Tailwind para consistencia. */
 

@@ -13,6 +13,14 @@ export const themeConfig = {
     secondary: '#F5E6D3',
     /** Color de acento: badges, CTAs secundarios, highlights. */
     accent:    '#D4A574',
+    /** Footer: fondo (default oscuro, ajustable por negocio). */
+    footerBg:        '#111827',
+    /** Footer: texto en negrita (nombre, títulos de columna). */
+    footerText:      '#FFFFFF',
+    /** Footer: texto secundario e iconos de redes. */
+    footerTextMuted: '#9CA3AF',
+    /** Footer: línea separadora inferior. */
+    footerBorder:    '#1F2937',
   },
   fonts: {
     /** Fuente para títulos y encabezados. */

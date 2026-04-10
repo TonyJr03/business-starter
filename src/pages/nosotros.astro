@@ -11,20 +11,20 @@ import { businessConfig } from '@/config';
   <section class="py-20 px-4 text-center" style="background-color: var(--color-secondary);">
     <div class="max-w-3xl mx-auto">
       <h1 class="text-4xl font-bold mb-4" style="color: var(--color-primary);">Sobre Nosotros</h1>
-      <p class="text-gray-600 text-lg">Conoce la historia detrás de {businessConfig.name}.</p>
+      <p class="text-lg" style="color: var(--color-text-muted);">Conoce la historia detrás de {businessConfig.name}.</p>
     </div>
   </section>
 
   <!-- Historia -->
   <section class="py-20 px-4">
     <div class="max-w-3xl mx-auto space-y-6">
-      <p class="text-gray-700 leading-relaxed text-lg">
+      <p class="leading-relaxed text-lg" style="color: var(--color-text);">
         Café La Esquina nació en 2018 de la mano de dos amigos habaneros con un sueño sencillo: crear un espacio donde el café de verdad tuviera el protagonismo que merece. Lo que empezó como un pequeño local en el Vedado se convirtió rápidamente en el punto de encuentro favorito del barrio.
       </p>
-      <p class="text-gray-700 leading-relaxed text-lg">
+      <p class="leading-relaxed text-lg" style="color: var(--color-text);">
         Trabajamos con granos de café cubano de primera calidad, tostados de forma artesanal para preservar cada matiz de sabor. Nuestro equipo está formado por personas apasionadas por la buena atención y el ambiente tranquilo, donde cada visita se siente como en casa.
       </p>
-      <p class="text-gray-700 leading-relaxed text-lg">
+      <p class="leading-relaxed text-lg" style="color: var(--color-text);">
         Hoy seguimos fieles a esa misma filosofía: café de calidad, trato cercano y un rincón acogedor en el corazón de La Habana.
       </p>
     </div>
@@ -34,7 +34,7 @@ import { businessConfig } from '@/config';
   <section class="py-20 px-4" style="background-color: var(--color-surface);">
     <div class="max-w-3xl mx-auto">
       <h2 class="text-2xl font-bold mb-6" style="color: var(--color-primary);">Dónde encontrarnos</h2>
-      <ul class="space-y-3 text-gray-700">
+      <ul class="space-y-3" style="color: var(--color-text);">
         <li class="flex items-start gap-3">
           <svg xmlns="http://www.w3.org/2000/svg" class="size-5 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--color-primary);">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -58,13 +58,13 @@ import { businessConfig } from '@/config';
   <section class="py-20 px-4">
     <div class="max-w-lg mx-auto">
       <h2 class="text-2xl font-bold mb-8" style="color: var(--color-primary);">Horarios de atención</h2>
-      <ul class="divide-y divide-gray-200 rounded-xl overflow-hidden shadow-sm bg-white border border-gray-100">
+      <ul class="divide-y rounded-xl overflow-hidden shadow-sm border" style="background-color: var(--color-bg); border-color: var(--color-border);">
         {businessConfig.openingHours.map((entry) => (
           <li class="flex justify-between items-center px-6 py-3">
-            <span class="font-medium text-gray-800">{entry.day}</span>
+            <span class="font-medium" style="color: var(--color-text);">{entry.day}</span>
             {entry.isClosed
-              ? <span class="text-red-500 text-sm font-semibold">Cerrado</span>
-              : <span class="text-gray-600 text-sm">{entry.open} – {entry.close}</span>
+              ? <span class="text-sm font-semibold" style="color: var(--color-error);">Cerrado</span>
+              : <span class="text-sm" style="color: var(--color-text-muted);">{entry.open} – {entry.close}</span>
             }
           </li>
         ))}
