@@ -1,6 +1,6 @@
 ---
 import Button from '@/components/ui/Button.astro';
-import { siteConfig } from '@/config';
+import { businessConfig } from '@/config';
 
 interface Props {
   title?: string;
@@ -10,8 +10,8 @@ interface Props {
 }
 
 const {
-  title = siteConfig.name,
-  subtitle = siteConfig.shortDescription,
+  title = businessConfig.name,
+  subtitle = businessConfig.shortDescription,
   primaryCta = { label: 'Ver Menú', href: '/menu' },
   secondaryCta = { label: 'Contáctanos', href: '/contacto' },
 } = Astro.props;
