@@ -5,7 +5,7 @@ export const headerNav: NavItem[] = [
   { label: 'Menú', href: '/menu' },
   { label: 'Ofertas', href: '/promotions' },
   { label: 'Nosotros', href: '/about' },
-  { label: 'Contacto', href: '/contacto' },
+  { label: 'Contacto', href: '/contact' },
 ];
 
 export const footerNav: FooterSection[] = [
@@ -16,7 +16,7 @@ export const footerNav: FooterSection[] = [
       { label: 'Menú', href: '/menu' },
       { label: 'Ofertas', href: '/promotions' },
       { label: 'Nosotros', href: '/about' },
-      { label: 'Contacto', href: '/contacto' },
+      { label: 'Contacto', href: '/contact' },
     ],
   },
   {

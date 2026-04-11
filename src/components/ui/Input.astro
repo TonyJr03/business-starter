@@ -19,17 +19,18 @@
  */
 
 interface Props {
-  label:        string;
-  id:           string;
-  name?:        string;
-  type?:        'text' | 'email' | 'tel' | 'number' | 'password' | 'search' | 'url';
-  placeholder?: string;
-  required?:    boolean;
-  disabled?:    boolean;
-  value?:       string;
-  error?:       string;
-  helperText?:  string;
-  class?:       string;
+  label:         string;
+  id:            string;
+  name?:         string;
+  type?:         'text' | 'email' | 'tel' | 'number' | 'password' | 'search' | 'url';
+  placeholder?:  string;
+  required?:     boolean;
+  disabled?:     boolean;
+  value?:        string;
+  error?:        string;
+  helperText?:   string;
+  autocomplete?: string;
+  class?:        string;
 }
 
 const {
@@ -43,6 +44,7 @@ const {
   value,
   error,
   helperText,
+  autocomplete,
   class: className,
 } = Astro.props;
 
@@ -71,6 +73,7 @@ const describedBy = error ? errorId : helperText ? helperId : undefined;
     required={required}
     disabled={disabled}
     value={value}
+    autocomplete={autocomplete}
     aria-describedby={describedBy}
     aria-invalid={error ? 'true' : undefined}
     class:list={[
