@@ -5,27 +5,7 @@ import FeatureSection from '@/components/sections/FeatureSection.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
 import Section from '@/components/ui/Section.astro';
 import { businessConfig } from '@/config';
-import type { FeatureItem } from '@/components/sections/FeatureSection.astro';
-
-// ── Datos de la sección de características ─────────────────────────────────
-// Personaliza estos ítems para cada negocio.
-const features: FeatureItem[] = [
-  {
-    icon: '✨',
-    title: 'Calidad artesanal',
-    description: 'Cada producto elaborado con los mejores ingredientes locales y con el cuidado de siempre.',
-  },
-  {
-    icon: '📍',
-    title: businessConfig.address.city,
-    description: `Encuéntranos en ${businessConfig.address.street}, ${businessConfig.address.municipality}.`,
-  },
-  {
-    icon: '🕐',
-    title: 'Abierto toda la semana',
-    description: 'Horario extendido para que disfrutes cuando lo necesites.',
-  },
-];
+import { homeFeatures } from '@/data';
 ---
 
 <MainLayout
@@ -48,7 +28,7 @@ const features: FeatureItem[] = [
   <FeatureSection
     title="¿Por qué elegirnos?"
     subtitle={businessConfig.description}
-    items={features}
+    items={homeFeatures}
     columns={3}
     bg="surface"
     size="md"
