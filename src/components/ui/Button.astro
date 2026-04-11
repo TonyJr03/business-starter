@@ -31,6 +31,7 @@ const variants: Record<string, string> = {
   primary: 'text-white hover:opacity-90 active:opacity-80',
   outline: [
     'border-2 bg-transparent',
+    'border-(--color-primary) text-(--color-primary)',
     'hover:text-white hover:bg-(--color-primary) hover:border-(--color-primary)',
     'active:opacity-90',
   ].join(' '),
@@ -47,7 +48,7 @@ const inlineStyle =
   variant === 'primary'
     ? 'background-color: var(--color-primary);'
     : variant === 'outline'
-      ? 'border-color: var(--color-primary); color: var(--color-primary);'
+      ? 'border-color: var(--color-primary);'
       : 'color: var(--color-primary);';
 ---
 
