@@ -1,76 +1,136 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import SectionHeader from '@/components/common/SectionHeader.astro';
+import ProductCard from '@/components/catalog/ProductCard.astro';
+import CategoryNav from '@/components/catalog/CategoryNav.astro';
+import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
 import { businessConfig } from '@/config';
 import { getCategories, getProducts } from '@/services/products';
-import Badge from '@/components/ui/Badge.astro';
+import { getWhatsAppUrl } from '@/lib/whatsapp';
 
-const categories = await getCategories();
-const allProducts = await getProducts({ onlyAvailable: false });
+const { name, activeModules, contact } = businessConfig;
+
+const categories    = await getCategories();
+const allProducts   = await getProducts({ onlyAvailable: false });
+
+const featured = allProducts.filter((p) => p.isFeatured && p.isAvailable);
 
 const productsByCategory = categories.map((cat) => ({
   category: cat,
   products: allProducts.filter((p) => p.categoryId === cat.id),
 }));
+
+/**
+ * Genera la URL de WhatsApp para un producto concreto.
+ * Cuando el módulo de carrito se active, este helper dejará de usarse
+ * y el botón de ProductCard pasará a gestionar el carrito en su lugar.
+ */
+function productOrderUrl(productName: string): string | undefined {
+  if (!contact.whatsappNumber) return undefined;
+  return getWhatsAppUrl(`Hola ${name}, quisiera pedir: ${productName}.`);
+}
 ---
 
 <MainLayout
   title="Menú"
-  description={`Conoce nuestro menú completo en ${businessConfig.name}. Cafés, bebidas y bocados.`}
+  description={`Conoce nuestro menú completo en ${name}. Cafés, bebidas y bocados.`}
 >
-  <!-- Encabezado -->
-  <section class="py-20 px-4 text-center" style="background-color: var(--color-secondary);">
-    <div class="max-w-2xl mx-auto">
-      <h1 class="text-4xl font-bold mb-4" style="color: var(--color-primary);">Nuestro Menú</h1>
-      <p class="text-lg" style="color: var(--color-text-muted);">Todo lo que tenemos para ofrecerte hoy.</p>
+
+  <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
+  <Section bg="secondary" size="md">
+    <div class="max-w-2xl mx-auto text-center">
+      <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
+        Nuestro Menú
+      </h1>
+      <p class="text-lg" style="color: var(--color-text-muted);">
+        Todo lo que tenemos para ofrecerte hoy.
+      </p>
     </div>
-  </section>
+  </Section>
 
-  <!-- Catalógo por categorías -->
-  <section class="py-16 px-4">
-    <div class="max-w-4xl mx-auto space-y-16">
-      {productsByCategory.map(({ category, products }) => (
-        <div>
-          <!-- Cabecera de categoría -->
-          <div class="flex items-center gap-4 mb-8">
-            <h2 class="text-2xl font-bold" style="color: var(--color-primary);">{category.name}</h2>
-            <div class="flex-1 h-px" style="background-color: var(--color-border);"></div>
-          </div>
+  {!activeModules.catalog ? (
 
-          {category.description && (
-            <p class="text-sm -mt-4 mb-8" style="color: var(--color-text-muted);">{category.description}</p>
-          )}
+    <!-- ── Módulo desactivado ────────────────────────────────────────────── -->
+    <Section bg="default" size="lg">
+      <p class="text-center" style="color: var(--color-text-subtle);">
+        El catálogo no está disponible en este momento.
+      </p>
+    </Section>
 
-          <!-- Lista de productos -->
-          <ul class="divide-y" style="border-color: var(--color-border-subtle);">
-            {products.map((product) => (
-              <li class="flex items-start justify-between gap-4 py-4">
-                <div class="flex-1">
-                  <div class="flex items-center gap-2 flex-wrap">
-                    <span class:list={[
-                      'font-medium',
-                      !product.isAvailable && 'opacity-40 line-through',
-                    ]} style="color: var(--color-text);">
-                      {product.name}
-                    </span>
-                    {product.badge && product.isAvailable && (
-                      <Badge variant={product.badge} />
-                    )}
-                    {!product.isAvailable && (
-                      <span class="text-xs font-medium" style="color: var(--color-error);">Agotado</span>
-                    )}
-                  </div>
-                  {product.description && (
-                    <p class="text-sm mt-0.5" style="color: var(--color-text-muted);">{product.description}</p>
-                  )}
-                </div>
-                <span class="font-semibold whitespace-nowrap" style="color: var(--color-text);">
-                  ${product.price}
-                </span>
+  ) : (
+    <>
+      <!-- ── Nav de categorías (sticky) ──────────────────────────────────── -->
+      <CategoryNav categories={categories} />
+
+      <!-- ── Destacados ──────────────────────────────────────────────────── -->
+      {featured.length > 0 && (
+        <Section bg="surface" size="md">
+          <SectionHeader title="Destacados" align="left" />
+          <ul class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((product) => (
+              <li>
+                <ProductCard
+                  product={product}
+                  orderHref={productOrderUrl(product.name)}
+                />
               </li>
             ))}
           </ul>
-        </div>
+        </Section>
+      )}
+
+      <!-- ── Catálogo por categorías ─────────────────────────────────────── -->
+      {productsByCategory.map(({ category, products }) => (
+        <Section bg="default" size="md" id={category.slug}>
+          <!-- Cabecera de categoría -->
+          <div class="flex items-center gap-4 mb-2">
+            <h2
+              class="text-2xl font-bold whitespace-nowrap"
+              style="color: var(--color-primary);"
+            >
+              {category.name}
+            </h2>
+            <div class="flex-1 h-px" style="background-color: var(--color-border);" />
+          </div>
+
+          {category.description && (
+            <p class="text-sm mb-8" style="color: var(--color-text-muted);">
+              {category.description}
+            </p>
+          )}
+
+          {products.length === 0 ? (
+            <p class="text-sm py-4" style="color: var(--color-text-subtle);">
+              Sin productos en esta categoría por el momento.
+            </p>
+          ) : (
+            <ul class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+              {products.map((product) => (
+                <li>
+                  <ProductCard
+                    product={product}
+                    orderHref={productOrderUrl(product.name)}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+        </Section>
       ))}
-    </div>
-  </section>
+
+      <!-- ── CTA WhatsApp ────────────────────────────────────────────────── -->
+      {contact.whatsappNumber && (
+        <CtaWhatsappSection
+          title="¿Ves algo que te gusta?"
+          subtitle="Escríbenos por WhatsApp y te atendemos de inmediato."
+          buttonLabel="Hacer un pedido"
+          message={`Hola ${name}, quisiera hacer un pedido.`}
+          bg="secondary"
+          size="md"
+        />
+      )}
+    </>
+  )}
+
 </MainLayout>
