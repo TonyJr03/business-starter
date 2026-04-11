@@ -1,18 +1,18 @@
 import type { Promotion } from '@/types';
-import { mockPromotions } from '@/data';
+import { promotions } from '@/data';
 
 /**
  * Capa de servicios para promociones.
  *
- * Actualmente devuelve datos mock.
+ * Actualmente devuelve datos locales tipados.
  * En el futuro consultará Supabase sin cambiar el contrato de las funciones.
  */
 
 export async function getPromotions(onlyActive = true): Promise<Promotion[]> {
-  if (!onlyActive) return mockPromotions;
-  return mockPromotions.filter((p) => p.isActive);
+  if (!onlyActive) return promotions;
+  return promotions.filter((p) => p.isActive);
 }
 
 export async function getPromotionById(id: string): Promise<Promotion | undefined> {
-  return mockPromotions.find((p) => p.id === id);
+  return promotions.find((p) => p.id === id);
 }

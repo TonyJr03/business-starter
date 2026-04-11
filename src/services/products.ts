@@ -1,15 +1,15 @@
 import type { Product, Category } from '@/types';
-import { mockProducts, mockCategories } from '@/data';
+import { categories, menuItems } from '@/data';
 
 /**
  * Capa de servicios para productos y categorías.
  *
- * Actualmente devuelve datos mock.
+ * Actualmente devuelve datos locales tipados.
  * En el futuro consultará Supabase sin cambiar el contrato de las funciones.
  */
 
 export async function getCategories(): Promise<Category[]> {
-  return mockCategories.filter((c) => c.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
+  return categories.filter((c) => c.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 export async function getProducts(options?: {
@@ -17,7 +17,7 @@ export async function getProducts(options?: {
   onlyFeatured?: boolean;
   onlyAvailable?: boolean;
 }): Promise<Product[]> {
-  let results = [...mockProducts];
+  let results = [...menuItems];
 
   if (options?.onlyAvailable !== false) {
     results = results.filter((p) => p.isAvailable);
@@ -35,5 +35,5 @@ export async function getProducts(options?: {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
-  return mockProducts.find((p) => p.slug === slug);
+  return menuItems.find((p) => p.slug === slug);
 }
