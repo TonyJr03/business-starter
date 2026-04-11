@@ -2,75 +2,57 @@
 import MainLayout from '@/layouts/MainLayout.astro';
 import HeroSection from '@/components/sections/HeroSection.astro';
 import FeatureSection from '@/components/sections/FeatureSection.astro';
+import OpeningHoursSection from '@/components/sections/OpeningHoursSection.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
-import Section from '@/components/ui/Section.astro';
 import { businessConfig } from '@/config';
 import { homeFeatures } from '@/data';
+
+const { name, tagline, shortDescription, description, address, contact, openingHours, activeModules } = businessConfig;
+const ctaMessage = `Hola ${name}, me gustaría hacer una consulta.`;
 ---
 
 <MainLayout
   title="Inicio"
-  description={businessConfig.shortDescription}
+  description={shortDescription}
 >
 
   <!-- ── Hero ────────────────────────────────────────────────────────────── -->
   <HeroSection
-    tagline={businessConfig.tagline}
-    title={businessConfig.name}
-    subtitle={businessConfig.shortDescription}
+    tagline={tagline}
+    title={name}
+    subtitle={shortDescription}
     primaryCta={{ label: 'Ver Menú', href: '/menu' }}
     secondaryCta={{ label: 'Contáctanos', href: '/contacto' }}
     bg="secondary"
     size="lg"
   />
 
-  <!-- ── Características ─────────────────────────────────────────────────── -->
+  <!-- ── Por qué elegirnos ───────────────────────────────────────────────── -->
   <FeatureSection
     title="¿Por qué elegirnos?"
-    subtitle={businessConfig.description}
+    subtitle={description}
     items={homeFeatures}
     columns={3}
     bg="surface"
     size="md"
   />
 
-  <!-- ── Horarios ────────────────────────────────────────────────────────── -->
-  {businessConfig.openingHours.length > 0 && (
-    <Section bg="default" size="md">
-      <div class="max-w-lg mx-auto">
-        <h2 class="text-3xl font-bold mb-8 text-center" style="color: var(--color-primary);">
-          Horarios
-        </h2>
-        <ul
-          class="rounded-xl overflow-hidden shadow-(--shadow-card) border border-(--color-border)"
-          style="background-color: var(--color-bg);"
-        >
-          {businessConfig.openingHours.map((entry) => (
-            <li
-              class="flex justify-between items-center px-6 py-3"
-              style="border-bottom: 1px solid var(--color-border-subtle);"
-            >
-              <span class="text-sm font-medium" style="color: var(--color-text);">
-                {entry.day}
-              </span>
-              {entry.isClosed
-                ? <span class="text-xs font-semibold" style="color: var(--color-error);">Cerrado</span>
-                : <span class="text-sm" style="color: var(--color-text-muted);">{entry.open} – {entry.close}</span>
-              }
-            </li>
-          ))}
-        </ul>
-      </div>
-    </Section>
+  <!-- ── Horarios (si hay horarios definidos) ────────────────────────────── -->
+  {openingHours.length > 0 && (
+    <OpeningHoursSection
+      hours={openingHours}
+      bg="default"
+      size="md"
+    />
   )}
 
-  <!-- ── CTA WhatsApp — visible solo si hay número configurado ───────────── -->
-  {businessConfig.contact.whatsappNumber && (
+  <!-- ── CTA WhatsApp (si hay número configurado) ────────────────────────── -->
+  {contact.whatsappNumber && (
     <CtaWhatsappSection
-      title="¿Listo para pedir?"
+      title="¿Listo para ordenar?"
       subtitle="Escríbenos directamente por WhatsApp y te atendemos al momento."
       buttonLabel="Escribir ahora"
-      message={`Hola ${businessConfig.name}, me gustaría hacer una consulta.`}
+      message={ctaMessage}
       bg="secondary"
       size="md"
     />

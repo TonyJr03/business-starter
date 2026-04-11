@@ -1,0 +1,69 @@
+---
+/**
+ * OpeningHoursSection — tabla de horarios de atención del negocio.
+ *
+ * Dominio-neutral: acepta cualquier array de OpeningHours definido en businessConfig.
+ * Resalta los días cerrados con el token de error del sistema de diseño.
+ *
+ * @prop title  - Título de la sección (default: 'Horarios')
+ * @prop hours  - Array de OpeningHours desde businessConfig.openingHours
+ * @prop bg     - Fondo de sección
+ * @prop size   - Padding vertical
+ */
+import Section from '@/components/ui/Section.astro';
+import SectionHeader from '@/components/common/SectionHeader.astro';
+import type { OpeningHours } from '@/types';
+
+interface Props {
+  hours:  OpeningHours[];
+  title?: string;
+  bg?:    'default' | 'surface' | 'secondary';
+  size?:  'sm' | 'md' | 'lg';
+}
+
+const {
+  hours,
+  title = 'Horarios',
+  bg    = 'default',
+  size  = 'md',
+} = Astro.props;
+---
+
+<Section bg={bg} size={size}>
+  <div class="max-w-lg mx-auto">
+
+    <SectionHeader title={title} align="center" class="mb-8" />
+
+    <ul
+      class="rounded-xl overflow-hidden border divide-y"
+      style="
+        background-color: var(--color-bg);
+        border-color: var(--color-border);
+        divide-color: var(--color-border-subtle);
+        box-shadow: var(--shadow-card);
+      "
+      aria-label="Horarios de atención"
+    >
+      {hours.map((entry) => (
+        <li class="flex justify-between items-center px-6 py-3.5">
+          <span class="text-sm font-medium" style="color: var(--color-text);">
+            {entry.day}
+          </span>
+          {entry.isClosed
+            ? (
+              <span class="text-xs font-semibold" style="color: var(--color-error);">
+                Cerrado
+              </span>
+            )
+            : (
+              <span class="text-sm tabular-nums" style="color: var(--color-text-muted);">
+                {entry.open} – {entry.close}
+              </span>
+            )
+          }
+        </li>
+      ))}
+    </ul>
+
+  </div>
+</Section>
