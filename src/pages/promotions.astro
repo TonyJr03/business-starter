@@ -75,8 +75,7 @@ const activeCount = enriched.filter((e) => e.status === 'active').length;
   </Section>
 
   {!activeModules.promotions ? (
-
-    <!-- ── Módulo desactivado ────────────────────────────────────────────── -->
+    // Módulo desactivado
     <Section bg="default" size="lg">
       <p class="text-center" style="color: var(--color-text-subtle);">
         Las promociones no están disponibles en este momento.
@@ -84,8 +83,7 @@ const activeCount = enriched.filter((e) => e.status === 'active').length;
     </Section>
 
   ) : enriched.length === 0 ? (
-
-    <!-- ── Sin datos ─────────────────────────────────────────────────────── -->
+    // Sin datos
     <Section bg="default" size="lg">
       <p class="text-center" style="color: var(--color-text-subtle);">
         No hay promociones registradas en este momento.
@@ -93,8 +91,7 @@ const activeCount = enriched.filter((e) => e.status === 'active').length;
     </Section>
 
   ) : (
-
-    <!-- ── Lista de promociones ───────────────────────────────────────────── -->
+    // Lista de promociones
     <Section bg="default" size="md">
       <ul class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
         {enriched.map(({ promo, status, dateRange, orderHref }) => (

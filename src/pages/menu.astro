@@ -50,8 +50,7 @@ function productOrderUrl(productName: string): string | undefined {
   </Section>
 
   {!activeModules.catalog ? (
-
-    <!-- ── Módulo desactivado ────────────────────────────────────────────── -->
+    // Módulo desactivado
     <Section bg="default" size="lg">
       <p class="text-center" style="color: var(--color-text-subtle);">
         El catálogo no está disponible en este momento.
@@ -60,10 +59,10 @@ function productOrderUrl(productName: string): string | undefined {
 
   ) : (
     <>
-      <!-- ── Nav de categorías (sticky) ──────────────────────────────────── -->
+      {/* Nav de categorías (sticky) */}
       <CategoryNav categories={categories} />
 
-      <!-- ── Destacados ──────────────────────────────────────────────────── -->
+      {/* Destacados */}
       {featured.length > 0 && (
         <Section bg="surface" size="md">
           <SectionHeader title="Destacados" align="left" />
@@ -80,10 +79,10 @@ function productOrderUrl(productName: string): string | undefined {
         </Section>
       )}
 
-      <!-- ── Catálogo por categorías ─────────────────────────────────────── -->
+      {/* Catálogo por categorías */}
       {productsByCategory.map(({ category, products }) => (
         <Section bg="default" size="md" id={category.slug}>
-          <!-- Cabecera de categoría -->
+          {/* Cabecera de categoría */}
           <div class="flex items-center gap-4 mb-2">
             <h2
               class="text-2xl font-bold whitespace-nowrap"
@@ -119,7 +118,7 @@ function productOrderUrl(productName: string): string | undefined {
         </Section>
       ))}
 
-      <!-- ── CTA WhatsApp ────────────────────────────────────────────────── -->
+      {/* CTA WhatsApp */}
       {contact.whatsappNumber && (
         <CtaWhatsappSection
           title="¿Ves algo que te gusta?"

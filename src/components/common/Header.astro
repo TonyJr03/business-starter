@@ -1,7 +1,8 @@
 ---
 import { businessConfig, headerNav } from '@/config';
+import { getWhatsAppUrl } from '@/lib/whatsapp';
 
-const whatsappUrl = `https://wa.me/${businessConfig.contact.whatsappNumber.replace(/\D/g, '')}`;
+const whatsappUrl = getWhatsAppUrl();
 ---
 
 <header class="sticky top-0 z-50 shadow-sm" style="background-color: var(--color-bg);">

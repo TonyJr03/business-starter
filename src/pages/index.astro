@@ -7,7 +7,7 @@ import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
 import { businessConfig } from '@/config';
 import { homeFeatures } from '@/data';
 
-const { name, tagline, shortDescription, description, address, contact, openingHours, activeModules } = businessConfig;
+const { name, tagline, shortDescription, description, contact, openingHours } = businessConfig;
 const ctaMessage = `Hola ${name}, me gustaría hacer una consulta.`;
 ---
 
@@ -23,7 +23,7 @@ const ctaMessage = `Hola ${name}, me gustaría hacer una consulta.`;
     title={name}
     subtitle={shortDescription}
     primaryCta={{ label: 'Ver Menú', href: '/menu' }}
-    secondaryCta={{ label: 'Contáctanos', href: '/contacto' }}
+    secondaryCta={{ label: 'Contáctanos', href: '/contact' }}
     bg="secondary"
     size="lg"
   />
