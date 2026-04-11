@@ -1,0 +1,126 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import PromotionCard from '@/components/catalog/PromotionCard.astro';
+import type { PromoStatus } from '@/components/catalog/PromotionCard.astro';
+import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
+import { businessConfig } from '@/config';
+import { getPromotions } from '@/services/promotions';
+import { getWhatsAppUrl } from '@/lib/whatsapp';
+
+const { name, contact, activeModules } = businessConfig;
+
+// Traemos todas —activas e inactivas— para mostrar estado visual completo.
+const allPromos = await getPromotions(false);
+
+// ── Derivar estado por fechas (build-time) ──────────────────────────────────
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+function getStatus(promo: typeof allPromos[number]): PromoStatus {
+  if (!promo.isActive) return 'expired';
+  const starts = promo.startsAt ? new Date(promo.startsAt) : null;
+  const ends   = promo.endsAt   ? new Date(promo.endsAt)   : null;
+  if (starts && starts > today) return 'upcoming';
+  if (ends   && ends   < today) return 'expired';
+  return 'active';
+}
+
+// ── Formatear rango de fechas legible ───────────────────────────────────────
+const dateFormatter = new Intl.DateTimeFormat('es-CU', {
+  day:   'numeric',
+  month: 'long',
+  year:  'numeric',
+  timeZone: 'America/Havana',
+});
+
+function formatDateRange(startsAt?: string, endsAt?: string): string | undefined {
+  if (!startsAt && !endsAt) return undefined;
+  const parts: string[] = [];
+  if (startsAt) parts.push(`Desde el ${dateFormatter.format(new Date(startsAt + 'T00:00:00'))}`);
+  if (endsAt)   parts.push(`hasta el ${dateFormatter.format(new Date(endsAt   + 'T00:00:00'))}`);
+  return parts.join(' ');
+}
+
+// ── Enriquecer promos con estado y url ──────────────────────────────────────
+const enriched = allPromos.map((promo) => {
+  const status   = getStatus(promo);
+  const dateRange = formatDateRange(promo.startsAt, promo.endsAt);
+  const orderHref = contact.whatsappNumber
+    ? getWhatsAppUrl(`Hola ${name}, quisiera aprovechar la oferta: ${promo.title}.`)
+    : undefined;
+  return { promo, status, dateRange, orderHref };
+});
+
+const activeCount = enriched.filter((e) => e.status === 'active').length;
+---
+
+<MainLayout
+  title="Ofertas"
+  description={`Descubre las promociones y ofertas especiales de ${name}.`}
+>
+
+  <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
+  <Section bg="secondary" size="md">
+    <div class="max-w-2xl mx-auto text-center">
+      <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
+        Ofertas y Promociones
+      </h1>
+      <p class="text-lg" style="color: var(--color-text-muted);">
+        {activeCount > 0
+          ? `${activeCount} promoción${activeCount > 1 ? 'es' : ''} activa${activeCount > 1 ? 's' : ''} ahora mismo.`
+          : 'Pronto tendremos novedades. ¡Vuelve a visitarnos!'}
+      </p>
+    </div>
+  </Section>
+
+  {!activeModules.promotions ? (
+
+    <!-- ── Módulo desactivado ────────────────────────────────────────────── -->
+    <Section bg="default" size="lg">
+      <p class="text-center" style="color: var(--color-text-subtle);">
+        Las promociones no están disponibles en este momento.
+      </p>
+    </Section>
+
+  ) : enriched.length === 0 ? (
+
+    <!-- ── Sin datos ─────────────────────────────────────────────────────── -->
+    <Section bg="default" size="lg">
+      <p class="text-center" style="color: var(--color-text-subtle);">
+        No hay promociones registradas en este momento.
+      </p>
+    </Section>
+
+  ) : (
+
+    <!-- ── Lista de promociones ───────────────────────────────────────────── -->
+    <Section bg="default" size="md">
+      <ul class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+        {enriched.map(({ promo, status, dateRange, orderHref }) => (
+          <li>
+            <PromotionCard
+              promotion={promo}
+              status={status}
+              dateRange={dateRange}
+              orderHref={orderHref}
+            />
+          </li>
+        ))}
+      </ul>
+    </Section>
+  )}
+
+  <!-- ── CTA WhatsApp ────────────────────────────────────────────────────── -->
+  {contact.whatsappNumber && (
+    <CtaWhatsappSection
+      title="¿Tienes alguna consulta?"
+      subtitle="Escríbenos por WhatsApp y te informamos sobre cualquier oferta."
+      buttonLabel="Consultar por WhatsApp"
+      message={`Hola ${name}, quisiera información sobre sus ofertas.`}
+      bg="secondary"
+      size="md"
+    />
+  )}
+
+</MainLayout>
