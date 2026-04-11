@@ -12,9 +12,13 @@ export interface ContentFeature {
 }
 
 /**
- * AboutContent — bloque de contenido narrativo para la página "Nosotros".
+ * AboutContent — bloque de contenido narrativo para la página "Nosotros" / About.
  */
 export interface AboutContent {
   /** Párrafos de la historia del negocio. */
   story: string[];
+  /** Declaración de misión o propuesta de valor en una frase. */
+  mission?: string;
+  /** Diferenciadores clave del negocio. */
+  differentiators?: ContentFeature[];
 }
