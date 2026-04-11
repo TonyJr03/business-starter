@@ -12,8 +12,9 @@ const ctaMessage = `Hola ${name}, me gustaría hacer una consulta.`;
 ---
 
 <MainLayout
-  title="Inicio"
-  description={shortDescription}
+  title={`${name} · ${tagline}`}
+  standaloneTitle
+  description={description}
 >
 
   <!-- ── Hero ────────────────────────────────────────────────────────────── -->

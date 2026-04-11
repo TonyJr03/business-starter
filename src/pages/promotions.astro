@@ -56,8 +56,8 @@ const activeCount = enriched.filter((e) => e.status === 'active').length;
 ---
 
 <MainLayout
-  title="Ofertas"
-  description={`Descubre las promociones y ofertas especiales de ${name}.`}
+  title="Promociones"
+  description={`Descubre las promociones y ofertas especiales de ${name}. ${activeCount > 0 ? `${activeCount} ${activeCount === 1 ? 'oferta activa' : 'ofertas activas'} ahora mismo.` : ''}`}
 >
 
   <!-- ── Encabezado ──────────────────────────────────────────────────────── -->

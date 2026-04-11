@@ -9,10 +9,15 @@ interface Props {
   description?: string;
   /** Imagen para og:image (ruta absoluta o URL). */
   ogImage?: string;
+  /**
+   * Cuando true, el <title> se usa tal cual (sin " | NombreDelNegocio").
+   * Útil para la home, donde el título ya incluye el nombre del negocio.
+   */
+  standaloneTitle?: boolean;
 }
 
-const { title, description, ogImage } = Astro.props;
-const pageTitle = `${title} | ${businessConfig.name}`;
+const { title, description, ogImage, standaloneTitle = false } = Astro.props;
+const pageTitle = standaloneTitle ? title : `${title} | ${businessConfig.name}`;
 const pageDescription = description ?? businessConfig.description;
 const canonicalUrl = Astro.url.href;
 ---
@@ -29,6 +34,7 @@ const canonicalUrl = Astro.url.href;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={businessConfig.name} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonicalUrl} />
