@@ -1,11 +1,11 @@
-import { businessConfig } from '@/config';
+import { globalConfig } from '@/config';
 
 /**
  * Genera la URL base de WhatsApp para el número del negocio.
  * Opcionalmente incluye un mensaje preescrito.
  */
 export function getWhatsAppUrl(message?: string): string {
-  const number = businessConfig.contact.whatsappNumber.replace(/\D/g, '');
+  const number = globalConfig.contact.whatsapp.replace(/\D/g, '');
   const base = `https://wa.me/${number}`;
   if (!message) return base;
   return `${base}?text=${encodeURIComponent(message)}`;
@@ -24,7 +24,7 @@ export function buildOrderMessage(
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return [
-    `Hola, quisiera hacer un pedido en ${businessConfig.name}:`,
+    `Hola, quisiera hacer un pedido en ${globalConfig.identity.name}:`,
     '',
     ...lines,
     '',

@@ -1,9 +1,9 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
 import HomeSectionRenderer from '@/components/sections/HomeSectionRenderer.astro';
-import { businessConfig, homeSections } from '@/config';
+import { globalConfig, homeSections } from '@/config';
 
-const { name, tagline, description } = businessConfig;
+const { identity, seoDefaults } = globalConfig;
 
 const activeSections = homeSections
   .filter(s => s.enabled)
@@ -11,9 +11,9 @@ const activeSections = homeSections
 ---
 
 <MainLayout
-  title={`${name} · ${tagline}`}
+  title={`${identity.name} · ${identity.tagline}`}
   standaloneTitle
-  description={description}
+  description={seoDefaults.defaultDescription}
 >
   {activeSections.map(section => (
     <HomeSectionRenderer section={section} />

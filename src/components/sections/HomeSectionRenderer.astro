@@ -23,7 +23,7 @@ import OpeningHoursSection from './OpeningHoursSection.astro';
 import CtaWhatsappSection from './CtaWhatsappSection.astro';
 
 import { SECTION_REGISTRY } from './home-section-registry';
-import { businessConfig } from '@/config';
+import { globalConfig } from '@/config';
 import { homeFeatures } from '@/data';
 
 import type { HomeSectionEntry } from '@/types';
@@ -47,10 +47,10 @@ const skip = !meta.implemented;
   <FeatureSection {...section.props} items={homeFeatures} />
 )}
 
-{!skip && section.id === 'hours' && businessConfig.openingHours.length > 0 && (
-  <OpeningHoursSection {...section.props} hours={businessConfig.openingHours} />
+{!skip && section.id === 'hours' && globalConfig.hours.length > 0 && (
+  <OpeningHoursSection {...section.props} hours={globalConfig.hours} />
 )}
 
-{!skip && section.id === 'whatsapp_cta' && businessConfig.contact.whatsappNumber && (
+{!skip && section.id === 'whatsapp_cta' && globalConfig.contact.whatsapp && (
   <CtaWhatsappSection {...section.props} />
 )}

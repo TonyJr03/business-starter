@@ -7,17 +7,18 @@ import Input from '@/components/ui/Input.astro';
 import Textarea from '@/components/ui/Textarea.astro';
 import Button from '@/components/ui/Button.astro';
 import OpeningHoursSection from '@/components/sections/OpeningHoursSection.astro';
-import { businessConfig } from '@/config';
+import { globalConfig } from '@/config';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 
-const { name, address, contact, openingHours, socialLinks } = businessConfig;
+const { identity, location, contact, hours, social } = globalConfig;
+const name = identity.name;
 
 const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`);
 ---
 
 <MainLayout
   title="Contacto"
-  description={`Contáctanos por WhatsApp o visítanos en ${address.street}, ${address.city}.`}
+  description={`Contáctanos por WhatsApp o visítanos en ${location.street ?? location.city}, ${location.city}.`}
 >
 
   <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
@@ -33,7 +34,7 @@ const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`
   </Section>
 
   <!-- ── CTA WhatsApp prominente ─────────────────────────────────────────── -->
-  {contact.whatsappNumber && (
+  {contact.whatsapp && (
     <Section bg="default" size="sm">
       <div class="max-w-xl mx-auto">
         <a
@@ -63,7 +64,7 @@ const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`
           <div class="flex-1 min-w-0">
             <p class="font-semibold" style="color: var(--color-text);">Escríbenos por WhatsApp</p>
             <p class="text-sm truncate" style="color: var(--color-text-muted);">
-              {contact.whatsappNumber} · Respuesta rápida
+              {contact.whatsapp} · Respuesta rápida
             </p>
           </div>
           <!-- Flecha -->
@@ -100,9 +101,9 @@ const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
             <span class="leading-relaxed">
-              {address.street}<br />
-              {address.municipality}, {address.city}
-              {address.country ? `, ${address.country}` : ''}
+              {location.street && <>{location.street}<br /></>}
+              {location.municipality ? `${location.municipality}, ` : ''}{location.city}
+              {location.country ? `, ${location.country}` : ''}
             </span>
           </li>
 
@@ -129,13 +130,13 @@ const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`
         </ul>
 
         <!-- Redes sociales -->
-        {(socialLinks.instagram || socialLinks.facebook) && (
+        {(social.instagram || social.facebook) && (
           <div class="space-y-3">
             <p class="text-sm font-semibold" style="color: var(--color-text);">Síguenos</p>
             <div class="flex gap-3 flex-wrap">
-              {socialLinks.instagram && (
+              {social.instagram && (
                 <a
-                  href={socialLinks.instagram}
+                  href={social.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="inline-flex items-center gap-2 text-sm px-4 py-2 rounded-full border border-(--color-border) text-(--color-text-muted) transition-colors hover:bg-[#E1306C] hover:border-[#E1306C] hover:text-white"
@@ -144,9 +145,9 @@ const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`
                   Instagram
                 </a>
               )}
-              {socialLinks.facebook && (
+              {social.facebook && (
                 <a
-                  href={socialLinks.facebook}
+                  href={social.facebook}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="inline-flex items-center gap-2 text-sm px-4 py-2 rounded-full border border-(--color-border) text-(--color-text-muted) transition-colors hover:bg-[#1877F2] hover:border-[#1877F2] hover:text-white"
@@ -221,7 +222,7 @@ const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`
                 <Button type="submit" variant="primary" size="md" class="w-full sm:w-auto">
                   Enviar mensaje
                 </Button>
-                {contact.whatsappNumber && (
+                {contact.whatsapp && (
                   <a
                     href={whatsappUrl}
                     target="_blank"
@@ -251,9 +252,9 @@ const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`
   </Section>
 
   <!-- ── Horarios ────────────────────────────────────────────────────────── -->
-  {openingHours.length > 0 && (
+  {hours.length > 0 && (
     <OpeningHoursSection
-      hours={openingHours}
+      hours={hours}
       title="Horarios de atención"
       bg="default"
       size="md"

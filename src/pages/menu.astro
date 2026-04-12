@@ -5,11 +5,12 @@ import SectionHeader from '@/components/common/SectionHeader.astro';
 import ProductCard from '@/components/catalog/ProductCard.astro';
 import CategoryNav from '@/components/catalog/CategoryNav.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
-import { businessConfig } from '@/config';
+import { globalConfig } from '@/config';
 import { getCategories, getProducts } from '@/services/products';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 
-const { name, activeModules, contact } = businessConfig;
+const { identity, modules, contact } = globalConfig;
+const name = identity.name;
 
 const categories    = await getCategories();
 const allProducts   = await getProducts({ onlyAvailable: false });
@@ -27,7 +28,7 @@ const productsByCategory = categories.map((cat) => ({
  * y el botón de ProductCard pasará a gestionar el carrito en su lugar.
  */
 function productOrderUrl(productName: string): string | undefined {
-  if (!contact.whatsappNumber) return undefined;
+  if (!contact.whatsapp) return undefined;
   return getWhatsAppUrl(`Hola ${name}, quisiera pedir: ${productName}.`);
 }
 ---
@@ -49,7 +50,7 @@ function productOrderUrl(productName: string): string | undefined {
     </div>
   </Section>
 
-  {!activeModules.catalog ? (
+  {!modules.core.catalog ? (
     // Módulo desactivado
     <Section bg="default" size="lg">
       <p class="text-center" style="color: var(--color-text-subtle);">
@@ -119,7 +120,7 @@ function productOrderUrl(productName: string): string | undefined {
       ))}
 
       {/* CTA WhatsApp */}
-      {contact.whatsappNumber && (
+      {contact.whatsapp && (
         <CtaWhatsappSection
           title="¿Ves algo que te gusta?"
           subtitle="Escríbenos por WhatsApp y te atendemos de inmediato."

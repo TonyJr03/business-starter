@@ -1,5 +1,5 @@
 ---
-import { businessConfig, themeConfig } from '@/config';
+import { globalConfig, themeConfig } from '@/config';
 import Header from '@/components/common/Header.astro';
 import Footer from '@/components/common/Footer.astro';
 import '@/styles/global.css';
@@ -10,15 +10,27 @@ interface Props {
   /** Imagen para og:image (ruta absoluta o URL). */
   ogImage?: string;
   /**
-   * Cuando true, el <title> se usa tal cual (sin " | NombreDelNegocio").
+   * Cuando true, el <title> se usa tal cual (sin el sufijo del negocio).
    * Útil para la home, donde el título ya incluye el nombre del negocio.
    */
   standaloneTitle?: boolean;
 }
 
 const { title, description, ogImage, standaloneTitle = false } = Astro.props;
-const pageTitle = standaloneTitle ? title : `${title} | ${businessConfig.name}`;
-const pageDescription = description ?? businessConfig.description;
+
+const { seoDefaults, identity } = globalConfig;
+
+// Aplica la plantilla de título configurable ("%s | Nombre del negocio").
+const pageTitle = standaloneTitle
+  ? title
+  : seoDefaults.titleTemplate.replace('%s', title);
+
+// Usa la descripción de la página si existe; si no, la descripción por defecto del negocio.
+const pageDescription = description ?? seoDefaults.defaultDescription;
+
+// Imagen OG: prioridad → prop de página → og:image por defecto del negocio.
+const resolvedOgImage = ogImage ?? seoDefaults.ogImage;
+
 const canonicalUrl = Astro.url.href;
 ---
 
@@ -34,16 +46,16 @@ const canonicalUrl = Astro.url.href;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content={businessConfig.name} />
+    <meta property="og:site_name" content={identity.name} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonicalUrl} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    {resolvedOgImage && <meta property="og:image" content={resolvedOgImage} />}
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
-    {ogImage && <meta name="twitter:image" content={ogImage} />}
+    {resolvedOgImage && <meta name="twitter:image" content={resolvedOgImage} />}
     <!-- Tokens de marca: sobreescriben los defaults de tokens.css por negocio -->
     <style define:vars={{
       colorPrimary:        themeConfig.colors.primary,

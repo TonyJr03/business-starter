@@ -4,11 +4,12 @@ import Section from '@/components/ui/Section.astro';
 import PromotionCard from '@/components/catalog/PromotionCard.astro';
 import type { PromoStatus } from '@/components/catalog/PromotionCard.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
-import { businessConfig } from '@/config';
+import { globalConfig } from '@/config';
 import { getPromotions } from '@/services/promotions';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 
-const { name, contact, activeModules } = businessConfig;
+const { identity, modules, contact } = globalConfig;
+const name = identity.name;
 
 // Traemos todas —activas e inactivas— para mostrar estado visual completo.
 const allPromos = await getPromotions(false);
@@ -46,7 +47,7 @@ function formatDateRange(startsAt?: string, endsAt?: string): string | undefined
 const enriched = allPromos.map((promo) => {
   const status   = getStatus(promo);
   const dateRange = formatDateRange(promo.startsAt, promo.endsAt);
-  const orderHref = contact.whatsappNumber
+  const orderHref = contact.whatsapp
     ? getWhatsAppUrl(`Hola ${name}, quisiera aprovechar la oferta: ${promo.title}.`)
     : undefined;
   return { promo, status, dateRange, orderHref };
@@ -74,7 +75,7 @@ const activeCount = enriched.filter((e) => e.status === 'active').length;
     </div>
   </Section>
 
-  {!activeModules.promotions ? (
+  {!modules.core.promotions ? (
     // Módulo desactivado
     <Section bg="default" size="lg">
       <p class="text-center" style="color: var(--color-text-subtle);">
@@ -109,7 +110,7 @@ const activeCount = enriched.filter((e) => e.status === 'active').length;
   )}
 
   <!-- ── CTA WhatsApp ────────────────────────────────────────────────────── -->
-  {contact.whatsappNumber && (
+  {contact.whatsapp && (
     <CtaWhatsappSection
       title="¿Tienes alguna consulta?"
       subtitle="Escríbenos por WhatsApp y te informamos sobre cualquier oferta."
