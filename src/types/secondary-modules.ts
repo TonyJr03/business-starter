@@ -30,6 +30,21 @@ export interface GalleryItem {
   category?: string;
 }
 
+/** A single blog post. */
+export interface BlogPost {
+  /** URL-safe unique identifier used to generate the post route. */
+  slug: string;
+  title: string;
+  /** One-sentence description shown in listings and meta tags. */
+  summary: string;
+  /** Post body rendered as an ordered list of paragraphs. */
+  body: string[];
+  /** ISO 8601 date string (YYYY-MM-DD). */
+  publishedAt: string;
+  author?: string;
+  tags?: string[];
+}
+
 // ─── Per-module config ─────────────────────────────────────────────────────────
 
 /** Configuration shared by every secondary module. */

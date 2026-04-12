@@ -1,0 +1,116 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import { isModuleEnabled } from '@/config';
+import type { BlogPost } from '@/types';
+import { getPosts } from '@/services/blog';
+
+/**
+ * getStaticPaths — genera una ruta por cada artículo publicado.
+ *
+ * Si el módulo blog está desactivado, devuelve un array vacío:
+ * ninguna ruta /blog/[slug] se pre-genera y el host devuelve 404 nativo.
+ */
+export async function getStaticPaths() {
+  if (!isModuleEnabled('blog')) return [];
+
+  const posts = await getPosts();
+  return posts.map((post: BlogPost) => ({
+    params: { slug: post.slug },
+    props:  { post },
+  }));
+}
+
+const { post } = Astro.props;
+
+const dateFormatter = new Intl.DateTimeFormat('es-CU', {
+  day:      'numeric',
+  month:    'long',
+  year:     'numeric',
+  timeZone: 'America/Havana',
+});
+
+const formattedDate = dateFormatter.format(new Date(post.publishedAt + 'T00:00:00'));
+---
+
+<MainLayout
+  title={post.title}
+  description={post.summary}
+>
+
+  {/* ── Encabezado del artículo ─────────────────────────────────────────── */}
+  <Section bg="secondary" size="md">
+    <div class="max-w-2xl mx-auto text-center">
+
+      {/* Fecha */}
+      <time
+        datetime={post.publishedAt}
+        class="block text-sm font-semibold uppercase tracking-widest mb-4"
+        style="color: var(--color-accent);"
+      >
+        {formattedDate}
+      </time>
+
+      {/* Título */}
+      <h1 class="text-4xl font-bold tracking-tight leading-snug mb-4" style="color: var(--color-primary);">
+        {post.title}
+      </h1>
+
+      {/* Resumen */}
+      <p class="text-lg leading-relaxed" style="color: var(--color-text-muted);">
+        {post.summary}
+      </p>
+
+      {/* Autor */}
+      {post.author && (
+        <p class="mt-4 text-sm" style="color: var(--color-text-muted);">
+          Por <span class="font-medium" style="color: var(--color-text);">{post.author}</span>
+        </p>
+      )}
+
+    </div>
+  </Section>
+
+  {/* ── Cuerpo del artículo ─────────────────────────────────────────────── */}
+  <Section bg="default" size="md">
+    <article class="max-w-2xl mx-auto">
+
+      <div class="space-y-6">
+        {post.body.map((paragraph: string) => (
+          <p class="text-base leading-relaxed" style="color: var(--color-text);">
+            {paragraph}
+          </p>
+        ))}
+      </div>
+
+      {/* Tags */}
+      {post.tags && post.tags.length > 0 && (
+        <footer class="mt-10 pt-6 border-t" style="border-color: var(--color-border, #e5e7eb);">
+          <ul class="flex flex-wrap gap-2" aria-label="Etiquetas">
+            {post.tags.map((tag: string) => (
+              <li
+                class="text-xs px-3 py-1 rounded-full"
+                style="background-color: var(--color-surface); color: var(--color-text-muted);"
+              >
+                #{tag}
+              </li>
+            ))}
+          </ul>
+        </footer>
+      )}
+
+      {/* Volver al listado */}
+      <div class="mt-10">
+        <a
+          href="/blog"
+          class="text-sm font-semibold transition-opacity hover:opacity-75"
+          style="color: var(--color-primary);"
+        >
+          ← Volver al blog
+        </a>
+      </div>
+
+    </article>
+  </Section>
+
+</MainLayout>

@@ -1,0 +1,84 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import BlogPostCard from '@/components/sections/BlogPostCard.astro';
+import { businessConfig } from '@/config';
+import { isModuleEnabled, secondaryModules } from '@/config';
+import { getPosts } from '@/services/blog';
+
+const blogEnabled = isModuleEnabled('blog');
+const { title: blogTitle, subtitle: blogSubtitle } = secondaryModules.blog;
+
+const { name } = businessConfig;
+
+const posts = blogEnabled ? await getPosts() : [];
+---
+
+<MainLayout
+  title="Blog"
+  description={`Artículos, recetas y novedades de ${name}.`}
+>
+
+  {/* ── Encabezado ──────────────────────────────────────────────────────── */}
+  {blogEnabled && (
+    <Section bg="secondary" size="md">
+      <div class="max-w-2xl mx-auto text-center">
+        <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
+          {blogTitle ?? 'Blog'}
+        </h1>
+        {blogSubtitle && (
+          <p class="text-lg" style="color: var(--color-text-muted);">
+            {blogSubtitle}
+          </p>
+        )}
+      </div>
+    </Section>
+  )}
+
+  {/* ── Listado de artículos ────────────────────────────────────────────── */}
+  {blogEnabled && (
+    <Section bg="default" size="md">
+      <div class="max-w-5xl mx-auto">
+        {posts.length > 0 ? (
+          <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" role="list">
+            {posts.map((post) => (
+              <li>
+                <BlogPostCard post={post} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="text-center py-12" style="color: var(--color-text-muted);">
+            No hay artículos publicados todavía.
+          </p>
+        )}
+      </div>
+    </Section>
+  )}
+
+  {/* ── Módulo desactivado ──────────────────────────────────────────────── */}
+  {!blogEnabled && (
+    <>
+      <meta http-equiv="refresh" content="0;url=/" />
+      <Section bg="default" size="lg">
+        <div class="max-w-md mx-auto text-center space-y-6">
+          <p class="text-5xl" aria-hidden="true">🔒</p>
+          <h1 class="text-2xl font-bold" style="color: var(--color-primary);">
+            Página no disponible
+          </h1>
+          <p class="text-base" style="color: var(--color-text-muted);">
+            Esta sección no está activa en este momento.
+          </p>
+          <a
+            href="/"
+            class="inline-block rounded-lg px-6 py-3 text-sm font-semibold transition-opacity hover:opacity-80"
+            style="background-color: var(--color-primary); color: white;"
+          >
+            Volver al inicio
+          </a>
+        </div>
+      </Section>
+    </>
+  )}
+
+</MainLayout>
