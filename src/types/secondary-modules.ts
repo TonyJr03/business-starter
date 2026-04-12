@@ -17,6 +17,19 @@ export interface FaqItem {
   category?: string;
 }
 
+/** A single image in the gallery. */
+export interface GalleryItem {
+  id: string;
+  /** Absolute URL or root-relative path to the image. */
+  src: string;
+  /** Required accessible description of the image. */
+  alt: string;
+  /** Optional caption rendered below the image. */
+  caption?: string;
+  /** Optional grouping label (e.g. "Espacio", "Productos"). */
+  category?: string;
+}
+
 // ─── Per-module config ─────────────────────────────────────────────────────────
 
 /** Configuration shared by every secondary module. */

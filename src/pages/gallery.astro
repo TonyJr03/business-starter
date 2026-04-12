@@ -1,0 +1,66 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import GalleryGrid from '@/components/sections/GalleryGrid.astro';
+import { businessConfig } from '@/config';
+import { isModuleEnabled, secondaryModules } from '@/config';
+import { galleryItems } from '@/data';
+
+const galleryEnabled = isModuleEnabled('gallery');
+const { title: galleryTitle, subtitle: gallerySubtitle } = secondaryModules.gallery;
+
+const { name } = businessConfig;
+---
+
+<MainLayout
+  title="Galería"
+  description={`Conoce el espacio, los productos y el equipo de ${name} a través de nuestra galería de imágenes.`}
+>
+
+  {/* ── Encabezado ────────────────────────────────────────────────────────── */}
+  {galleryEnabled && (
+    <Section bg="secondary" size="md">
+      <div class="max-w-2xl mx-auto text-center">
+        <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
+          {galleryTitle ?? 'Galería'}
+        </h1>
+        {gallerySubtitle && (
+          <p class="text-lg" style="color: var(--color-text-muted);">
+            {gallerySubtitle}
+          </p>
+        )}
+      </div>
+    </Section>
+  )}
+
+  {/* ── Grid de imágenes ──────────────────────────────────────────────────── */}
+  {galleryEnabled && (
+    <GalleryGrid items={galleryItems} columns={3} bg="default" size="md" />
+  )}
+
+  {/* ── Módulo desactivado ────────────────────────────────────────────────── */}
+  {!galleryEnabled && (
+    <>
+      <meta http-equiv="refresh" content="0;url=/" />
+      <Section bg="default" size="lg">
+        <div class="max-w-md mx-auto text-center space-y-6">
+          <p class="text-5xl" aria-hidden="true">🔒</p>
+          <h1 class="text-2xl font-bold" style="color: var(--color-primary);">
+            Página no disponible
+          </h1>
+          <p class="text-base" style="color: var(--color-text-muted);">
+            Esta sección no está activa en este momento.
+          </p>
+          <a
+            href="/"
+            class="inline-block rounded-lg px-6 py-3 text-sm font-semibold transition-opacity hover:opacity-80"
+            style="background-color: var(--color-primary); color: white;"
+          >
+            Volver al inicio
+          </a>
+        </div>
+      </Section>
+    </>
+  )}
+
+</MainLayout>
