@@ -3,7 +3,7 @@ import type { NavItem, FooterSection } from '@/types';
 export const headerNav: NavItem[] = [
   { label: 'Inicio', href: '/' },
   { label: 'Menú', href: '/menu' },
-  { label: 'Ofertas', href: '/promotions' },
+  { label: 'Promociones', href: '/promotions' },
   { label: 'Nosotros', href: '/about' },
   { label: 'Contacto', href: '/contact' },
 ];
@@ -14,7 +14,7 @@ export const footerNav: FooterSection[] = [
     links: [
       { label: 'Inicio', href: '/' },
       { label: 'Menú', href: '/menu' },
-      { label: 'Ofertas', href: '/promotions' },
+      { label: 'Promociones', href: '/promotions' },
       { label: 'Nosotros', href: '/about' },
       { label: 'Contacto', href: '/contact' },
     ],
