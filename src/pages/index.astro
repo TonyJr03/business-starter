@@ -1,13 +1,9 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
-import HeroSection from '@/components/sections/HeroSection.astro';
-import FeatureSection from '@/components/sections/FeatureSection.astro';
-import OpeningHoursSection from '@/components/sections/OpeningHoursSection.astro';
-import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
+import HomeSectionRenderer from '@/components/sections/HomeSectionRenderer.astro';
 import { businessConfig, homeSections } from '@/config';
-import { homeFeatures } from '@/data';
 
-const { name, tagline, description, openingHours, contact } = businessConfig;
+const { name, tagline, description } = businessConfig;
 
 const activeSections = homeSections
   .filter(s => s.enabled)
@@ -19,21 +15,7 @@ const activeSections = homeSections
   standaloneTitle
   description={description}
 >
-
-  {activeSections.map(section => {
-    if (section.id === 'hero') {
-      return <HeroSection {...section.props} />;
-    }
-    if (section.id === 'highlights') {
-      return <FeatureSection {...section.props} items={homeFeatures} />;
-    }
-    if (section.id === 'hours' && openingHours.length > 0) {
-      return <OpeningHoursSection {...section.props} hours={openingHours} />;
-    }
-    if (section.id === 'whatsapp_cta' && contact.whatsappNumber) {
-      return <CtaWhatsappSection {...section.props} />;
-    }
-    return null;
-  })}
-
+  {activeSections.map(section => (
+    <HomeSectionRenderer section={section} />
+  ))}
 </MainLayout>

@@ -1,0 +1,56 @@
+---
+/**
+ * HomeSectionRenderer — dispatcher de secciones para la Home.
+ *
+ * Recibe una entrada de configuración tipada (`HomeSectionEntry`) y renderiza
+ * el componente correspondiente. Toda la lógica de despacho vive aquí; las
+ * páginas consumidoras sólo necesitan iterar la config e instanciar este
+ * componente.
+ *
+ * Responsabilidades:
+ *  - Importar los componentes de sección disponibles.
+ *  - Inyectar runtime data (homeFeatures, openingHours) cuando proceda.
+ *  - Omitir secciones no implementadas o con guardas de negocio no cumplidas.
+ *
+ * Para registrar una nueva sección:
+ *  1. Añadir la entrada en SECTION_REGISTRY (home-section-registry.ts).
+ *  2. Importar el componente aquí.
+ *  3. Añadir la rama correspondiente en el bloque de renderizado.
+ */
+import HeroSection from './HeroSection.astro';
+import FeatureSection from './FeatureSection.astro';
+import OpeningHoursSection from './OpeningHoursSection.astro';
+import CtaWhatsappSection from './CtaWhatsappSection.astro';
+
+import { SECTION_REGISTRY } from './home-section-registry';
+import { businessConfig } from '@/config';
+import { homeFeatures } from '@/data';
+
+import type { HomeSectionEntry } from '@/types';
+
+interface Props {
+  section: HomeSectionEntry;
+}
+
+const { section } = Astro.props;
+const meta = SECTION_REGISTRY[section.id];
+
+// Skip unimplemented sections without errors.
+const skip = !meta.implemented;
+---
+
+{!skip && section.id === 'hero' && (
+  <HeroSection {...section.props} />
+)}
+
+{!skip && section.id === 'highlights' && (
+  <FeatureSection {...section.props} items={homeFeatures} />
+)}
+
+{!skip && section.id === 'hours' && businessConfig.openingHours.length > 0 && (
+  <OpeningHoursSection {...section.props} hours={businessConfig.openingHours} />
+)}
+
+{!skip && section.id === 'whatsapp_cta' && businessConfig.contact.whatsappNumber && (
+  <CtaWhatsappSection {...section.props} />
+)}
