@@ -6,10 +6,19 @@ import { categories, menuItems } from '@/data';
  *
  * Actualmente devuelve datos locales tipados.
  * En el futuro consultará Supabase sin cambiar el contrato de las funciones.
+ *
+ * Los campos isActive, isAvailable, isFeatured y sortOrder son opcionales en
+ * el tipo; aquí se aplican los valores por defecto del dominio:
+ *   isActive    → true   (se muestra si no se indica lo contrario)
+ *   isAvailable → true   (disponible salvo que se marque explícitamente false)
+ *   isFeatured  → false  (no destacado por defecto)
+ *   sortOrder   → 0      (al final si no se especifica posición)
  */
 
 export async function getCategories(): Promise<Category[]> {
-  return categories.filter((c) => c.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
+  return categories
+    .filter((c) => c.isActive ?? true)
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 }
 
 export async function getProducts(options?: {
@@ -20,7 +29,7 @@ export async function getProducts(options?: {
   let results = [...menuItems];
 
   if (options?.onlyAvailable !== false) {
-    results = results.filter((p) => p.isAvailable);
+    results = results.filter((p) => p.isAvailable ?? true);
   }
 
   if (options?.categoryId) {
@@ -28,10 +37,10 @@ export async function getProducts(options?: {
   }
 
   if (options?.onlyFeatured) {
-    results = results.filter((p) => p.isFeatured);
+    results = results.filter((p) => p.isFeatured ?? false);
   }
 
-  return results.sort((a, b) => a.sortOrder - b.sortOrder);
+  return results.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {

@@ -91,15 +91,10 @@ export interface Product {
   slug: string;
   /** Descripción completa del producto. */
   description: string;
-  /** Precio base como número simple (compatible con datos existentes). */
-  price: number;
+  /** Precio con divisa ISO 4217 (ej. { amount: 25, currency: 'CUP' }). */
+  money: Money;
 
   // ── Campos opcionales ─────────────────────────────────────────────────────
-  /**
-   * Precio estructurado con divisa.
-   * Cuando está presente, tiene precedencia sobre price para presentación.
-   */
-  money?: Money;
   /** URL de la imagen principal del producto. */
   imageUrl?: string;
   /** Galería de imágenes adicionales. */

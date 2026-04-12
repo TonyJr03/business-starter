@@ -22,7 +22,10 @@ interface Props {
 }
 
 const { product, orderHref } = Astro.props;
-const { name, description, price, badge, isAvailable, isFeatured } = product;
+const { name, description, money, badge, isAvailable, isFeatured } = product;
+
+// Precio canónico: money es requerido en el tipo.
+const displayPrice = `${money.amount} ${money.currency}`;
 ---
 
 <Card variant={isFeatured ? 'elevated' : 'default'} class="flex flex-col h-full">
@@ -52,7 +55,7 @@ const { name, description, price, badge, isAvailable, isFeatured } = product;
     <!-- Pie: precio + acción ─────────────────────────────────────────── -->
     <div class="flex items-center justify-between gap-4 pt-1 mt-auto">
       <span class="text-lg font-bold tabular-nums" style="color: var(--color-primary);">
-        ${price}
+        {displayPrice}
       </span>
 
       {orderHref && isAvailable && (

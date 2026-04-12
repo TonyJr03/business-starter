@@ -4,6 +4,9 @@ import type { Product } from '@/types';
  * menuItems — ítems del menú / productos del catálogo.
  *
  * Fuente canónica de datos de productos.
+ * Cada producto usa `money` (valor estructurado con divisa ISO 4217)
+ * como campo canónico de precio.
+ *
  * Los servicios de productos consumen este array a través del barrel @/data.
  */
 export const menuItems: Product[] = [
@@ -14,7 +17,7 @@ export const menuItems: Product[] = [
     name: 'Café Cubano',
     slug: 'cafe-cubano',
     description: 'Nuestro café cubano tradicional, fuerte y aromático.',
-    price: 25,
+    money: { amount: 25, currency: 'CUP' },
     isAvailable: true,
     isFeatured: true,
     badge: 'popular',
@@ -26,7 +29,7 @@ export const menuItems: Product[] = [
     name: 'Cortadito',
     slug: 'cortadito',
     description: 'Café cubano con un toque de leche suave.',
-    price: 30,
+    money: { amount: 30, currency: 'CUP' },
     isAvailable: true,
     isFeatured: true,
     sortOrder: 2,
@@ -37,7 +40,7 @@ export const menuItems: Product[] = [
     name: 'Café con Leche',
     slug: 'cafe-con-leche',
     description: 'La combinación perfecta para comenzar el día.',
-    price: 40,
+    money: { amount: 40, currency: 'CUP' },
     isAvailable: true,
     isFeatured: false,
     sortOrder: 3,
@@ -48,7 +51,7 @@ export const menuItems: Product[] = [
     name: 'Espresso Doble',
     slug: 'espresso-doble',
     description: 'Concentrado e intenso, para los que no se conforman con poco.',
-    price: 45,
+    money: { amount: 45, currency: 'CUP' },
     isAvailable: true,
     isFeatured: false,
     badge: 'new',
@@ -61,7 +64,7 @@ export const menuItems: Product[] = [
     name: 'Jugo de Guayaba',
     slug: 'jugo-guayaba',
     description: 'Natural, fresco y bien cubano.',
-    price: 35,
+    money: { amount: 35, currency: 'CUP' },
     isAvailable: true,
     isFeatured: true,
     badge: 'new',
@@ -73,7 +76,7 @@ export const menuItems: Product[] = [
     name: 'Batido de Mango',
     slug: 'batido-mango',
     description: 'Cremoso y dulce, hecho con mango fresco.',
-    price: 50,
+    money: { amount: 50, currency: 'CUP' },
     isAvailable: true,
     isFeatured: false,
     sortOrder: 2,
@@ -84,7 +87,7 @@ export const menuItems: Product[] = [
     name: 'Agua de Coco',
     slug: 'agua-de-coco',
     description: 'Refrescante y natural, directo del coco.',
-    price: 40,
+    money: { amount: 40, currency: 'CUP' },
     isAvailable: true,
     isFeatured: false,
     sortOrder: 3,
@@ -96,7 +99,7 @@ export const menuItems: Product[] = [
     name: 'Pastelito de Guayaba',
     slug: 'pastelito-guayaba',
     description: 'Hojaldrado y relleno de guayaba, igual que en casa.',
-    price: 20,
+    money: { amount: 20, currency: 'CUP' },
     isAvailable: true,
     isFeatured: true,
     badge: 'popular',
@@ -108,7 +111,7 @@ export const menuItems: Product[] = [
     name: 'Tostada con Mantequilla',
     slug: 'tostada-mantequilla',
     description: 'Pan tostado, crujiente y bien untado.',
-    price: 15,
+    money: { amount: 15, currency: 'CUP' },
     isAvailable: false,
     isFeatured: false,
     sortOrder: 2,
@@ -119,7 +122,7 @@ export const menuItems: Product[] = [
     name: 'Croqueta de Jamón',
     slug: 'croqueta-jamon',
     description: 'Crujiente por fuera, cremosa por dentro. Perfecta para acompañar el café.',
-    price: 25,
+    money: { amount: 25, currency: 'CUP' },
     isAvailable: true,
     isFeatured: false,
     sortOrder: 3,

@@ -16,19 +16,21 @@ export function getWhatsAppUrl(message?: string): string {
  * a partir de una lista de ítems seleccionados.
  */
 export function buildOrderMessage(
-  items: Array<{ name: string; quantity: number; price: number }>,
+  items: Array<{ name: string; quantity: number; money: { amount: number; currency: string } }>,
 ): string {
   const lines = items.map(
-    (item) => `• ${item.name} x${item.quantity} — $${item.price * item.quantity}`,
+    (item) => `• ${item.name} x${item.quantity} — ${item.money.amount * item.quantity} ${item.money.currency}`,
   );
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // Asume que todos los ítems comparten la misma divisa (primer ítem como referencia).
+  const currency = items[0]?.money.currency ?? '';
+  const total = items.reduce((sum, item) => sum + item.money.amount * item.quantity, 0);
 
   return [
     `Hola, quisiera hacer un pedido en ${globalConfig.identity.name}:`,
     '',
     ...lines,
     '',
-    `Total estimado: $${total}`,
+    `Total estimado: ${total} ${currency}`,
     '',
     '¿Está disponible?',
   ].join('\n');

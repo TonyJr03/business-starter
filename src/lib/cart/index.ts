@@ -17,7 +17,8 @@
 export type CartItem = {
   productId: string;
   name: string;
-  price: number;
+  /** Precio con divisa — campo canónico del dominio (reemplaza price: number). */
+  money: { amount: number; currency: string };
   quantity: number;
   imageUrl?: string;
 };
