@@ -4,11 +4,14 @@ import HeroSection from '@/components/sections/HeroSection.astro';
 import FeatureSection from '@/components/sections/FeatureSection.astro';
 import OpeningHoursSection from '@/components/sections/OpeningHoursSection.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
-import { businessConfig } from '@/config';
+import { businessConfig, homeSections } from '@/config';
 import { homeFeatures } from '@/data';
 
-const { name, tagline, shortDescription, description, contact, openingHours } = businessConfig;
-const ctaMessage = `Hola ${name}, me gustaría hacer una consulta.`;
+const { name, tagline, description, openingHours, contact } = businessConfig;
+
+const activeSections = homeSections
+  .filter(s => s.enabled)
+  .sort((a, b) => a.order - b.order);
 ---
 
 <MainLayout
@@ -17,46 +20,20 @@ const ctaMessage = `Hola ${name}, me gustaría hacer una consulta.`;
   description={description}
 >
 
-  <!-- ── Hero ────────────────────────────────────────────────────────────── -->
-  <HeroSection
-    tagline={tagline}
-    title={name}
-    subtitle={shortDescription}
-    primaryCta={{ label: 'Ver Menú', href: '/menu' }}
-    secondaryCta={{ label: 'Contáctanos', href: '/contact' }}
-    bg="secondary"
-    size="lg"
-  />
-
-  <!-- ── Por qué elegirnos ───────────────────────────────────────────────── -->
-  <FeatureSection
-    title="¿Por qué elegirnos?"
-    subtitle={description}
-    items={homeFeatures}
-    columns={3}
-    bg="surface"
-    size="md"
-  />
-
-  <!-- ── Horarios (si hay horarios definidos) ────────────────────────────── -->
-  {openingHours.length > 0 && (
-    <OpeningHoursSection
-      hours={openingHours}
-      bg="default"
-      size="md"
-    />
-  )}
-
-  <!-- ── CTA WhatsApp (si hay número configurado) ────────────────────────── -->
-  {contact.whatsappNumber && (
-    <CtaWhatsappSection
-      title="¿Listo para ordenar?"
-      subtitle="Escríbenos directamente por WhatsApp y te atendemos al momento."
-      buttonLabel="Escribir ahora"
-      message={ctaMessage}
-      bg="secondary"
-      size="md"
-    />
-  )}
+  {activeSections.map(section => {
+    if (section.id === 'hero') {
+      return <HeroSection {...section.props} />;
+    }
+    if (section.id === 'highlights') {
+      return <FeatureSection {...section.props} items={homeFeatures} />;
+    }
+    if (section.id === 'hours' && openingHours.length > 0) {
+      return <OpeningHoursSection {...section.props} hours={openingHours} />;
+    }
+    if (section.id === 'whatsapp_cta' && contact.whatsappNumber) {
+      return <CtaWhatsappSection {...section.props} />;
+    }
+    return null;
+  })}
 
 </MainLayout>
