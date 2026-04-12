@@ -1,74 +1,52 @@
 import type { BusinessConfig } from '@/types';
+import { globalConfig } from './business-config';
 
 /**
- * Configuración central del negocio.
+ * Wrapper de compatibilidad — forma heredada de `BusinessConfig`.
  *
- * Este objeto es la fuente de verdad para toda la información del negocio:
- * identidad, contacto, horarios, módulos activos e integración visual.
+ * Todos los datos viven en `src/config/business-config.ts` (globalConfig).
+ * Este objeto los proyecta a la interfaz plana que consumen los componentes
+ * y páginas existentes, eliminando cualquier duplicación.
  *
- * Para adaptar el starter a un nuevo cliente, ajusta únicamente este archivo
- * (y src/config/theme.ts para los colores y tipografías).
- *
- * Nomenclatura neutral: los campos no hacen referencia a ningún tipo de
- * negocio en particular para garantizar reutilización entre sectores.
+ * Para adaptar el starter a un nuevo negocio, edita únicamente
+ * `src/config/business-config.ts`.
  */
 export const businessConfig: BusinessConfig = {
   // ─── Identidad ─────────────────────────────────────────────────────────────
-  name: 'Café La Esquina',
-  slug: 'cafe-la-esquina',
-  tagline: 'El rincón del buen café habanero',
-  description:
-    'Café La Esquina es un rincón acogedor en el corazón de La Habana donde el aroma del café recién hecho te da la bienvenida. Ofrecemos los mejores cafés cubanos, bebidas artesanales y una selección de bocados para disfrutar en un ambiente tranquilo y familiar.',
-  shortDescription: 'Tu cafetería de confianza en La Habana. Café cubano, ambiente acogedor y los mejores sabores.',
-
-  // ─── Logo ──────────────────────────────────────────────────────────────────
-  logo: {
-    url: '/images/logo.png',
-    alt: 'Café La Esquina',
-  },
-  coverImageUrl: '/images/cover.jpg',
+  name:             globalConfig.identity.name,
+  slug:             globalConfig.identity.slug ?? '',
+  tagline:          globalConfig.identity.tagline,
+  description:      globalConfig.identity.description,
+  shortDescription: globalConfig.identity.shortDescription ?? '',
+  logo:             globalConfig.identity.logo,
+  coverImageUrl:    globalConfig.identity.coverImageUrl,
 
   // ─── Contacto ──────────────────────────────────────────────────────────────
   contact: {
-    whatsappNumber: '+5350000000',
-    phone: '+5372000000',
-    email: 'contacto@cafelaesquina.cu',
+    whatsappNumber: globalConfig.contact.whatsapp,
+    phone:          globalConfig.contact.phone,
+    email:          globalConfig.contact.email,
   },
 
   // ─── Ubicación ─────────────────────────────────────────────────────────────
   address: {
-    street: 'Calle 23 esquina a L, Vedado',
-    municipality: 'Plaza de la Revolución',
-    city: 'La Habana',
-    country: 'Cuba',
+    street:       globalConfig.location.street       ?? '',
+    municipality: globalConfig.location.municipality ?? '',
+    city:         globalConfig.location.city,
+    country:      globalConfig.location.country,
   },
 
   // ─── Redes sociales ────────────────────────────────────────────────────────
-  socialLinks: {
-    instagram: 'https://instagram.com/cafelaesquina',
-    facebook: 'https://facebook.com/cafelaesquina',
-  },
+  socialLinks: globalConfig.social,
 
   // ─── Horarios ──────────────────────────────────────────────────────────────
-  openingHours: [
-    { day: 'Lunes',     open: '08:00', close: '22:00', isClosed: false },
-    { day: 'Martes',    open: '08:00', close: '22:00', isClosed: false },
-    { day: 'Miércoles', open: '08:00', close: '22:00', isClosed: false },
-    { day: 'Jueves',    open: '08:00', close: '22:00', isClosed: false },
-    { day: 'Viernes',   open: '08:00', close: '22:00', isClosed: false },
-    { day: 'Sábado',    open: '08:00', close: '22:00', isClosed: false },
-    { day: 'Domingo',   open: '09:00', close: '18:00', isClosed: false },
-  ],
+  openingHours: globalConfig.hours,
 
   // ─── Módulos activos ───────────────────────────────────────────────────────
   activeModules: {
-    catalog: true,
-    promotions: true,
-    cart: false,
-    whatsappOrdering: false,
-    testimonials: false,
-    faq: false,
-    gallery: false,
-    blog: false,
+    ...globalConfig.modules.core,
+    faq:     globalConfig.modules.secondary.faq.enabled,
+    gallery: globalConfig.modules.secondary.gallery.enabled,
+    blog:    globalConfig.modules.secondary.blog.enabled,
   },
 };

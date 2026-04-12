@@ -1,40 +1,16 @@
-import type { SecondaryModuleId, SecondaryModulesConfig } from '@/types/secondary-modules';
-
 /**
- * Configuración de módulos secundarios.
+ * Wrapper de compatibilidad — proyecta los módulos secundarios desde globalConfig.
  *
- * Cada entrada controla si un módulo se renderiza (`enabled`) y lleva
- * el texto de visualización (título / subtítulo) usado por el componente de sección del módulo.
- *
- * Uso:
- * - Establece `enabled: true` para activar un módulo en todo el sitio.
- * - Anula `title` / `subtitle` para que coincidan con tu voz de marca.
- * - Usa `isModuleEnabled(id)` en componentes y páginas para verificaciones de protección.
- *
- * Las secciones FAQ, Gallery y Blog están deshabilitadas por defecto;
- * actívalas cuando el contenido esté listo.
+ * Para activar/desactivar un módulo o cambiar su título, edita
+ * `src/config/business-config.ts` → `modules.secondary`.
  */
-export const secondaryModules: SecondaryModulesConfig = {
-  faq: {
-    enabled: false,
-    title: 'Preguntas Frecuentes',
-    subtitle: 'Todo lo que necesitas saber antes de visitarnos.',
-  },
+import type { SecondaryModuleId, SecondaryModulesConfig } from '@/types/secondary-modules';
+import { globalConfig } from './business-config';
 
-  gallery: {
-    enabled: false,
-    title: 'Galería',
-    subtitle: 'Conoce nuestro espacio y nuestras creaciones.',
-  },
+/** Módulos secundarios extraídos directamente del config global. */
+export const secondaryModules: SecondaryModulesConfig = globalConfig.modules.secondary;
 
-  blog: {
-    enabled: false,
-    title: 'Blog',
-    subtitle: 'Noticias, recetas y artículos de interés.',
-  },
-};
-
-// ─── Helper ───────────────────────────────────────────────────────────────────
+// ─── Helper ────────────────────────────────────────────────────────────────────────────
 
 /**
  * Devuelve `true` cuando el módulo secundario dado está habilitado en la configuración.
@@ -43,5 +19,5 @@ export const secondaryModules: SecondaryModulesConfig = {
  * if (isModuleEnabled('faq')) { ... }
  */
 export function isModuleEnabled(moduleId: SecondaryModuleId): boolean {
-  return secondaryModules[moduleId]?.enabled ?? false;
+  return globalConfig.modules.secondary[moduleId]?.enabled ?? false;
 }

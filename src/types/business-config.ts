@@ -27,13 +27,19 @@ export interface BusinessLogo {
 export interface BusinessIdentity {
   /** Nombre comercial del negocio (requerido). */
   name: string;
+  /** Slug seguro para URL del negocio (opcional). */
+  slug?: string;
   /** Razón social / nombre legal (opcional). */
   legalName?: string;
   /** Frase corta de marca (requerido). */
   tagline: string;
   /** Descripción completa usada en About y meta tags (requerido). */
   description: string;
+  /** Descripción breve de una línea para footer y meta tags cortos (opcional). */
+  shortDescription?: string;
   logo?: BusinessLogo;
+  /** URL de imagen de portada usada en hero/og:image (opcional). */
+  coverImageUrl?: string;
 }
 
 // ─── Branding ─────────────────────────────────────────────────────────────────
@@ -97,6 +103,10 @@ export interface BusinessLocation {
   city: string;
   /** País donde opera el negocio (requerido). */
   country: string;
+  /** Calle y número / esquina (opcional). */
+  street?: string;
+  /** Municipio o barrio (opcional). */
+  municipality?: string;
   /** URL de embed de Google Maps u otro proveedor (opcional). */
   mapUrl?: string;
   /** Coordenadas geográficas para integraciones de mapa (opcional). */

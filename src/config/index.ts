@@ -1,3 +1,4 @@
+export { globalConfig } from './business-config';
 export { businessConfig } from './business';
 export { homeSections } from './home-sections';
 export { headerNav, footerNav } from './navigation';
