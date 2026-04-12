@@ -18,6 +18,7 @@ const { name, contact } = businessConfig;
   description={`Resolvemos tus dudas sobre ${name}: pedidos, horarios, menú y más.`}
 >
 
+  <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
   {faqEnabled && (
     <Section bg="secondary" size="md">
       <div class="max-w-2xl mx-auto text-center">
@@ -32,11 +33,13 @@ const { name, contact } = businessConfig;
       </div>
     </Section>
   )}
-
+  
+  <!-- ── Sección FAQ ───────────────────────────────────────────────────────── -->
   {faqEnabled && (
     <FaqSection items={faqItems} bg="default" size="md" />
   )}
 
+  <!-- ── Sección WhatsApp ────────────────────────────────────────────────────── -->
   {faqEnabled && contact.whatsappNumber && (
     <CtaWhatsappSection
       title="¿No encontraste lo que buscabas?"
@@ -48,6 +51,7 @@ const { name, contact } = businessConfig;
     />
   )}
 
+  <!-- ── Módulo desactivado ────────────────────────────────────────────────── -->
   {!faqEnabled && (
     <>
       <meta http-equiv="refresh" content="0;url=/" />

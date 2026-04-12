@@ -1,66 +1,66 @@
-// ─── Secondary Module IDs ──────────────────────────────────────────────────────
+// ─── IDs de Módulos Secundarios ────────────────────────────────────────────────────
 
 /**
- * Union of all supported secondary module identifiers.
- * Add new modules here to extend the system.
+ * Unión de todos los identificadores de módulos secundarios soportados.
+ * Añade nuevos módulos aquí para extender el sistema.
  */
 export type SecondaryModuleId = 'faq' | 'gallery' | 'blog';
 
-// ─── Content types ────────────────────────────────────────────────────────────
+// ─── Tipos de contenido ────────────────────────────────────────────────────────────
 
-/** A single FAQ entry with a question and its answer. */
+/** Una entrada individual de FAQ con una pregunta y su respuesta. */
 export interface FaqItem {
   id: string;
   question: string;
   answer: string;
-  /** Optional grouping label (e.g. "Pedidos", "Horarios"). */
+  /** Etiqueta de agrupación opcional (ej. "Pedidos", "Horarios"). */
   category?: string;
 }
 
-/** A single image in the gallery. */
+/** Una imagen individual en la galería. */
 export interface GalleryItem {
   id: string;
-  /** Absolute URL or root-relative path to the image. */
+  /** URL absoluta o ruta relativa a la raíz de la imagen. */
   src: string;
-  /** Required accessible description of the image. */
+  /** Descripción accesible obligatoria de la imagen. */
   alt: string;
-  /** Optional caption rendered below the image. */
+  /** Pie de foto opcional renderizado bajo la imagen. */
   caption?: string;
-  /** Optional grouping label (e.g. "Espacio", "Productos"). */
+  /** Etiqueta de agrupación opcional (ej. "Espacio", "Productos"). */
   category?: string;
 }
 
-/** A single blog post. */
+/** Un artículo de blog individual. */
 export interface BlogPost {
-  /** URL-safe unique identifier used to generate the post route. */
+  /** Identificador único seguro para URL usado para generar la ruta del artículo. */
   slug: string;
   title: string;
-  /** One-sentence description shown in listings and meta tags. */
+  /** Descripción de una oración mostrada en listados y etiquetas meta. */
   summary: string;
-  /** Post body rendered as an ordered list of paragraphs. */
+  /** Cuerpo del artículo renderizado como una lista ordenada de párrafos. */
   body: string[];
-  /** ISO 8601 date string (YYYY-MM-DD). */
+  /** Cadena de fecha ISO 8601 (YYYY-MM-DD). */
   publishedAt: string;
   author?: string;
   tags?: string[];
 }
 
-// ─── Per-module config ─────────────────────────────────────────────────────────
+// ─── Configuración por módulo ──────────────────────────────────────────────────────
 
-/** Configuration shared by every secondary module. */
+/** Configuración compartida por cada módulo secundario. */
 export interface SecondaryModuleConfig {
-  /** Whether this module is active and should be rendered. */
+  /** Si este módulo está activo y debe ser renderizado. */
   enabled: boolean;
-  /** Optional heading for the module's main section. */
+  /** Encabezado opcional para la sección principal del módulo. */
   title?: string;
-  /** Optional supporting copy shown below the title. */
+  /** Texto de apoyo opcional mostrado bajo el título. */
   subtitle?: string;
 }
 
-// ─── Full map ─────────────────────────────────────────────────────────────────
+// ─── Mapa completo ────────────────────────────────────────────────────────────────
 
 /**
- * Record of every secondary module, keyed by SecondaryModuleId.
- * Type-safe: adding a new ID to the union forces a matching entry here.
+ * Registro de cada módulo secundario, indexado por SecondaryModuleId.
+ * Type-safe: añadir un nuevo ID a la unión fuerza una entrada correspondiente aquí.
  */
 export type SecondaryModulesConfig = Record<SecondaryModuleId, SecondaryModuleConfig>;

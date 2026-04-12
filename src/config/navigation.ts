@@ -1,7 +1,7 @@
 import type { NavItem, FooterSection } from '@/types';
 import { isModuleEnabled } from './secondary-modules';
 
-// Secondary module nav items — only included when the module is enabled.
+// Elementos de navegación de módulos secundarios — solo incluidos cuando el módulo está activo.
 const secondaryNavItems: NavItem[] = [
   ...(isModuleEnabled('faq')     ? [{ label: 'FAQ',     href: '/faq'     }] : []),
   ...(isModuleEnabled('gallery') ? [{ label: 'Galería', href: '/gallery' }] : []),

@@ -17,7 +17,7 @@ const { name } = businessConfig;
   description={`Conoce el espacio, los productos y el equipo de ${name} a través de nuestra galería de imágenes.`}
 >
 
-  {/* ── Encabezado ────────────────────────────────────────────────────────── */}
+  <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
   {galleryEnabled && (
     <Section bg="secondary" size="md">
       <div class="max-w-2xl mx-auto text-center">
@@ -33,12 +33,12 @@ const { name } = businessConfig;
     </Section>
   )}
 
-  {/* ── Grid de imágenes ──────────────────────────────────────────────────── */}
+  <!-- ── Grid de imágenes ──────────────────────────────────────────────────── -->
   {galleryEnabled && (
     <GalleryGrid items={galleryItems} columns={3} bg="default" size="md" />
   )}
 
-  {/* ── Módulo desactivado ────────────────────────────────────────────────── */}
+  <!-- ── Módulo desactivado ────────────────────────────────────────────────── -->
   {!galleryEnabled && (
     <>
       <meta http-equiv="refresh" content="0;url=/" />

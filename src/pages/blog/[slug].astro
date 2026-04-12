@@ -38,11 +38,11 @@ const formattedDate = dateFormatter.format(new Date(post.publishedAt + 'T00:00:0
   description={post.summary}
 >
 
-  {/* ── Encabezado del artículo ─────────────────────────────────────────── */}
+  <!-- ── Encabezado del artículo ─────────────────────────────────────────── -->
   <Section bg="secondary" size="md">
     <div class="max-w-2xl mx-auto text-center">
 
-      {/* Fecha */}
+      <!-- Fecha -->
       <time
         datetime={post.publishedAt}
         class="block text-sm font-semibold uppercase tracking-widest mb-4"
@@ -51,17 +51,17 @@ const formattedDate = dateFormatter.format(new Date(post.publishedAt + 'T00:00:0
         {formattedDate}
       </time>
 
-      {/* Título */}
+      <!-- Título -->
       <h1 class="text-4xl font-bold tracking-tight leading-snug mb-4" style="color: var(--color-primary);">
         {post.title}
       </h1>
 
-      {/* Resumen */}
+      <!-- Resumen -->
       <p class="text-lg leading-relaxed" style="color: var(--color-text-muted);">
         {post.summary}
       </p>
 
-      {/* Autor */}
+      <!-- Autor -->
       {post.author && (
         <p class="mt-4 text-sm" style="color: var(--color-text-muted);">
           Por <span class="font-medium" style="color: var(--color-text);">{post.author}</span>
@@ -71,7 +71,7 @@ const formattedDate = dateFormatter.format(new Date(post.publishedAt + 'T00:00:0
     </div>
   </Section>
 
-  {/* ── Cuerpo del artículo ─────────────────────────────────────────────── */}
+  <!-- ── Cuerpo del artículo ─────────────────────────────────────────────── -->
   <Section bg="default" size="md">
     <article class="max-w-2xl mx-auto">
 
@@ -83,7 +83,7 @@ const formattedDate = dateFormatter.format(new Date(post.publishedAt + 'T00:00:0
         ))}
       </div>
 
-      {/* Tags */}
+      <!-- Tags -->
       {post.tags && post.tags.length > 0 && (
         <footer class="mt-10 pt-6 border-t" style="border-color: var(--color-border, #e5e7eb);">
           <ul class="flex flex-wrap gap-2" aria-label="Etiquetas">
@@ -99,7 +99,7 @@ const formattedDate = dateFormatter.format(new Date(post.publishedAt + 'T00:00:0
         </footer>
       )}
 
-      {/* Volver al listado */}
+      <!-- Volver al listado -->
       <div class="mt-10">
         <a
           href="/blog"

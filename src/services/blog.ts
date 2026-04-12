@@ -8,14 +8,14 @@ import { blogPosts } from '@/data';
  * En el futuro consultará Supabase o un CMS sin cambiar el contrato.
  */
 
-/** Returns all posts, newest first. */
+/** Devuelve todos los artículos ordenados por fecha descendente (más nuevos primero). */
 export async function getPosts(): Promise<BlogPost[]> {
   return [...blogPosts].sort(
     (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
   );
 }
 
-/** Returns a single post by slug, or undefined if not found. */
+/** Devuelve un artículo por slug, o undefined si no existe. */
 export async function getPostBySlug(slug: string): Promise<BlogPost | undefined> {
   return blogPosts.find((p) => p.slug === slug);
 }

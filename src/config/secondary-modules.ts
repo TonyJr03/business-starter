@@ -1,17 +1,17 @@
 import type { SecondaryModuleId, SecondaryModulesConfig } from '@/types/secondary-modules';
 
 /**
- * Secondary modules configuration.
+ * Configuración de módulos secundarios.
  *
- * Each entry controls whether a module is rendered (`enabled`) and carries
- * the display copy (title / subtitle) used by the module's section component.
+ * Cada entrada controla si un módulo se renderiza (`enabled`) y lleva
+ * el texto de visualización (título / subtítulo) usado por el componente de sección del módulo.
  *
- * Usage:
- * - Set `enabled: true` to activate a module site-wide.
- * - Override `title` / `subtitle` to match your brand voice.
- * - Use `isModuleEnabled(id)` in components and pages for guard checks.
+ * Uso:
+ * - Establece `enabled: true` para activar un módulo en todo el sitio.
+ * - Anula `title` / `subtitle` para que coincidan con tu voz de marca.
+ * - Usa `isModuleEnabled(id)` en componentes y páginas para verificaciones de protección.
  *
- * Les secciones FAQ, Gallery y Blog están deshabilitadas por defecto;
+ * Las secciones FAQ, Gallery y Blog están deshabilitadas por defecto;
  * actívalas cuando el contenido esté listo.
  */
 export const secondaryModules: SecondaryModulesConfig = {
@@ -37,7 +37,7 @@ export const secondaryModules: SecondaryModulesConfig = {
 // ─── Helper ───────────────────────────────────────────────────────────────────
 
 /**
- * Returns `true` when the given secondary module is enabled in config.
+ * Devuelve `true` cuando el módulo secundario dado está habilitado en la configuración.
  *
  * @example
  * if (isModuleEnabled('faq')) { ... }

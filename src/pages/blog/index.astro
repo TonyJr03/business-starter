@@ -19,7 +19,7 @@ const posts = blogEnabled ? await getPosts() : [];
   description={`Artículos, recetas y novedades de ${name}.`}
 >
 
-  {/* ── Encabezado ──────────────────────────────────────────────────────── */}
+  <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
   {blogEnabled && (
     <Section bg="secondary" size="md">
       <div class="max-w-2xl mx-auto text-center">
@@ -35,7 +35,7 @@ const posts = blogEnabled ? await getPosts() : [];
     </Section>
   )}
 
-  {/* ── Listado de artículos ────────────────────────────────────────────── */}
+  <!-- ── Listado de artículos ────────────────────────────────────────────── -->
   {blogEnabled && (
     <Section bg="default" size="md">
       <div class="max-w-5xl mx-auto">
@@ -56,7 +56,7 @@ const posts = blogEnabled ? await getPosts() : [];
     </Section>
   )}
 
-  {/* ── Módulo desactivado ──────────────────────────────────────────────── */}
+  <!-- ── Módulo desactivado ──────────────────────────────────────────────── -->
   {!blogEnabled && (
     <>
       <meta http-equiv="refresh" content="0;url=/" />
