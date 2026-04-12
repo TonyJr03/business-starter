@@ -125,3 +125,25 @@
   --tracking-wider:    0.05em;
   --tracking-widest:   0.1em;
 }
+
+/* ─── Skin hooks ──────────────────────────────────────────────────────────────
+ *
+ * MainLayout inyecta `data-theme` en <html> desde `globalConfig.branding.themeKey`.
+ * Para crear una skin alternativa, sobreescribe tokens de marca aquí usando ese
+ * atributo. Solo los tokens declarados en #1 y #6 (Colores de marca + Tipografía)
+ * deberían cambiar por skin; los tokens estructurales (spacing, radius, shadows)
+ * son invariantes del sistema de diseño.
+ *
+ * Ejemplo de skin oscura:
+ *   [data-theme="dark"] {
+ *     --color-primary:   #D4A574;
+ *     --color-secondary: #1A1A1A;
+ *     --color-accent:    #F5E6D3;
+ *     --color-bg:        #111111;
+ *     --color-surface:   #1A1A1A;
+ *     --color-text:      #F5F5F5;
+ *     --color-text-muted:#9CA3AF;
+ *   }
+ *
+ * Para activarla: establece `branding.themeKey: 'dark'` en business-config.ts.
+ * ─────────────────────────────────────────────────────────────────────────── */

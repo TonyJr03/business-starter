@@ -1,5 +1,5 @@
 ---
-import { globalConfig, themeConfig } from '@/config';
+import { globalConfig } from '@/config';
 import Header from '@/components/common/Header.astro';
 import Footer from '@/components/common/Footer.astro';
 import '@/styles/global.css';
@@ -18,8 +18,9 @@ interface Props {
 
 const { title, description, ogImage, standaloneTitle = false } = Astro.props;
 
-const { seoDefaults, identity } = globalConfig;
+const { seoDefaults, identity, branding } = globalConfig;
 
+// ── SEO ───────────────────────────────────────────────────────────────────────
 // Aplica la plantilla de título configurable ("%s | Nombre del negocio").
 const pageTitle = standaloneTitle
   ? title
@@ -32,10 +33,29 @@ const pageDescription = description ?? seoDefaults.defaultDescription;
 const resolvedOgImage = ogImage ?? seoDefaults.ogImage;
 
 const canonicalUrl = Astro.url.href;
+
+// ── Branding / CSS vars ───────────────────────────────────────────────────────
+// Los fallbacks coinciden con los defaults de tokens.css para que cualquier
+// campo no definido en `branding` simplemente aplique el token base.
+// `themeKey` se expone como atributo data-theme en <html> para que futuras
+// skins puedan sobrescribir tokens mediante selectores [data-theme="xxx"].
+const { colors = {}, typography = {} } = branding;
+
+const brandVars = {
+  colorPrimary:     colors.primary         ?? '#6F4E37',
+  colorSecondary:   colors.secondary       ?? '#F5E6D3',
+  colorAccent:      colors.accent          ?? '#D4A574',
+  colorFooterBg:    colors.footerBg        ?? '#111827',
+  colorFooterText:  colors.footerText      ?? '#FFFFFF',
+  colorFooterMuted: colors.footerTextMuted ?? '#9CA3AF',
+  colorFooterBorder:colors.footerBorder    ?? '#1F2937',
+  fontHeading:      typography.heading     ?? "'Inter', system-ui, sans-serif",
+  fontBody:         typography.body        ?? "'Inter', system-ui, sans-serif",
+};
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="es" data-theme={branding.themeKey ?? 'default'}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -56,18 +76,8 @@ const canonicalUrl = Astro.url.href;
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
     {resolvedOgImage && <meta name="twitter:image" content={resolvedOgImage} />}
-    <!-- Tokens de marca: sobreescriben los defaults de tokens.css por negocio -->
-    <style define:vars={{
-      colorPrimary:        themeConfig.colors.primary,
-      colorSecondary:      themeConfig.colors.secondary,
-      colorAccent:         themeConfig.colors.accent,
-      colorFooterBg:       themeConfig.colors.footerBg,
-      colorFooterText:     themeConfig.colors.footerText,
-      colorFooterMuted:    themeConfig.colors.footerTextMuted,
-      colorFooterBorder:   themeConfig.colors.footerBorder,
-      fontHeading:         themeConfig.fonts.heading,
-      fontBody:            themeConfig.fonts.body,
-    }}>
+    <!-- Tokens de marca: inyectados desde globalConfig.branding, sobreescriben los defaults de tokens.css -->
+    <style define:vars={brandVars}>
       :root {
         --color-primary:            var(--colorPrimary);
         --color-secondary:          var(--colorSecondary);

@@ -1,6 +1,10 @@
 /**
  * Wrapper de compatibilidad — proyecta branding desde globalConfig.
  *
+ * MainLayout ya no importa este módulo; lee `globalConfig.branding` directamente.
+ * Este wrapper se mantiene para consumidores externos que puedan necesitar la
+ * forma plana de `themeConfig` (p. ej. scripts de generación de tokens, tests).
+ *
  * Para cambiar colores o tipografías, edita
  * `src/config/business-config.ts` → `branding`.
  *
