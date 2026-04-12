@@ -6,6 +6,17 @@
  */
 export type SecondaryModuleId = 'faq' | 'gallery' | 'blog';
 
+// ─── Content types ────────────────────────────────────────────────────────────
+
+/** A single FAQ entry with a question and its answer. */
+export interface FaqItem {
+  id: string;
+  question: string;
+  answer: string;
+  /** Optional grouping label (e.g. "Pedidos", "Horarios"). */
+  category?: string;
+}
+
 // ─── Per-module config ─────────────────────────────────────────────────────────
 
 /** Configuration shared by every secondary module. */

@@ -1,0 +1,76 @@
+---
+import MainLayout from '@/layouts/MainLayout.astro';
+import Section from '@/components/ui/Section.astro';
+import FaqSection from '@/components/sections/FaqSection.astro';
+import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
+import { businessConfig } from '@/config';
+import { isModuleEnabled, secondaryModules } from '@/config';
+import { faqItems } from '@/data';
+
+const faqEnabled = isModuleEnabled('faq');
+const { title: faqTitle, subtitle: faqSubtitle } = secondaryModules.faq;
+
+const { name, contact } = businessConfig;
+---
+
+<MainLayout
+  title="Preguntas Frecuentes"
+  description={`Resolvemos tus dudas sobre ${name}: pedidos, horarios, menú y más.`}
+>
+
+  {faqEnabled && (
+    <Section bg="secondary" size="md">
+      <div class="max-w-2xl mx-auto text-center">
+        <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
+          {faqTitle ?? 'Preguntas Frecuentes'}
+        </h1>
+        {faqSubtitle && (
+          <p class="text-lg" style="color: var(--color-text-muted);">
+            {faqSubtitle}
+          </p>
+        )}
+      </div>
+    </Section>
+  )}
+
+  {faqEnabled && (
+    <FaqSection items={faqItems} bg="default" size="md" />
+  )}
+
+  {faqEnabled && contact.whatsappNumber && (
+    <CtaWhatsappSection
+      title="¿No encontraste lo que buscabas?"
+      subtitle="Escríbenos directamente y te respondemos enseguida."
+      message={`Hola ${name}, tengo una pregunta que no encontré en el FAQ.`}
+      buttonLabel="Preguntar por WhatsApp"
+      bg="surface"
+      size="md"
+    />
+  )}
+
+  {!faqEnabled && (
+    <>
+      <meta http-equiv="refresh" content="0;url=/" />
+      <Section bg="default" size="lg">
+        <div class="max-w-md mx-auto text-center space-y-6">
+          <p class="text-5xl" aria-hidden="true">🔒</p>
+          <h1 class="text-2xl font-bold" style="color: var(--color-primary);">
+            Página no disponible
+          </h1>
+          <p class="text-base" style="color: var(--color-text-muted);">
+            Esta sección no está activa en este momento.
+          </p>
+          <a
+            href="/"
+            class="inline-block rounded-lg px-6 py-3 text-sm font-semibold transition-opacity hover:opacity-80"
+            style="background-color: var(--color-primary); color: white;"
+          >
+            Volver al inicio
+          </a>
+        </div>
+      </Section>
+    </>
+  )}
+
+</MainLayout>
+
