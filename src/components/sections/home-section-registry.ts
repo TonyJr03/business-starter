@@ -3,17 +3,17 @@ import type { HomeSectionId } from '@/types';
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 
 export interface SectionMeta {
-  /** Human-readable label (dev tooling, logs). */
+  /** Etiqueta legible para herramientas de desarrollo y logs. */
   label: string;
   /**
-   * True when the section requires live runtime data beyond its config props
-   * (e.g. homeFeatures array, openingHours from businessConfig, DB records).
-   * Used by HomeSectionRenderer to decide whether to inject it.
+   * `true` si la sección necesita datos en tiempo de render más allá de sus props de config
+   * (p. ej. array homeFeatures, openingHours de businessConfig, registros de BD).
+   * HomeSectionRenderer lo usa para decidir qué inyectar.
    */
   needsRuntimeData: boolean;
   /**
-   * False when the underlying component is not yet implemented.
-   * HomeSectionRenderer skips these sections silently in production.
+   * `false` cuando el componente asociado aún no está implementado.
+   * HomeSectionRenderer omite estas secciones silenciosamente.
    */
   implemented: boolean;
 }
@@ -21,14 +21,14 @@ export interface SectionMeta {
 // ─── Registry ─────────────────────────────────────────────────────────────────
 
 /**
- * Central section registry for the Home page.
+ * Registro central de secciones de la Home.
  *
- * Typed as `Record<HomeSectionId, SectionMeta>` so TypeScript enforces
- * exhaustiveness: adding a new section ID to `HomeSectionId` without a
- * matching entry here is a **compile error**.
+ * Tipado como `Record<HomeSectionId, SectionMeta>` para que TypeScript
+ * garantice exhaustividad: añadir un nuevo ID a `HomeSectionId` sin
+ * una entrada aquí es un **error de compilación**.
  *
- * Rendering dispatch lives in `HomeSectionRenderer.astro`; this file is
- * pure data and has no Astro or component dependencies.
+ * El despacho de renderizado vive en `HomeSectionRenderer.astro`;
+ * este archivo es datos puros sin dependencias de Astro ni componentes.
  */
 export const SECTION_REGISTRY: Record<HomeSectionId, SectionMeta> = {
   hero: {
@@ -38,17 +38,17 @@ export const SECTION_REGISTRY: Record<HomeSectionId, SectionMeta> = {
   },
   highlights: {
     label: 'Highlights',
-    needsRuntimeData: true,   // needs homeFeatures[]
+    needsRuntimeData: true,   // requiere homeFeatures[]
     implemented: true,
   },
   promotions: {
     label: 'Promotions',
-    needsRuntimeData: true,   // needs promotions[] (future)
+    needsRuntimeData: true,   // requiere promotions[] (futuro)
     implemented: false,
   },
   testimonials: {
     label: 'Testimonials',
-    needsRuntimeData: true,   // needs testimonials[] (future)
+    needsRuntimeData: true,   // requiere testimonials[] (futuro)
     implemented: false,
   },
   whatsapp_cta: {
@@ -63,7 +63,7 @@ export const SECTION_REGISTRY: Record<HomeSectionId, SectionMeta> = {
   },
   hours: {
     label: 'Opening Hours',
-    needsRuntimeData: true,   // needs openingHours[] from businessConfig
+    needsRuntimeData: true,   // requiere openingHours[] de businessConfig
     implemented: true,
   },
 };
@@ -71,17 +71,17 @@ export const SECTION_REGISTRY: Record<HomeSectionId, SectionMeta> = {
 // ─── Guards & helpers ─────────────────────────────────────────────────────────
 
 /**
- * Type guard — narrows an unknown string to `HomeSectionId`.
- * Use to safely handle values from dynamic sources (CMS, DB, query strings).
+ * Type guard — estrecha un string desconocido a `HomeSectionId`.
+ * Úsalo para manejar valores de fuentes dinámicas (CMS, BD, query strings).
  */
 export function isRegisteredSection(id: string): id is HomeSectionId {
   return Object.prototype.hasOwnProperty.call(SECTION_REGISTRY, id);
 }
 
 /**
- * Returns the metadata for a section, or `undefined` for unrecognised IDs.
- * Prefer the typed `SECTION_REGISTRY[id]` lookup when `id` is already
- * narrowed to `HomeSectionId`.
+ * Devuelve los metadatos de una sección, o `undefined` para IDs no reconocidos.
+ * Prefiere el acceso tipado `SECTION_REGISTRY[id]` cuando `id` ya está
+ * estrechado a `HomeSectionId`.
  */
 export function getSectionMeta(id: string): SectionMeta | undefined {
   return isRegisteredSection(id) ? SECTION_REGISTRY[id] : undefined;

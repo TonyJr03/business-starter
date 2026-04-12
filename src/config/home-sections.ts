@@ -7,14 +7,14 @@ import { businessConfig } from './business';
  * Each entry controls visibility (`enabled`), stacking order (`order`),
  * and static display props for a section component.
  *
- * Rules:
- * - Set `enabled: false` to hide a section without removing it.
- * - Change `order` values to reorder sections (ascending, gaps allowed).
- * - Runtime data (feature items, openingHours) is injected by the page;
- *   only display-level props live here.
+ * Reglas:
+ * - Pon `enabled: false` para ocultar una sección sin eliminarla.
+ * - Cambia `order` para reordenar (ascendente, se permiten saltos).
+ * - Los datos en tiempo de render (homeFeatures, openingHours) los inyecta
+ *   el renderer; aquí solo viven props visuales.
  *
- * Sections with IDs 'promotions', 'testimonials', 'location' are included
- * for future use — their components are not built yet.
+ * Las secciones 'promotions', 'testimonials' y 'location' están reservadas
+ * para futuros sprints — sus componentes aún no están implementados.
  */
 export const homeSections: HomeSectionEntry[] = [
   {

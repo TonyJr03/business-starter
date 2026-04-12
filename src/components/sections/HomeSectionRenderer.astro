@@ -35,7 +35,7 @@ interface Props {
 const { section } = Astro.props;
 const meta = SECTION_REGISTRY[section.id];
 
-// Skip unimplemented sections without errors.
+// Omitir secciones no implementadas sin producir errores.
 const skip = !meta.implemented;
 ---
 

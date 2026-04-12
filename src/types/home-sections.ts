@@ -1,9 +1,9 @@
 // ─── Base ────────────────────────────────────────────────────────────────────
 
 interface SectionBase {
-  /** Whether this section is rendered on the Home page. */
+  /** Si esta sección se renderiza en la Home. */
   enabled: boolean;
-  /** Ascending render order (1 = topmost). */
+  /** Orden de renderizado ascendente (1 = arriba del todo). */
   order: number;
 }
 
@@ -20,7 +20,7 @@ export interface HeroSectionProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-/** Display props only — feature items are injected at render time from src/data. */
+/** Solo props visuales — los ítems de características se inyectan en tiempo de render desde src/data. */
 export interface HighlightsSectionProps {
   title?: string;
   subtitle?: string;
@@ -29,7 +29,7 @@ export interface HighlightsSectionProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-/** Placeholder — component not yet built. */
+/** Reservada — componente aún no implementado. */
 export interface PromotionsSectionProps {
   title?: string;
   subtitle?: string;
@@ -37,7 +37,7 @@ export interface PromotionsSectionProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-/** Placeholder — component not yet built. */
+/** Reservada — componente aún no implementado. */
 export interface TestimonialsSectionProps {
   title?: string;
   subtitle?: string;
@@ -49,20 +49,20 @@ export interface WhatsappCtaSectionProps {
   title: string;
   subtitle?: string;
   buttonLabel?: string;
-  /** Pre-filled WhatsApp message. Interpolated at config creation time. */
+  /** Mensaje pre-cargado en WhatsApp. Se interpola al definir la config. */
   message?: string;
   bg?: 'default' | 'surface' | 'secondary' | 'primary';
   size?: 'sm' | 'md' | 'lg';
 }
 
-/** Placeholder — component not yet built. */
+/** Reservada — componente aún no implementado. */
 export interface LocationSectionProps {
   title?: string;
   bg?: 'default' | 'surface' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
 }
 
-/** Display props only — openingHours array is injected at render time from businessConfig. */
+/** Solo props visuales — el array openingHours se inyecta desde businessConfig en tiempo de render. */
 export interface HoursSectionProps {
   title?: string;
   bg?: 'default' | 'surface' | 'secondary';
@@ -72,8 +72,8 @@ export interface HoursSectionProps {
 // ─── Discriminated union ──────────────────────────────────────────────────────
 
 /**
- * A single Home section entry: identity, visibility, render order and display props.
- * The `id` field is the discriminant — TypeScript narrows `props` automatically.
+ * Entrada de sección de la Home: identidad, visibilidad, orden y props visuales.
+ * El campo `id` es el discriminante — TypeScript estrecha `props` automáticamente.
  */
 export type HomeSectionEntry =
   | (SectionBase & { id: 'hero';         props: HeroSectionProps })
@@ -84,5 +84,5 @@ export type HomeSectionEntry =
   | (SectionBase & { id: 'location';     props: LocationSectionProps })
   | (SectionBase & { id: 'hours';        props: HoursSectionProps });
 
-/** Union of all valid section IDs — derived from the entry type, never duplicated. */
+/** Unión de todos los IDs de sección válidos — derivada del tipo, nunca duplicada. */
 export type HomeSectionId = HomeSectionEntry['id'];
