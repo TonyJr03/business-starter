@@ -1,5 +1,7 @@
 import type { ContentFeature, AboutContent } from '@/types';
-import { businessConfig } from '@/config';
+import { globalConfig } from '@/config';
+
+const { location } = globalConfig;
 
 /**
  * homeFeatures — propuesta de valor para la sección de características del Home.
@@ -14,8 +16,8 @@ export const homeFeatures: ContentFeature[] = [
   },
   {
     icon: '📍',
-    title: businessConfig.address.city,
-    description: `Encuéntranos en ${businessConfig.address.street}, ${businessConfig.address.municipality}.`,
+    title: location.city,
+    description: `Encuéntranos${location.street ? ` en ${location.street}` : ''}${location.municipality ? `, ${location.municipality}` : ''}.`,
   },
   {
     icon: '🕐',

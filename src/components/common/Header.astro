@@ -1,7 +1,8 @@
 ---
-import { businessConfig, headerNav } from '@/config';
+import { globalConfig, headerNav } from '@/config';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 
+const { identity } = globalConfig;
 const whatsappUrl = getWhatsAppUrl();
 ---
 
@@ -10,9 +11,9 @@ const whatsappUrl = getWhatsAppUrl();
     <div class="flex items-center justify-between h-16">
       <!-- Logo / Nombre -->
       <a href="/" class="text-xl font-bold" style="color: var(--color-primary);">
-        {businessConfig.logo?.url
-          ? <img src={businessConfig.logo.url} alt={businessConfig.logo.alt} class="h-8 w-auto" />
-          : businessConfig.name
+        {identity.logo?.url
+          ? <img src={identity.logo.url} alt={identity.logo.alt} class="h-8 w-auto" />
+          : identity.name
         }
       </a>
 

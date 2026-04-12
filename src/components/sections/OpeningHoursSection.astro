@@ -2,20 +2,20 @@
 /**
  * OpeningHoursSection — tabla de horarios de atención del negocio.
  *
- * Dominio-neutral: acepta cualquier array de OpeningHours definido en businessConfig.
+ * Dominio-neutral: acepta cualquier array de DayHours desde globalConfig.hours.
  * Resalta los días cerrados con el token de error del sistema de diseño.
  *
  * @prop title  - Título de la sección (default: 'Horarios')
- * @prop hours  - Array de OpeningHours desde businessConfig.openingHours
+ * @prop hours  - Array de DayHours desde globalConfig.hours
  * @prop bg     - Fondo de sección
  * @prop size   - Padding vertical
  */
 import Section from '@/components/ui/Section.astro';
 import SectionHeader from '@/components/common/SectionHeader.astro';
-import type { OpeningHours } from '@/types';
+import type { DayHours } from '@/types';
 
 interface Props {
-  hours:  OpeningHours[];
+  hours:  DayHours[];
   title?: string;
   bg?:    'default' | 'surface' | 'secondary';
   size?:  'sm' | 'md' | 'lg';

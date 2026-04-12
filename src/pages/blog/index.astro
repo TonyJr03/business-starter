@@ -2,21 +2,20 @@
 import MainLayout from '@/layouts/MainLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import BlogPostCard from '@/components/sections/BlogPostCard.astro';
-import { businessConfig } from '@/config';
-import { isModuleEnabled, secondaryModules } from '@/config';
+import { globalConfig, isModuleEnabled, secondaryModules } from '@/config';
 import { getPosts } from '@/services/blog';
 
 const blogEnabled = isModuleEnabled('blog');
 const { title: blogTitle, subtitle: blogSubtitle } = secondaryModules.blog;
 
-const { name } = businessConfig;
+const { identity } = globalConfig;
 
 const posts = blogEnabled ? await getPosts() : [];
 ---
 
 <MainLayout
   title="Blog"
-  description={`Artículos, recetas y novedades de ${name}.`}
+  description={`Artículos, recetas y novedades de ${identity.name}.`}
 >
 
   <!-- ── Encabezado ──────────────────────────────────────────────────────── -->

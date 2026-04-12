@@ -2,19 +2,18 @@
 import MainLayout from '@/layouts/MainLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import GalleryGrid from '@/components/sections/GalleryGrid.astro';
-import { businessConfig } from '@/config';
-import { isModuleEnabled, secondaryModules } from '@/config';
+import { globalConfig, isModuleEnabled, secondaryModules } from '@/config';
 import { galleryItems } from '@/data';
 
 const galleryEnabled = isModuleEnabled('gallery');
 const { title: galleryTitle, subtitle: gallerySubtitle } = secondaryModules.gallery;
 
-const { name } = businessConfig;
+const { identity } = globalConfig;
 ---
 
 <MainLayout
   title="Galería"
-  description={`Conoce el espacio, los productos y el equipo de ${name} a través de nuestra galería de imágenes.`}
+  description={`Conoce el espacio, los productos y el equipo de ${identity.name} a través de nuestra galería de imágenes.`}
 >
 
   <!-- ── Encabezado ──────────────────────────────────────────────────────── -->

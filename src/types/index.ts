@@ -1,4 +1,3 @@
-export * from './business';
 export * from './business-config';
 export * from './catalog';
 export * from './content';

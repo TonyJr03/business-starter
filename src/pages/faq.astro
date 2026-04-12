@@ -3,19 +3,19 @@ import MainLayout from '@/layouts/MainLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import FaqSection from '@/components/sections/FaqSection.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
-import { businessConfig } from '@/config';
+import { globalConfig } from '@/config';
 import { isModuleEnabled, secondaryModules } from '@/config';
 import { faqItems } from '@/data';
 
 const faqEnabled = isModuleEnabled('faq');
 const { title: faqTitle, subtitle: faqSubtitle } = secondaryModules.faq;
 
-const { name, contact } = businessConfig;
+const { identity, contact } = globalConfig;
 ---
 
 <MainLayout
   title="Preguntas Frecuentes"
-  description={`Resolvemos tus dudas sobre ${name}: pedidos, horarios, menú y más.`}
+  description={`Resolvemos tus dudas sobre ${identity.name}: pedidos, horarios, menú y más.`}
 >
 
   <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
@@ -40,11 +40,11 @@ const { name, contact } = businessConfig;
   )}
 
   <!-- ── Sección WhatsApp ────────────────────────────────────────────────────── -->
-  {faqEnabled && contact.whatsappNumber && (
+  {faqEnabled && contact.whatsapp && (
     <CtaWhatsappSection
       title="¿No encontraste lo que buscabas?"
       subtitle="Escríbenos directamente y te respondemos enseguida."
-      message={`Hola ${name}, tengo una pregunta que no encontré en el FAQ.`}
+      message={`Hola ${identity.name}, tengo una pregunta que no encontré en el FAQ.`}
       buttonLabel="Preguntar por WhatsApp"
       bg="surface"
       size="md"

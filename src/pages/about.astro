@@ -5,15 +5,15 @@ import SectionHeader from '@/components/common/SectionHeader.astro';
 import Card from '@/components/ui/Card.astro';
 import OpeningHoursSection from '@/components/sections/OpeningHoursSection.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
-import { businessConfig } from '@/config';
+import { globalConfig } from '@/config';
 import { aboutContent } from '@/data';
 
-const { name, address, contact, openingHours } = businessConfig;
+const { identity, location, contact, hours } = globalConfig;
 ---
 
 <MainLayout
   title="Nuestra Historia"
-  description={`Conoce la historia, misión y valores detrás de ${name}, tu cafetería de confianza en ${address.city}.`}
+  description={`Conoce la historia, misión y valores detrás de ${identity.name}, tu cafetería de confianza en ${location.city}.`}
 >
 
   <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
@@ -23,7 +23,7 @@ const { name, address, contact, openingHours } = businessConfig;
         Sobre Nosotros
       </h1>
       <p class="text-lg" style="color: var(--color-text-muted);">
-        Conoce la historia y los valores detrás de {name}.
+        Conoce la historia y los valores detrás de {identity.name}.
       </p>
     </div>
   </Section>
@@ -122,8 +122,8 @@ const { name, address, contact, openingHours } = businessConfig;
               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
           <span>
-            {address.street}, {address.municipality}, {address.city}
-            {address.country ? `, ${address.country}` : ''}
+            {location.street && `${location.street}, `}{location.municipality && `${location.municipality}, `}{location.city}
+            {location.country ? `, ${location.country}` : ''}
           </span>
         </li>
 
@@ -182,9 +182,9 @@ const { name, address, contact, openingHours } = businessConfig;
   </Section>
 
   <!-- ── Horarios ────────────────────────────────────────────────────────── -->
-  {openingHours.length > 0 && (
+  {hours.length > 0 && (
     <OpeningHoursSection
-      hours={openingHours}
+      hours={hours}
       title="Horarios de atención"
       bg="default"
       size="md"
@@ -192,12 +192,12 @@ const { name, address, contact, openingHours } = businessConfig;
   )}
 
   <!-- ── CTA WhatsApp ────────────────────────────────────────────────────── -->
-  {contact.whatsappNumber && (
+  {contact.whatsapp && (
     <CtaWhatsappSection
       title="¿Tienes alguna pregunta?"
       subtitle="Escríbenos directamente y te respondemos de inmediato."
       buttonLabel="Escribir por WhatsApp"
-      message={`Hola ${name}, quisiera más información sobre el café.`}
+      message={`Hola ${identity.name}, quisiera más información sobre el café.`}
       bg="secondary"
       size="md"
     />
