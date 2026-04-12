@@ -5,4 +5,5 @@ export * from './home-sections';
 export * from './modules';
 export * from './navigation';
 export * from './promotion';
+export * from './secondary-modules';
 export * from './testimonial';
