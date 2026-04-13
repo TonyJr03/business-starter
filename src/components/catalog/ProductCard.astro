@@ -24,6 +24,11 @@ interface Props {
 const { product, orderHref } = Astro.props;
 const { name, description, money, badge, isAvailable, isFeatured } = product;
 
+// Regla de dominio: ausencia de isAvailable significa disponible.
+// Usar `available` en lugar de `isAvailable` directamente evita el bug
+// de `!undefined === true` que marcaría como agotado productos sin el campo.
+const available = isAvailable ?? true;
+
 // Precio canónico: money es requerido en el tipo.
 const displayPrice = `${money.amount} ${money.currency}`;
 ---
@@ -35,13 +40,13 @@ const displayPrice = `${money.amount} ${money.currency}`;
     <div class="flex items-start justify-between gap-3">
       <div class="flex flex-wrap items-center gap-2">
         <span
-          class:list={['font-semibold leading-snug', !isAvailable && 'line-through opacity-40']}
+          class:list={['font-semibold leading-snug', !available && 'line-through opacity-40']}
           style="color: var(--color-text);"
         >
           {name}
         </span>
-        {badge && isAvailable && <Badge variant={badge} />}
-        {!isAvailable && <Badge variant="error" label="Agotado" />}
+        {badge && available && <Badge variant={badge} />}
+        {!available && <Badge variant="error" label="Agotado" />}
       </div>
     </div>
 
@@ -54,11 +59,14 @@ const displayPrice = `${money.amount} ${money.currency}`;
 
     <!-- Pie: precio + acción ─────────────────────────────────────────── -->
     <div class="flex items-center justify-between gap-4 pt-1 mt-auto">
-      <span class="text-lg font-bold tabular-nums" style="color: var(--color-primary);">
+      <span
+        class:list={['text-lg font-bold tabular-nums', !available && 'opacity-40']}
+        style="color: var(--color-primary);"
+      >
         {displayPrice}
       </span>
 
-      {orderHref && isAvailable && (
+      {orderHref && available && (
         <a
           href={orderHref}
           target="_blank"

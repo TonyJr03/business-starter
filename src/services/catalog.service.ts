@@ -83,3 +83,16 @@ export async function getProductsByCategory(categoryId: string): Promise<Product
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
   return menuItems.find((p) => p.slug === slug);
 }
+
+// ─── Helpers de dominio ─────────────────────────────────────────────────────────
+
+/**
+ * Regla de dominio: un producto está disponible si `isAvailable` es true
+ * o si el campo está ausente (undefined). La ausencia significa "disponible".
+ *
+ * Usar este helper en lugar de acceder a `product.isAvailable` directamente
+ * para evitar el bug de `!undefined === true`.
+ */
+export function isProductAvailable(product: Product): boolean {
+  return product.isAvailable ?? true;
+}

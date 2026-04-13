@@ -8,6 +8,7 @@
  * Estados:
  *  - 'active'   → promoción vigente (color de acento)
  *  - 'upcoming' → aún no comenzó (color info)
+ *  - 'paused'   → en pausa temporal (color warning)
  *  - 'expired'  → venció o está inactiva (gris)
  *
  * @prop promotion  - Objeto Promotion tipado.
@@ -19,7 +20,7 @@ import Card from '@/components/ui/Card.astro';
 import Badge from '@/components/ui/Badge.astro';
 import type { Promotion } from '@/types';
 
-export type PromoStatus = 'active' | 'upcoming' | 'expired';
+export type PromoStatus = 'active' | 'upcoming' | 'paused' | 'expired';
 
 interface Props {
   promotion: Promotion;
@@ -31,12 +32,15 @@ interface Props {
 const { promotion, status, dateRange, orderHref } = Astro.props;
 const { title, description, discountLabel } = promotion;
 
-const statusBadge: Record<PromoStatus, { variant: 'success' | 'info' | 'default'; label: string }> = {
+const statusBadge: Record<PromoStatus, { variant: 'success' | 'info' | 'warning' | 'default'; label: string }> = {
   active:   { variant: 'success', label: 'Vigente' },
   upcoming: { variant: 'info',    label: 'Próximamente' },
+  paused:   { variant: 'warning', label: 'En pausa' },
   expired:  { variant: 'default', label: 'Finalizada' },
 };
 
+// Atenuamos el contenido en estados no-activos salvo upcoming (tiene info útil)
+const isDimmed = status === 'expired' || status === 'paused';
 const isExpired = status === 'expired';
 ---
 
@@ -47,7 +51,7 @@ const isExpired = status === 'expired';
     <div class="flex items-start justify-between gap-4 flex-wrap">
       <div class="flex flex-col gap-2">
         <h2
-          class:list={['text-xl font-bold leading-snug', isExpired && 'opacity-50']}
+          class:list={['text-xl font-bold leading-snug', isDimmed && 'opacity-50']}
           style="color: var(--color-text);"
         >
           {title}
@@ -75,7 +79,7 @@ const isExpired = status === 'expired';
 
     <!-- Descripción ───────────────────────────────────────────────────────── -->
     <p
-      class:list={['text-sm leading-relaxed flex-1', isExpired && 'opacity-50']}
+      class:list={['text-sm leading-relaxed flex-1', isDimmed && 'opacity-50']}
       style="color: var(--color-text-muted);"
     >
       {description}

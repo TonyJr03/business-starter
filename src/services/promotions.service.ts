@@ -69,3 +69,18 @@ export async function getActivePromotions(now: Date = new Date()): Promise<Promo
 export async function getPromotionById(id: string): Promise<Promotion | undefined> {
   return promotions.find((p) => p.id === id);
 }
+
+// ─── Helpers de dominio ─────────────────────────────────────────────────────────
+
+/**
+ * Devuelve true si la promoción está activa en el momento indicado.
+ * Equivale a `getPromotionStatus(promotion, now) === 'active'`.
+ *
+ * Útil como guard rápido sin necesitar el tipo PromotionStatus completo.
+ *
+ * @param promotion - Objeto Promotion tipado.
+ * @param now       - Fecha de referencia. Por defecto: Date actual.
+ */
+export function isPromotionActive(promotion: Promotion, now: Date = new Date()): boolean {
+  return getPromotionStatus(promotion, now) === 'active';
+}

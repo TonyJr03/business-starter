@@ -14,15 +14,13 @@ const name = identity.name;
 // Traemos todas —activas e inactivas— para mostrar estado visual completo.
 const allPromos = await getPromotions();
 
-// ── Derivar estado por fechas (build-time) ──────────────────────────────────
-// La lógica vive en el servicio; aquí solo mapeamos 'paused' → 'expired'
-// para el componente PromotionCard que solo conoce 3 estados visuales.
+// ── Derivar estado (build-time) ─────────────────────────────────────────────
+// getPromotionStatus devuelve los 4 estados del dominio; PromotionCard los
+// representa todos (active / upcoming / paused / expired).
 const today = new Date();
 
 function getStatus(promo: typeof allPromos[number]): PromoStatus {
-  const resolved = getPromotionStatus(promo, today);
-  // 'paused' no tiene representación visual propia → se muestra como expirada
-  return resolved === 'paused' ? 'expired' : resolved;
+  return getPromotionStatus(promo, today);
 }
 
 // ── Formatear rango de fechas legible ───────────────────────────────────────
