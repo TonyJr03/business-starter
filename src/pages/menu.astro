@@ -9,7 +9,7 @@ import { globalConfig } from '@/config';
 import { getCategories, getProducts, getFeaturedProducts } from '@/services/catalog.service';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 
-const { identity, modules, contact } = globalConfig;
+const { identity, modules, contact, seoDefaults } = globalConfig;
 const name = identity.name;
 
 // Delegamos filtrado y ordenación al servicio de dominio.
@@ -39,7 +39,7 @@ function productOrderUrl(productName: string): string | undefined {
 
 <MainLayout
   title="Menú"
-  description={`Explora el menú completo de ${name}: cafés cubanos, bebidas artesanales y bocados. Pedidos por WhatsApp.`}
+  description={`Explora el catálogo completo de ${name}. ${seoDefaults.defaultDescription ?? ''}`}
 >
 
   <!-- ── Encabezado ──────────────────────────────────────────────────────── -->

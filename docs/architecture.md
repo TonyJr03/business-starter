@@ -62,11 +62,16 @@ Páginas de Astro. El file-based routing mapea esta carpeta a URLs directamente.
 - La carga de datos (`getStaticProps` style) va al frontmatter `---`
 
 **Páginas actuales:**
-- `index.astro` — Home
-- `nosotros.astro` — Sobre nosotros
+- `index.astro` — Home (secciones configurables vía `homeSections`)
+- `about.astro` — Sobre el negocio
 - `menu.astro` — Catálogo / Menú
-- `ofertas.astro` — Promociones
-- `contacto.astro` — Contacto
+- `promotions.astro` — Promociones y ofertas
+- `contact.astro` — Contacto
+- `faq.astro` — Preguntas frecuentes
+- `gallery.astro` — Galería
+- `blog/index.astro` — Listado de posts
+- `blog/[slug].astro` — Post individual
+- `styleguide.astro` — Guía de estilos (desarrollo)
 
 ---
 
@@ -127,21 +132,25 @@ Configuración centralizada del negocio. Es la fuente de verdad para el sitio es
 - Nunca importar desde `@/services` ni `@/data` aquí
 
 | Archivo | Contenido |
-|---------|-----------|
-| `site.ts` | `BusinessInfo`: nombre, contacto, horarios, redes, ubicación |
-| `modules.ts` | `ModulesConfig`: qué módulos están activos |
-| `navigation.ts` | `headerNav`, `footerNav` |
-| `theme.ts` | Colores, tipografías (aplicados como CSS vars en el layout) |
-| `index.ts` | Re-exporta todo |
+|---------|----------|
+| `business-config.ts` | `BusinessGlobalConfig`: fuente de verdad única del negocio (identity, branding, contact, location, hours, social, navigation, modules, seoDefaults) |
+| `home-sections.ts` | `homeSections[]`: orden y props de las secciones de la Home |
+| `navigation.ts` | `headerNav`: items derivados de `globalConfig.navigation.main` |
+| `secondary-modules.ts` | `secondaryModules`: flags de módulos secundarios (faq, gallery, blog) |
+| `index.ts` | Re-exporta todo, incluyendo `globalConfig` |
 
 ---
 
-### `src/data/mock/`
-Datos de desarrollo tipados, sin conexión a base de datos. Se usan mientras no hay integración con Supabase.
+### `src/data/`
+Datos de muestra tipados para la demo del starter (el negocio de ejemplo: Café La Esquina).
+Sin conexión a base de datos. Los servicios consumen este directorio; las páginas y componentes **no** lo importan directamente.
 
-- **Naming:** `products.ts`, `categories.ts`, `promotions.ts`
+- **Naming:** `menu-items.ts`, `menu-categories.ts`, `promotions.ts`, etc.
 - Exportar arrays tipados usando los tipos de `@/types`
-- No usar directamente en components — consumir a través de `@/services`
+- Consumir siempre a través de `@/services`, nunca directamente en components o pages
+- El barrel `index.ts` re-exporta todo
+
+**Archivos actuales:** `business-info.ts`, `blog-posts.ts`, `faq.ts`, `gallery.ts`, `menu-categories.ts`, `menu-items.ts`, `promotions.ts`, `testimonials.ts`
 
 ---
 
@@ -152,12 +161,16 @@ Definiciones de tipos TypeScript del dominio. Sin lógica, solo interfaces y tip
 - Un archivo por entidad de dominio
 
 | Archivo | Contenido |
-|---------|-----------|
-| `business.ts` | `BusinessInfo`, `OpeningHours`, `SocialLinks` |
-| `catalog.ts` | `Product`, `Category`, `ProductBadge` |
-| `promotion.ts` | `Promotion` |
-| `navigation.ts` | `NavItem`, `FooterSection` |
-| `modules.ts` | `ModulesConfig` |
+|---------|----------|
+| `business-config.ts` | `BusinessGlobalConfig` y sus sub-interfaces (Sprint 7) |
+| `catalog.ts` | `Money`, `Category`, `Product`, `ProductTag`, `ProductVariant`, `ProductBadge` (Sprint 8) |
+| `promotion.ts` | `Promotion`, `PromotionStatus`, `PromotionRule`, `DiscountType` (Sprint 8) |
+| `home-sections.ts` | `HomeSectionEntry`, `HomeSectionId` y props por sección |
+| `navigation.ts` | `NavItem` |
+| `modules.ts` | Tipos internos de módulos core |
+| `secondary-modules.ts` | `SecondaryModuleId`, `SecondaryModuleConfig`, `FaqItem`, `GalleryItem`, `BlogPost` |
+| `content.ts` | `ContentFeature`, `AboutContent` |
+| `testimonial.ts` | `Testimonial` |
 
 ---
 
@@ -179,9 +192,18 @@ Utilidades puras, helpers y clientes externos. Sin componentes UI ni lógica de 
 ### `src/services/`
 Capa de acceso a datos. Abstrae la fuente (mock o Supabase). Las pages y sections consumen servicios, nunca datos directamente.
 
-- **Naming:** `products.ts`, `promotions.ts`, `business.ts`
-- Funciones `async` que hoy devuelven datos mock y mañana consultarán Supabase
-- El contrato (firma de funciones) no cambia al migrar a Supabase
+- **Naming:** `catalog.service.ts`, `promotions.service.ts`, `blog.ts`
+- Funciones `async` que hoy devuelven datos de `src/data/` y mañana consultarán Supabase
+- El contrato (firma de funciones + tipos de retorno) **no cambia** al migrar a Supabase
+- Los helpers de dominio (`isProductAvailable`, `isPromotionActive`, `getPromotionStatus`) viven aquí
+
+**Servicios actuales:**
+
+| Archivo | Funciones principales |
+|---|---|
+| `catalog.service.ts` | `getCategories`, `getProducts`, `getFeaturedProducts`, `getProductsByCategory`, `getProductBySlug`, `isProductAvailable` |
+| `promotions.service.ts` | `getPromotions`, `getActivePromotions`, `getPromotionById`, `getPromotionStatus`, `isPromotionActive` |
+| `blog.ts` | `getPosts`, `getPostBySlug` |
 
 ---
 
@@ -213,9 +235,9 @@ Astro Content Collections para contenido tipado (blog, FAQ).
 |------|-----------|---------|
 | Componentes Astro | PascalCase | `ProductCard.astro` |
 | Componentes React | PascalCase | `CartDrawer.tsx` |
-| Páginas Astro | kebab-case | `nosotros.astro` |
+| Páginas Astro | kebab-case | `menu.astro`, `about.astro` |
 | Archivos de datos/lib | camelCase | `products.ts` |
-| Archivos de config | camelCase | `site.ts` |
+| Archivos de config | camelCase | `business-config.ts` |
 | Carpetas | kebab-case | `components/catalog/` |
 | Funciones | camelCase | `generateWhatsAppUrl()` |
 | Tipos e Interfaces | PascalCase | `Product`, `BusinessInfo` |
@@ -251,13 +273,13 @@ Astro Content Collections para contenido tipado (blog, FAQ).
 ## Flujo de datos
 
 ```
-src/config/              → configuración estática del negocio (fuente de verdad)
-src/data/mock/           → datos de prueba tipados durante desarrollo
-src/lib/supabase/        → cliente de base de datos (producción)
+src/config/              → configuración estática del negocio (fuente de verdad única)
+src/data/                → datos de muestra tipados (demo business)
+src/lib/supabase/        → cliente de base de datos (producción futura)
         ↓
-src/services/            → abstracción de datos (mock → Supabase sin cambiar contrato)
+src/services/            → abstracción de datos + reglas de dominio (mock → Supabase sin romper contrato)
         ↓
-src/pages/               → carga datos en frontmatter, los pasa a secciones
+src/pages/               → carga datos via servicios en frontmatter, orquesta secciones
         ↓
 src/components/sections/ → reciben datos vía props, componen la UI de página
         ↓
@@ -268,16 +290,20 @@ src/components/ui/       → primitivas sin estado, puramente visuales
 
 ## Activación de módulos
 
-Los módulos se controlan desde `src/config/modules.ts`. El patrón en pages:
+Los módulos se controlan desde `src/config/business-config.ts` (`globalConfig.modules`). El patrón en pages:
 
 ```astro
 ---
-import { modulesConfig } from '@/config';
+import { globalConfig } from '@/config';
+const { modules } = globalConfig;
 ---
 
-{modulesConfig.catalog && <CatalogSection />}
-{modulesConfig.promotions && <PromotionsSection />}
+{modules.core.catalog && <CatalogSection />}
+{modules.core.promotions && <PromotionsSection />}
 ```
+
+Los módulos secundarios (faq, gallery, blog) se controlan desde `globalConfig.modules.secondary`
+y tienen su propia config individual (`title`, `subtitle`, `enabled`).
 
 ---
 
