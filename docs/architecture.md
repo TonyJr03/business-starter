@@ -56,7 +56,7 @@ Layouts de Astro que envuelven páginas completas. Manejan `<head>`, SEO, estruc
 ### `src/pages/`
 Páginas de Astro. El file-based routing mapea esta carpeta a URLs directamente.
 
-- **Naming:** kebab-case → `index.astro`, `nosotros.astro`, `menu.astro`
+- **Naming:** kebab-case → `index.astro`, `about.astro`, `catalog.astro`
 - Solo orquestación: importar layouts y secciones, sin lógica de negocio en el template
 - Las subcarpetas crean rutas anidadas: `pages/admin/` → `/admin/...`
 - La carga de datos (`getStaticProps` style) va al frontmatter `---`
@@ -64,7 +64,7 @@ Páginas de Astro. El file-based routing mapea esta carpeta a URLs directamente.
 **Páginas actuales:**
 - `index.astro` — Home (secciones configurables vía `homeSections`)
 - `about.astro` — Sobre el negocio
-- `menu.astro` — Catálogo / Menú
+- `catalog.astro` — Catálogo de productos
 - `promotions.astro` — Promociones y ofertas
 - `contact.astro` — Contacto
 - `faq.astro` — Preguntas frecuentes
@@ -145,12 +145,12 @@ Configuración centralizada del negocio. Es la fuente de verdad para el sitio es
 Datos de muestra tipados para la demo del starter (el negocio de ejemplo: Café La Esquina).
 Sin conexión a base de datos. Los servicios consumen este directorio; las páginas y componentes **no** lo importan directamente.
 
-- **Naming:** `menu-items.ts`, `menu-categories.ts`, `promotions.ts`, etc.
+- **Naming:** `products.ts`, `categories.ts`, `promotions.ts`, etc.
 - Exportar arrays tipados usando los tipos de `@/types`
 - Consumir siempre a través de `@/services`, nunca directamente en components o pages
 - El barrel `index.ts` re-exporta todo
 
-**Archivos actuales:** `business-info.ts`, `blog-posts.ts`, `faq.ts`, `gallery.ts`, `menu-categories.ts`, `menu-items.ts`, `promotions.ts`, `testimonials.ts`
+**Archivos actuales:** `business-info.ts`, `blog-posts.ts`, `faq.ts`, `gallery.ts`, `categories.ts`, `products.ts`, `promotions.ts`, `testimonials.ts`
 
 ---
 
@@ -235,7 +235,7 @@ Astro Content Collections para contenido tipado (blog, FAQ).
 |------|-----------|---------|
 | Componentes Astro | PascalCase | `ProductCard.astro` |
 | Componentes React | PascalCase | `CartDrawer.tsx` |
-| Páginas Astro | kebab-case | `menu.astro`, `about.astro` |
+| Páginas Astro | kebab-case | `catalog.astro`, `about.astro` |
 | Archivos de datos/lib | camelCase | `products.ts` |
 | Archivos de config | camelCase | `business-config.ts` |
 | Carpetas | kebab-case | `components/catalog/` |

@@ -1,7 +1,7 @@
 import type { Product } from '@/types';
 
 /**
- * menuItems — ítems del menú / productos del catálogo.
+ * products — productos del catálogo del negocio.
  *
  * Fuente canónica de datos de productos.
  * Cada producto usa `money` (valor estructurado con divisa ISO 4217)
@@ -9,7 +9,7 @@ import type { Product } from '@/types';
  *
  * Los servicios de productos consumen este array a través del barrel @/data.
  */
-export const menuItems: Product[] = [
+export const products: Product[] = [
   // ── Cafés (cat-1) ────────────────────────────────────────────────────────
   {
     id: 'prod-1',

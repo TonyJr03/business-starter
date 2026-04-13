@@ -56,7 +56,7 @@ const homeSections: HomeSectionEntry[] = [
       tagline: identity.tagline,
       title: identity.name,
       subtitle: identity.shortDescription,
-      primaryCta: { label: 'Ver Menú', href: '/menu' },
+      primaryCta: { label: 'Ver catálogo', href: '/catalog' },
       secondaryCta: { label: 'Contáctanos', href: '/contact' },
       bg: 'secondary',
       size: 'lg',
@@ -190,7 +190,7 @@ export const globalConfig: BusinessGlobalConfig = {
   navigation: {
     main: [
       { label: 'Inicio',      href: '/'          },
-      { label: 'Menú',        href: '/menu'       },
+      { label: 'Catálogo',     href: '/catalog'    },
       { label: 'Promociones', href: '/promotions' },
       { label: 'Nosotros',    href: '/about'      },
       { label: 'Contacto',    href: '/contact'    },

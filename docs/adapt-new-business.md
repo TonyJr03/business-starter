@@ -14,7 +14,7 @@ personalización vive en los archivos de `src/config/` y `src/data/`**.
 4. [Branding y colores](#4-branding-y-colores)
 5. [Cómo activar y desactivar módulos](#5-módulos--activar-y-desactivar)
 6. [Cómo cambiar el orden de la home](#6-orden-de-la-home)
-7. [Cómo actualizar menú, ofertas y contacto](#7-menú-ofertas-y-contacto)
+7. [Cómo actualizar catálogo, ofertas y contacto](#7-catálogo-ofertas-y-contacto)
 8. [Contenido secundario: FAQ, galería, blog](#8-contenido-secundario)
 9. [Checklist de lanzamiento](#9-checklist-de-lanzamiento)
 10. [Errores comunes a evitar](#10-errores-comunes-a-evitar)
@@ -35,8 +35,8 @@ El sistema tiene una única fuente de verdad, más archivos de contenido separad
 
 | Archivo | Qué controla |
 |---|---|
-| `src/data/menu-categories.ts` | Categorías del catálogo |
-| `src/data/menu-items.ts` | Productos con precios, disponibilidad, badges |
+| `src/data/categories.ts` | Categorías del catálogo |
+| `src/data/products.ts` | Productos con precios, disponibilidad, badges |
 | `src/data/promotions.ts` | Ofertas y descuentos con fechas |
 | `src/data/business-info.ts` | Features del home + historia de la página Nosotros |
 | `src/data/faq.ts` | Preguntas frecuentes (si el módulo FAQ está activo) |
@@ -213,7 +213,7 @@ Controlan si las páginas de catálogo y promociones están activas:
 ```ts
 modules: {
   core: {
-    catalog:          true,   // página /menu con productos
+    catalog:          true,   // página /catalog con productos
     promotions:       true,   // página /promotions con ofertas
     cart:             false,  // carrito de compras (fase 2)
     whatsappOrdering: false,  // flujo de pedido por WhatsApp (fase 2)
@@ -221,7 +221,7 @@ modules: {
   },
 ```
 
-Cuando `catalog: false`, la página `/menu` muestra un mensaje de "no disponible"
+Cuando `catalog: false`, la página `/catalog` muestra un mensaje de “no disponible”
 en lugar del catálogo. Lo mismo aplica a `promotions`.
 
 ### Módulos secundarios (`modules.secondary`)
@@ -300,16 +300,16 @@ Cada entrada tiene:
 
 ---
 
-## 7. Menú, ofertas y contacto
+## 7. Catálogo, ofertas y contacto
 
-### Menú / Catálogo
+### Catálogo
 
-**Categorías** — `src/data/menu-categories.ts`
+**Categorías** — `src/data/categories.ts`
 
 ```ts
 export const categories: Category[] = [
   {
-    id:          'cat-1',          // único, usado en menu-items para relacionar
+    id:          'cat-1',          // único, usado en products.ts para relacionar
     name:        'Cafés',
     slug:        'cafes',          // aparece en la URL del anchor (#cafes)
     description: 'Descripción de la categoría.',
@@ -320,7 +320,7 @@ export const categories: Category[] = [
 ];
 ```
 
-**Productos** — `src/data/menu-items.ts`
+**Productos** — `src/data/products.ts`
 
 ```ts
 {
@@ -333,7 +333,7 @@ export const categories: Category[] = [
   isAvailable: true,           // false = "No disponible" pero visible
   isFeatured:  true,           // aparece en la sección "Destacados"
   badge:       'popular',      // opcional: 'popular' | 'new' | 'offer'
-  imageUrl:    '/images/menu/producto.webp', // opcional
+  imageUrl:    '/images/catalog/producto.webp', // opcional
   sortOrder:   1,
 },
 ```
@@ -454,7 +454,7 @@ Usa esta lista antes de entregar o publicar el sitio.
 - [ ] Módulos secundarios (FAQ, galería, blog) con `enabled: false` si no tienen contenido
 
 ### Contenido
-- [ ] `menu-categories.ts` y `menu-items.ts` con productos reales (no demo de Café La Esquina)
+- [ ] `categories.ts` y `products.ts` con productos reales (no demo de Café La Esquina)
 - [ ] `promotions.ts` con ofertas reales o vacío si no hay (array `[]`)
 - [ ] `business-info.ts` con features y aboutContent reales
 - [ ] Imágenes en `/public/images/` (logo, cover, productos, galería)
@@ -501,11 +501,11 @@ está mal, los enlaces de WhatsApp no funcionarán.
 // ❌ Incorrecto — 'cat-bebidas' no existe en categories
 { id: 'prod-5', categoryId: 'cat-bebidas', ... }
 
-// ✅ Correcto — usar el id exacto definido en menu-categories.ts
+// ✅ Correcto — usar el id exacto definido en categories.ts
 { id: 'prod-5', categoryId: 'cat-2', ... }
 ```
 
-Los productos con `categoryId` inexistente no aparecerán en el menú.
+Los productos con `categoryId` inexistente no aparecerán en el catálogo.
 
 ---
 

@@ -34,7 +34,7 @@ Agrupa productos bajo un criterio común (sección de menú, tipo de servicio, e
 interface Category {
   id:          string;   // 'cat-1'
   name:        string;   // 'Cafés'
-  slug:        string;   // 'cafes'  →  /menu#cafes
+  slug:        string;   // 'cafes'  →  /catalog#cafes
   description?: string;
   imageUrl?:   string;
   sortOrder?:  number;   // ausente → 0 (al final)
@@ -45,7 +45,7 @@ interface Category {
 **Reglas de dominio:**
 - `isActive` ausente se interpreta como `true` — una categoría nueva es visible por defecto.
 - `sortOrder` ausente equivale a `0` en los servicios.
-- El `slug` se usa como ancla de URL (`/menu#cafes`) y como parámetro de filtro.
+- El `slug` se usa como ancla de URL (`/catalog#cafes`) y como parámetro de filtro.
 
 ---
 
@@ -77,7 +77,7 @@ interface Product {
 
 **Reglas de dominio:**
 - `isAvailable` ausente se interpreta como `true`. Usar siempre `isProductAvailable(product)` del servicio para evitar errores de `!undefined`.
-- `isFeatured` ausente es `false`. Los destacados aparecen en la sección hero del menú.
+- `isFeatured` ausente es `false`. Los destacados aparecen en la sección hero del catálogo.
 - Un producto no disponible muestra badge "Agotado", precio atenuado y sin CTA.
 
 ---
@@ -216,7 +216,7 @@ const available = !product.isAvailable; // !undefined === true → falso positiv
 
 ### Destacados
 
-Un producto aparece en la sección "Destacados" del menú si `isFeatured === true` **y** `isAvailable !== false`. El servicio `getFeaturedProducts()` aplica ambos filtros.
+Un producto aparece en la sección “Destacados” del catálogo si `isFeatured === true` **y** `isAvailable !== false`. El servicio `getFeaturedProducts()` aplica ambos filtros.
 
 ### Vigencia de promoción
 
@@ -359,7 +359,7 @@ export async function getCategories(): Promise<Category[]> {
 }
 ```
 
-Las páginas (`menu.astro`, `promotions.astro`) no necesitan ningún cambio.
+Las páginas (`catalog.astro`, `promotions.astro`) no necesitan ningún cambio.
 
 ---
 

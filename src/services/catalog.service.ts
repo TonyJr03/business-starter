@@ -1,5 +1,5 @@
 import type { Category, Product } from '@/types';
-import { categories, menuItems } from '@/data';
+import { categories, products } from '@/data';
 
 /**
  * Servicio de catálogo — lectura de categorías y productos.
@@ -44,7 +44,7 @@ export async function getCategories(): Promise<Category[]> {
  * Si no se pasan filtros, devuelve todos los disponibles ordenados.
  */
 export async function getProducts(filters?: ProductFilters): Promise<Product[]> {
-  let results = [...menuItems];
+  let results = [...products];
 
   if (filters?.onlyAvailable !== false) {
     results = results.filter((p) => p.isAvailable ?? true);
@@ -81,7 +81,7 @@ export async function getProductsByCategory(categoryId: string): Promise<Product
  * Devuelve undefined si no existe.
  */
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
-  return menuItems.find((p) => p.slug === slug);
+  return products.find((p) => p.slug === slug);
 }
 
 // ─── Helpers de dominio ─────────────────────────────────────────────────────────
