@@ -5,14 +5,14 @@ import PromotionCard from '@/components/catalog/PromotionCard.astro';
 import type { PromoStatus } from '@/components/catalog/PromotionCard.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
 import { globalConfig } from '@/config';
-import { getPromotions, resolvePromotionStatus } from '@/services/promotions';
+import { getPromotions, getPromotionStatus } from '@/services/promotions.service';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 
 const { identity, modules, contact } = globalConfig;
 const name = identity.name;
 
 // Traemos todas —activas e inactivas— para mostrar estado visual completo.
-const allPromos = await getPromotions(false);
+const allPromos = await getPromotions();
 
 // ── Derivar estado por fechas (build-time) ──────────────────────────────────
 // La lógica vive en el servicio; aquí solo mapeamos 'paused' → 'expired'
@@ -20,7 +20,7 @@ const allPromos = await getPromotions(false);
 const today = new Date();
 
 function getStatus(promo: typeof allPromos[number]): PromoStatus {
-  const resolved = resolvePromotionStatus(promo, today);
+  const resolved = getPromotionStatus(promo, today);
   // 'paused' no tiene representación visual propia → se muestra como expirada
   return resolved === 'paused' ? 'expired' : resolved;
 }

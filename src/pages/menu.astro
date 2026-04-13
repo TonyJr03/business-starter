@@ -6,7 +6,7 @@ import ProductCard from '@/components/catalog/ProductCard.astro';
 import CategoryNav from '@/components/catalog/CategoryNav.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
 import { globalConfig } from '@/config';
-import { getCategories, getProducts } from '@/services/products';
+import { getCategories, getProducts } from '@/services/catalog.service';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 
 const { identity, modules, contact } = globalConfig;
