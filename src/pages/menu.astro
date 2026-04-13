@@ -6,26 +6,30 @@ import ProductCard from '@/components/catalog/ProductCard.astro';
 import CategoryNav from '@/components/catalog/CategoryNav.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
 import { globalConfig } from '@/config';
-import { getCategories, getProducts } from '@/services/catalog.service';
+import { getCategories, getProducts, getFeaturedProducts } from '@/services/catalog.service';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 
 const { identity, modules, contact } = globalConfig;
 const name = identity.name;
 
-const categories    = await getCategories();
-const allProducts   = await getProducts({ onlyAvailable: false });
+// Delegamos filtrado y ordenación al servicio de dominio.
+// Las categorías y los productos por categoría vienen ya listos para renderizar.
+const [categories, featuredProducts] = await Promise.all([
+  getCategories(),
+  getFeaturedProducts(),
+]);
 
-const featured = allProducts.filter((p) => p.isFeatured && p.isAvailable);
-
-const productsByCategory = categories.map((cat) => ({
-  category: cat,
-  products: allProducts.filter((p) => p.categoryId === cat.id),
-}));
+// Incluimos no-disponibles para que el componente muestre el badge "Agotado".
+const productsByCategory = await Promise.all(
+  categories.map(async (cat) => ({
+    category: cat,
+    products: await getProducts({ categoryId: cat.id, onlyAvailable: false }),
+  }))
+);
 
 /**
  * Genera la URL de WhatsApp para un producto concreto.
- * Cuando el módulo de carrito se active, este helper dejará de usarse
- * y el botón de ProductCard pasará a gestionar el carrito en su lugar.
+ * Cuando el módulo de carrito se active, este helper dejará de usarse.
  */
 function productOrderUrl(productName: string): string | undefined {
   if (!contact.whatsapp) return undefined;
@@ -64,11 +68,11 @@ function productOrderUrl(productName: string): string | undefined {
       <CategoryNav categories={categories} />
 
       {/* Destacados */}
-      {featured.length > 0 && (
+      {featuredProducts.length > 0 && (
         <Section bg="surface" size="md">
           <SectionHeader title="Destacados" align="left" />
           <ul class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((product) => (
+            {featuredProducts.map((product) => (
               <li>
                 <ProductCard
                   product={product}
