@@ -1,33 +1,13 @@
-import type { ContentFeature, AboutContent } from '@/types';
-import { globalConfig } from '@/config';
-
-const { location } = globalConfig;
+import type { AboutContent } from '@/types';
 
 /**
- * homeFeatures — propuesta de valor para la sección de características del Home.
- * Personaliza estos ítems para cada negocio.
- */
-export const homeFeatures: ContentFeature[] = [
-  {
-    icon: '✨',
-    title: 'Calidad artesanal',
-    description:
-      'Cada producto elaborado con los mejores ingredientes locales y con el cuidado de siempre.',
-  },
-  {
-    icon: '📍',
-    title: location.city,
-    description: `Encuéntranos${location.street ? ` en ${location.street}` : ''}${location.municipality ? `, ${location.municipality}` : ''}.`,
-  },
-  {
-    icon: '🕐',
-    title: 'Abierto toda la semana',
-    description: 'Horario extendido para que disfrutes cuando lo necesites.',
-  },
-];
-
-/**
- * aboutContent — contenido institucional para la página About.
+ * aboutContent — contenido editorial/narrativo para la página About ("Nosotros").
+ *
+ * Este archivo contiene únicamente texto de marca: historia, misión y
+ * diferenciadores. No duplica datos estructurales que viven en globalConfig
+ * (nombre, contacto, ubicación, horarios).
+ *
+ * Personaliza estos textos para cada cliente.
  */
 export const aboutContent: AboutContent = {
   story: [
