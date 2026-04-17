@@ -9,8 +9,9 @@ import { globalConfig } from '@/config';
 import { getCategories, getProducts, getFeaturedProducts } from '@/services/catalog.service';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 
-const { identity, modules, contact, seoDefaults } = globalConfig;
+const { identity, modules, contact, seoDefaults, pages } = globalConfig;
 const name = identity.name;
+const catalogCopy = pages.catalog;
 
 // Delegamos filtrado y ordenación al servicio de dominio.
 // Las categorías y los productos por categoría vienen ya listos para renderizar.
@@ -46,10 +47,10 @@ function productOrderUrl(productName: string): string | undefined {
   <Section bg="secondary" size="md">
     <div class="max-w-2xl mx-auto text-center">
       <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
-        Nuestro Catálogo
+        {catalogCopy.heading}
       </h1>
       <p class="text-lg" style="color: var(--color-text-muted);">
-        Todo lo que tenemos para ofrecerte hoy.
+        {catalogCopy.subheading}
       </p>
     </div>
   </Section>
@@ -70,7 +71,7 @@ function productOrderUrl(productName: string): string | undefined {
       {/* Destacados */}
       {featuredProducts.length > 0 && (
         <Section bg="surface" size="md">
-          <SectionHeader title="Destacados" align="left" />
+          <SectionHeader title={catalogCopy.featuredTitle} align="left" />
           <ul class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {featuredProducts.map((product) => (
               <li>
@@ -126,10 +127,10 @@ function productOrderUrl(productName: string): string | undefined {
       {/* CTA WhatsApp */}
       {contact.whatsapp && (
         <CtaWhatsappSection
-          title="¿Ves algo que te gusta?"
-          subtitle="Escríbenos por WhatsApp y te atendemos de inmediato."
-          buttonLabel="Hacer un pedido"
-          message={`Hola ${name}, quisiera hacer un pedido.`}
+          title={catalogCopy.cta.title}
+          subtitle={catalogCopy.cta.subtitle}
+          buttonLabel={catalogCopy.cta.buttonLabel}
+          message={catalogCopy.cta.message}
           bg="secondary"
           size="md"
         />

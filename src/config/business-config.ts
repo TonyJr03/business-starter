@@ -217,6 +217,12 @@ export const globalConfig: BusinessGlobalConfig = {
         enabled:  false,
         title:    'Preguntas Frecuentes',
         subtitle: 'Todo lo que necesitas saber antes de visitarnos.',
+        cta: {
+          title:       '¿No encontraste lo que buscabas?',
+          subtitle:    'Escríbenos directamente y te respondemos enseguida.',
+          buttonLabel: 'Preguntar por WhatsApp',
+          message:     `Hola ${identity.name}, tengo una pregunta que no encontré en el FAQ.`,
+        },
       },
       gallery: {
         enabled:  false,
@@ -236,5 +242,40 @@ export const globalConfig: BusinessGlobalConfig = {
     titleTemplate:      `%s | ${identity.name}`,
     defaultDescription: identity.shortDescription ?? identity.description,
     ogImage:            identity.coverImageUrl,
+  },
+
+  // ── Textos de página ──────────────────────────────────────────────────────
+  // Headings, subheadings y CTAs visibles al cliente final por página.
+  // Centraliza aquí cualquier texto de negocio que un operador deba cambiar.
+  pages: {
+    catalog: {
+      heading:      'Nuestro Catálogo',
+      subheading:   'Todo lo que tenemos para ofrecerte hoy.',
+      featuredTitle: 'Destacados',
+      cta: {
+        title:       '¿Ves algo que te gusta?',
+        subtitle:    'Escríbenos por WhatsApp y te atendemos de inmediato.',
+        buttonLabel: 'Hacer un pedido',
+        message:     `Hola ${identity.name}, quisiera hacer un pedido.`,
+      },
+    },
+    promotions: {
+      heading:      'Ofertas y Promociones',
+      emptyMessage: 'Pronto tendremos novedades. ¡Vuelve a visitarnos!',
+      cta: {
+        title:       '¿Tienes alguna consulta?',
+        subtitle:    'Escríbenos por WhatsApp y te informamos sobre cualquier oferta.',
+        buttonLabel: 'Consultar por WhatsApp',
+        message:     `Hola ${identity.name}, quisiera información sobre sus ofertas.`,
+      },
+    },
+    about: {
+      cta: {
+        title:       '¿Tienes alguna pregunta?',
+        subtitle:    'Escríbenos directamente y te respondemos de inmediato.',
+        buttonLabel: 'Escribir por WhatsApp',
+        message:     `Hola ${identity.name}, quisiera más información sobre el café.`,
+      },
+    },
   },
 };

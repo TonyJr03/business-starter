@@ -172,6 +172,52 @@ export interface BusinessModulesConfig {
   secondary: Record<SecondaryModuleId, SecondaryModuleConfig>;
 }
 
+// ─── Page copy ────────────────────────────────────────────────────────────────
+
+/** Bloque de textos para una sección CTA de WhatsApp dentro de una página. */
+export interface PageCtaCopy {
+  title: string;
+  subtitle?: string;
+  buttonLabel: string;
+  /** Mensaje pre-escrito enviado al abrir WhatsApp. */
+  message: string;
+}
+
+export interface CatalogPageCopy {
+  /** H1 visible de la página de catálogo. */
+  heading: string;
+  /** Subtítulo bajo el H1. */
+  subheading?: string;
+  /** Título de la sección de productos destacados. */
+  featuredTitle: string;
+  /** Texto del bloque CTA de WhatsApp al final de la página. */
+  cta: PageCtaCopy;
+}
+
+export interface PromotionsPageCopy {
+  /** H1 visible de la página de promociones. */
+  heading: string;
+  /** Mensaje mostrado cuando no hay promociones activas. */
+  emptyMessage: string;
+  /** Texto del bloque CTA de WhatsApp al final de la página. */
+  cta: PageCtaCopy;
+}
+
+export interface AboutPageCopy {
+  /** Texto del bloque CTA de WhatsApp al final de la página. */
+  cta: PageCtaCopy;
+}
+
+/**
+ * Textos visibles al cliente final para cada página del sitio.
+ * Centraliza headings, CTAs y mensajes que varían por negocio.
+ */
+export interface BusinessPagesCopy {
+  catalog: CatalogPageCopy;
+  promotions: PromotionsPageCopy;
+  about: AboutPageCopy;
+}
+
 // ─── SEO Defaults ─────────────────────────────────────────────────────────────
 
 export interface BusinessSeoDefaults {
@@ -220,6 +266,8 @@ export interface BusinessGlobalConfig {
   navigation: BusinessNavigation;
   modules: BusinessModulesConfig;
   seoDefaults: BusinessSeoDefaults;
+  /** Textos visibles al cliente final para cada página. */
+  pages: BusinessPagesCopy;
 }
 
 // ─── Validación en tiempo de ejecución ────────────────────────────────────────

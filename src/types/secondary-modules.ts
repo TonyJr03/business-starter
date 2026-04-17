@@ -1,3 +1,5 @@
+import type { PageCtaCopy } from './business-config';
+
 // ─── IDs de Módulos Secundarios ────────────────────────────────────────────────────
 
 /**
@@ -55,6 +57,8 @@ export interface SecondaryModuleConfig {
   title?: string;
   /** Texto de apoyo opcional mostrado bajo el título. */
   subtitle?: string;
+  /** Bloque CTA de WhatsApp al final de la página del módulo (opcional). */
+  cta?: PageCtaCopy;
 }
 
 // ─── Mapa completo ────────────────────────────────────────────────────────────────

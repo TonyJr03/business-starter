@@ -8,8 +8,9 @@ import { globalConfig } from '@/config';
 import { getPromotions, getPromotionStatus } from '@/services/promotions.service';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 
-const { identity, modules, contact } = globalConfig;
+const { identity, modules, contact, pages } = globalConfig;
 const name = identity.name;
+const promoCopy = pages.promotions;
 
 // Traemos todas —activas e inactivas— para mostrar estado visual completo.
 const allPromos = await getPromotions();
@@ -61,12 +62,12 @@ const activeCount = enriched.filter((e) => e.status === 'active').length;
   <Section bg="secondary" size="md">
     <div class="max-w-2xl mx-auto text-center">
       <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
-        Ofertas y Promociones
+        {promoCopy.heading}
       </h1>
       <p class="text-lg" style="color: var(--color-text-muted);">
         {activeCount > 0
           ? `${activeCount} promoción${activeCount > 1 ? 'es' : ''} activa${activeCount > 1 ? 's' : ''} ahora mismo.`
-          : 'Pronto tendremos novedades. ¡Vuelve a visitarnos!'}
+          : promoCopy.emptyMessage}
       </p>
     </div>
   </Section>
@@ -108,10 +109,10 @@ const activeCount = enriched.filter((e) => e.status === 'active').length;
   <!-- ── CTA WhatsApp ────────────────────────────────────────────────────── -->
   {contact.whatsapp && (
     <CtaWhatsappSection
-      title="¿Tienes alguna consulta?"
-      subtitle="Escríbenos por WhatsApp y te informamos sobre cualquier oferta."
-      buttonLabel="Consultar por WhatsApp"
-      message={`Hola ${name}, quisiera información sobre sus ofertas.`}
+      title={promoCopy.cta.title}
+      subtitle={promoCopy.cta.subtitle}
+      buttonLabel={promoCopy.cta.buttonLabel}
+      message={promoCopy.cta.message}
       bg="secondary"
       size="md"
     />

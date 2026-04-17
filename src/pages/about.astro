@@ -8,7 +8,8 @@ import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
 import { globalConfig } from '@/config';
 import { aboutContent } from '@/data';
 
-const { identity, location, contact, hours } = globalConfig;
+const { identity, location, contact, hours, pages } = globalConfig;
+const aboutCopy = pages.about;
 ---
 
 <MainLayout
@@ -194,10 +195,10 @@ const { identity, location, contact, hours } = globalConfig;
   <!-- ── CTA WhatsApp ────────────────────────────────────────────────────── -->
   {contact.whatsapp && (
     <CtaWhatsappSection
-      title="¿Tienes alguna pregunta?"
-      subtitle="Escríbenos directamente y te respondemos de inmediato."
-      buttonLabel="Escribir por WhatsApp"
-      message={`Hola ${identity.name}, quisiera más información sobre el café.`}
+      title={aboutCopy.cta.title}
+      subtitle={aboutCopy.cta.subtitle}
+      buttonLabel={aboutCopy.cta.buttonLabel}
+      message={aboutCopy.cta.message}
       bg="secondary"
       size="md"
     />

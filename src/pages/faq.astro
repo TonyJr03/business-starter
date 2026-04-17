@@ -8,7 +8,7 @@ import { isModuleEnabled, secondaryModules } from '@/config';
 import { faqItems } from '@/data';
 
 const faqEnabled = isModuleEnabled('faq');
-const { title: faqTitle, subtitle: faqSubtitle } = secondaryModules.faq;
+const { title: faqTitle, subtitle: faqSubtitle, cta: faqCta } = secondaryModules.faq;
 
 const { identity, contact } = globalConfig;
 ---
@@ -40,12 +40,12 @@ const { identity, contact } = globalConfig;
   )}
 
   <!-- ── Sección WhatsApp ────────────────────────────────────────────────────── -->
-  {faqEnabled && contact.whatsapp && (
+  {faqEnabled && contact.whatsapp && faqCta && (
     <CtaWhatsappSection
-      title="¿No encontraste lo que buscabas?"
-      subtitle="Escríbenos directamente y te respondemos enseguida."
-      message={`Hola ${identity.name}, tengo una pregunta que no encontré en el FAQ.`}
-      buttonLabel="Preguntar por WhatsApp"
+      title={faqCta.title}
+      subtitle={faqCta.subtitle}
+      message={faqCta.message}
+      buttonLabel={faqCta.buttonLabel}
       bg="surface"
       size="md"
     />
