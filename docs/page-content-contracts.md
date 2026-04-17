@@ -20,7 +20,7 @@ Este documento define qué datos necesita cada página, de dónde los obtiene y 
 > Ruta implementada en `src/pages/index.astro`  
 > Orçuestada por `HomeSectionRenderer.astro` + `home-section-registry.ts`
 
-La home no tiene contenido fijo. Renderiza la lista de **`homeSections` activas y ordenadas** definidas en `globalConfig.modules.homeSections`. Cada sección tiene contrato propio.
+La home no tiene contenido fijo. Renderiza la lista de **módulos de sección activos y ordenados** definidos en `globalConfig.modules.sections`. Cada sección tiene contrato propio.
 
 ### Sección `hero` — Hero principal
 
@@ -29,20 +29,20 @@ La home no tiene contenido fijo. Renderiza la lista de **`homeSections` activas 
 | `tagline` | ✓ | `CFG` → `identity.tagline` vía `PROP` | `HeroSection.astro` | — |
 | `title` | ✓ | `CFG` → `identity.name` vía `PROP` | `HeroSection.astro` | — |
 | `subtitle` | ✓ | `CFG` → `identity.shortDescription` vía `PROP` | `HeroSection.astro` | — |
-| `primaryCta.label` | ✓ | `CFG` → `homeSections[hero].props.primaryCta` | `HeroSection.astro` | — |
-| `primaryCta.href` | ✓ | `CFG` → `homeSections[hero].props.primaryCta` | `HeroSection.astro` | — |
-| `secondaryCta.label` | — | `CFG` → `homeSections[hero].props.secondaryCta` | `HeroSection.astro` | No se renderiza el botón secundario |
-| `secondaryCta.href` | — | `CFG` → `homeSections[hero].props.secondaryCta` | `HeroSection.astro` | No se renderiza el botón secundario |
-| `bg` | — | `CFG` → `homeSections[hero].props.bg` | `HeroSection.astro` | `'default'` |
-| `size` | — | `CFG` → `homeSections[hero].props.size` | `HeroSection.astro` | `'md'` |
+| `primaryCta.label` | ✓ | `CFG` → `modules.sections[hero].props.primaryCta` | `HeroSection.astro` | — |
+| `primaryCta.href` | ✓ | `CFG` → `modules.sections[hero].props.primaryCta` | `HeroSection.astro` | — |
+| `secondaryCta.label` | — | `CFG` → `modules.sections[hero].props.secondaryCta` | `HeroSection.astro` | No se renderiza el botón secundario |
+| `secondaryCta.href` | — | `CFG` → `modules.sections[hero].props.secondaryCta` | `HeroSection.astro` | No se renderiza el botón secundario |
+| `bg` | — | `CFG` → `modules.sections[hero].props.bg` | `HeroSection.astro` | `'default'` |
+| `size` | — | `CFG` → `modules.sections[hero].props.size` | `HeroSection.astro` | `'md'` |
 
 ### Sección `highlights` — Propuesta de valor
 
 | Campo | Req. | Fuente | Consumidor | Fallback |
 |-------|:----:|--------|------------|---------|
-| `title` | ✓ | `CFG` → `homeSections[highlights].props.title` | `FeatureSection.astro` | — |
-| `subtitle` | — | `CFG` → `homeSections[highlights].props.subtitle` | `FeatureSection.astro` | No se renderiza el subtítulo |
-| `items[]` | ✓ | `DATA` → `data/business-info.ts` → `homeFeatures` | `FeatureSection.astro` | Array vacío → sección renderiza sin ítems |
+| `title` | ✓ | `CFG` → `modules.sections[highlights].props.title` | `FeatureSection.astro` | — |
+| `subtitle` | — | `CFG` → `modules.sections[highlights].props.subtitle` | `FeatureSection.astro` | No se renderiza el subtítulo |
+| `items[]` | ✓ | `DATA` → `data/highlights.ts` → `homeFeatures` | `FeatureSection.astro` | Array vacío → sección renderiza sin ítems |
 | `items[].icon` | — | `DATA` → `homeFeatures[n].icon` | `FeatureSection.astro` | No se renderiza el símbolo |
 | `items[].title` | ✓ | `DATA` → `homeFeatures[n].title` | `FeatureSection.astro` | — |
 | `items[].description` | ✓ | `DATA` → `homeFeatures[n].description` | `FeatureSection.astro` | — |
@@ -52,7 +52,7 @@ La home no tiene contenido fijo. Renderiza la lista de **`homeSections` activas 
 
 | Campo | Req. | Fuente | Consumidor | Fallback |
 |-------|:----:|--------|------------|---------|
-| `title` | ✓ | `CFG` → `homeSections[hours].props.title` | `OpeningHoursSection.astro` | — |
+| `title` | ✓ | `CFG` → `modules.sections[hours].props.title` | `OpeningHoursSection.astro` | — |
 | `hours[]` | ✓ | `CFG` → `globalConfig.hours` | `OpeningHoursSection.astro` | Si array vacío, la sección no se renderiza (guarda en renderer) |
 | `hours[n].open` | ✓ | `CFG` → `hours[n].open` | `OpeningHoursSection.astro` | — |
 | `hours[n].close` | — | `CFG` → `hours[n].close` | `OpeningHoursSection.astro` | No se muestra hora de cierre |
@@ -62,15 +62,15 @@ La home no tiene contenido fijo. Renderiza la lista de **`homeSections` activas 
 
 | Campo | Req. | Fuente | Consumidor | Fallback |
 |-------|:----:|--------|------------|---------|
-| `title` | ✓ | `CFG` → `homeSections[whatsapp_cta].props.title` | `CtaWhatsappSection.astro` | — |
-| `subtitle` | — | `CFG` → `homeSections[whatsapp_cta].props.subtitle` | `CtaWhatsappSection.astro` | No se renderiza |
-| `buttonLabel` | ✓ | `CFG` → `homeSections[whatsapp_cta].props.buttonLabel` | `CtaWhatsappSection.astro` | — |
-| `message` | ✓ | `CFG` → `homeSections[whatsapp_cta].props.message` | `CtaWhatsappSection.astro` + `lib/whatsapp` | — |
+| `title` | ✓ | `CFG` → `modules.sections[whatsapp_cta].props.title` | `CtaWhatsappSection.astro` | — |
+| `subtitle` | — | `CFG` → `modules.sections[whatsapp_cta].props.subtitle` | `CtaWhatsappSection.astro` | No se renderiza |
+| `buttonLabel` | ✓ | `CFG` → `modules.sections[whatsapp_cta].props.buttonLabel` | `CtaWhatsappSection.astro` | — |
+| `message` | ✓ | `CFG` → `modules.sections[whatsapp_cta].props.message` | `CtaWhatsappSection.astro` + `lib/whatsapp` | — |
 | `contact.whatsapp` | ✓ | `CFG` → `contact.whatsapp` | Renderer (guarda) | Sección no se renderiza si no hay número |
 
 ### Secciones `promotions` y `testimonials`
 
-Configuradas en `homeSections` pero **no implementadas aún** (`implemented: false` en `home-section-registry.ts`). El renderer las omite silenciosamente sin error.
+Configuradas en `modules.sections` pero **no implementadas aún** (`implemented: false` en `section-module-registry.ts`). El renderer las omite silenciosamente sin error.
 
 ### SEO de la Home
 
@@ -85,13 +85,13 @@ Configuradas en `homeSections` pero **no implementadas aún** (`implemented: fal
 ## `/catalog` — Catálogo
 
 > Ruta: `src/pages/catalog.astro`  
-> Feature flag: `globalConfig.modules.core.catalog`
+> Feature flag: `globalConfig.modules.pages.catalog.enabled`
 
 ### Campos requeridos
 
 | Campo | Fuente | Consumidor | Notas |
 |-------|--------|------------|-------|
-| `modules.core.catalog` | `CFG` | `catalog.astro` | `false` → se muestra mensaje "no disponible" |
+| `modules.pages.catalog.enabled` | `CFG` | `catalog.astro` | `false` → muestra `<ModuleDisabled />` |
 | `categories[]` | `SVC` → `catalog.service.getCategories()` | `CategoryNav.astro` | Array vacío → nav oculta |
 | `products[]` | `SVC` → `catalog.service.getProducts()` | `ProductCard.astro` | Array vacío → mensaje "sin productos" |
 | `identity.name` | `CFG` | URL de WhatsApp del pedido | Usado en el mensaje pre-escrito |
@@ -113,7 +113,7 @@ Configuradas en `homeSections` pero **no implementadas aún** (`implemented: fal
 | `pages.catalog.heading` | `CFG` | H1 de la página de catálogo | — |
 | `pages.catalog.subheading` | `CFG` | Subtítulo bajo el H1 | No se renderiza |
 | `pages.catalog.featuredTitle` | `CFG` | Título sección Destacados | — |
-| `pages.catalog.cta.*` | `CFG` | `CtaWhatsappSection` al final | No se renderiza si `contact.whatsapp` es `undefined` |
+| `modules.pages.catalog.cta.*` | `CFG` | `CtaWhatsappSection` al final | No se renderiza si `contact.whatsapp` es `undefined` |
 
 ### Contrato de `ProductCard.astro`
 
@@ -134,13 +134,13 @@ Configuradas en `homeSections` pero **no implementadas aún** (`implemented: fal
 ## `/promotions` — Promociones y Ofertas
 
 > Ruta: `src/pages/promotions.astro`  
-> Feature flag: `globalConfig.modules.core.promotions`
+> Feature flag: `globalConfig.modules.pages.promotions.enabled`
 
 ### Campos requeridos
 
 | Campo | Fuente | Consumidor | Notas |
 |-------|--------|------------|-------|
-| `modules.core.promotions` | `CFG` | `promotions.astro` | `false` → mensaje "no disponible" |
+| `modules.pages.promotions.enabled` | `CFG` | `promotions.astro` | `false` → muestra `<ModuleDisabled />` |
 | `promotions[]` | `SVC` → `promotions.service.getPromotions()` | `PromotionCard.astro` | Array vacío → "Pronto tendremos novedades" |
 | `identity.name` | `CFG` | Mensaje de WhatsApp | Usado en texto pre-escrito |
 
@@ -158,7 +158,7 @@ Configuradas en `homeSections` pero **no implementadas aún** (`implemented: fal
 | `promotion.categoryIds[]` | `DATA` → `promotions.ts` | Lógica de vinculación | Sin categorías vinculadas |
 | `pages.promotions.heading` | `CFG` | H1 de la página de promociones | — |
 | `pages.promotions.emptyMessage` | `CFG` | Mensaje cuando no hay promociones | — |
-| `pages.promotions.cta.*` | `CFG` | `CtaWhatsappSection` al final | No se renderiza si `contact.whatsapp` es `undefined` |
+| `modules.pages.promotions.cta.*` | `CFG` | `CtaWhatsappSection` al final | No se renderiza si `contact.whatsapp` es `undefined` |
 
 ### Estados resueltos por el servicio
 
@@ -183,7 +183,7 @@ El estado de cada promoción es calculado por `getPromotionStatus(promo, now)` a
 ## `/about` — Sobre Nosotros
 
 > Ruta: `src/pages/about.astro`  
-> Siempre visible (sin feature flag)
+> Feature flag: `globalConfig.modules.pages.about.enabled`
 
 ### Campos requeridos
 
@@ -191,21 +191,21 @@ El estado de cada promoción es calculado por `getPromotionStatus(promo, now)` a
 |-------|--------|------------|-------|
 | `identity.name` | `CFG` | `about.astro` | Título del `<meta description>` y hero |
 | `location.city` | `CFG` | `<meta description>` | Construcción de la descripción SEO |
-| `aboutContent.story[]` | `DATA` → `data/business-info.ts` | Bloque de historia | Array de párrafos; mínimo 1 recomendado |
+| `aboutContent.story[]` | `DATA` → `data/about-content.ts` | Bloque de historia | Array de párrafos; mínimo 1 recomendado |
 
 ### Campos opcionales
 
 | Campo | Fuente | Consumidor | Fallback |
 |-------|--------|------------|---------|
-| `aboutContent.mission` | `DATA` → `data/business-info.ts` | Bloque cita de misión | Sección de misión no renderizada |
-| `aboutContent.differentiators[]` | `DATA` → `data/business-info.ts` | Grid de diferenciadores | Sección completa no renderizada |
+| `aboutContent.mission` | `DATA` → `data/about-content.ts` | Bloque cita de misión | Sección de misión no renderizada |
+| `aboutContent.differentiators[]` | `DATA` → `data/about-content.ts` | Grid de diferenciadores | Sección completa no renderizada |
 | `differentiator.icon` | `DATA` | `about.astro` card | Sin ícono |
 | `differentiator.title` | `DATA` | `about.astro` card | — |
 | `differentiator.description` | `DATA` | `about.astro` card | — |
 | `hours` | `CFG` → `globalConfig.hours` | `OpeningHoursSection.astro` | Sección de horarios no renderizada si array vacío |
 | `contact.whatsapp` | `CFG` | `CtaWhatsappSection.astro` | Sección CTA no renderizada |
 | `identity.coverImageUrl` | `CFG` | OG image fallback | Sin og:image |
-| `pages.about.cta.*` | `CFG` | `CtaWhatsappSection` al final | No se renderiza si `contact.whatsapp` es `undefined` |
+| `modules.pages.about.cta.*` | `CFG` | `CtaWhatsappSection` al final | No se renderiza si `contact.whatsapp` es `undefined` |
 
 ### SEO
 
@@ -219,7 +219,7 @@ El estado de cada promoción es calculado por `getPromotionStatus(promo, now)` a
 ## `/contact` — Contacto
 
 > Ruta: `src/pages/contact.astro`  
-> Siempre visible (sin feature flag)
+> Feature flag: `globalConfig.modules.pages.contact.enabled`
 
 ### Campos requeridos
 
@@ -259,14 +259,14 @@ La página tiene un formulario HTML (campos nombre, teléfono, mensaje) renderiz
 ## `/faq` — Preguntas Frecuentes *(módulo secundario)*
 
 > Ruta: `src/pages/faq.astro`  
-> Feature flag: `globalConfig.modules.secondary.faq.enabled`  
-> Si deshabilitado: redirect `meta refresh` a `/` + mensaje "Página no disponible"
+> Feature flag: `globalConfig.modules.pages.faq.enabled`  
+> Si deshabilitado: muestra `<ModuleDisabled />` (UI tipo 404, sin redirect)
 
 ### Campos requeridos
 
 | Campo | Fuente | Consumidor | Notas |
 |-------|--------|------------|-------|
-| `modules.secondary.faq.enabled` | `CFG` | Guard en `faq.astro` | `false` → redirect a `/` |
+| `modules.pages.faq.enabled` | `CFG` | Guard en `faq.astro` | `false` → `<ModuleDisabled />` |
 | `faqItems[]` | `DATA` → `data/faq.ts` | `FaqSection.astro` | Array vacío → sección vacía sin error |
 | `faqItems[n].question` | `DATA` | `FaqSection.astro` | — |
 | `faqItems[n].answer` | `DATA` | `FaqSection.astro` | — |
@@ -275,11 +275,11 @@ La página tiene un formulario HTML (campos nombre, teléfono, mensaje) renderiz
 
 | Campo | Fuente | Consumidor | Fallback |
 |-------|--------|------------|---------|
-| `modules.secondary.faq.title` | `CFG` | H1 de la página | `'Preguntas Frecuentes'` (literal en `faq.astro`) |
-| `modules.secondary.faq.subtitle` | `CFG` | Subtítulo del hero | No se renderiza el subtítulo |
+| `modules.pages.faq.title` | `CFG` | H1 de la página | `'Preguntas Frecuentes'` (literal en `faq.astro`) |
+| `modules.pages.faq.subtitle` | `CFG` | Subtítulo del hero | No se renderiza el subtítulo |
 | `faqItems[n].id` | `DATA` | Anchor/categoría | Generado si no viene |
 | `faqItems[n].category` | `DATA` | Agrupación visual | Sin agrupación |
-| `modules.secondary.faq.cta` | `CFG` | `CtaWhatsappSection` al final | Si `undefined`, sección CTA no renderizada |
+| `modules.pages.faq.cta` | `CFG` | `CtaWhatsappSection` al final | Si `undefined`, sección CTA no renderizada |
 | `contact.whatsapp` | `CFG` | Guard del CTA | CTA omitido si el número no está definido |
 | `identity.name` | `CFG` | Mensaje de WhatsApp del CTA | Usado en texto pre-escrito |
 
@@ -295,14 +295,14 @@ La página tiene un formulario HTML (campos nombre, teléfono, mensaje) renderiz
 ## `/gallery` — Galería *(módulo secundario)*
 
 > Ruta: `src/pages/gallery.astro`  
-> Feature flag: `globalConfig.modules.secondary.gallery.enabled`  
-> Si deshabilitado: redirect `meta refresh` a `/` + mensaje "Página no disponible"
+> Feature flag: `globalConfig.modules.pages.gallery.enabled`  
+> Si deshabilitado: muestra `<ModuleDisabled />` (UI tipo 404, sin redirect)
 
 ### Campos requeridos
 
 | Campo | Fuente | Consumidor | Notas |
 |-------|--------|------------|-------|
-| `modules.secondary.gallery.enabled` | `CFG` | Guard en `gallery.astro` | `false` → redirect a `/` |
+| `modules.pages.gallery.enabled` | `CFG` | Guard en `gallery.astro` | `false` → `<ModuleDisabled />` |
 | `galleryItems[]` | `DATA` → `data/gallery.ts` | `GalleryGrid.astro` | Array vacío → grid vacío sin error |
 | `galleryItems[n].src` | `DATA` | `GalleryGrid.astro` | — (imagen rota si falta) |
 | `galleryItems[n].alt` | `DATA` | `GalleryGrid.astro` | `''` (accesibilidad degradada) |
@@ -311,8 +311,8 @@ La página tiene un formulario HTML (campos nombre, teléfono, mensaje) renderiz
 
 | Campo | Fuente | Consumidor | Fallback |
 |-------|--------|------------|---------|
-| `modules.secondary.gallery.title` | `CFG` | H1 de la página | `'Galería'` (literal en `gallery.astro`) |
-| `modules.secondary.gallery.subtitle` | `CFG` | Subtítulo del hero | No se renderiza |
+| `modules.pages.gallery.title` | `CFG` | H1 de la página | `'Galería'` (literal en `gallery.astro`) |
+| `modules.pages.gallery.subtitle` | `CFG` | Subtítulo del hero | No se renderiza |
 | `galleryItems[n].caption` | `DATA` | `GalleryGrid.astro` | Sin pie de foto |
 | `galleryItems[n].category` | `DATA` | Filtros de galería (futuro) | Sin categoría |
 | `columns` | `PROP` en `GalleryGrid` | `GalleryGrid.astro` | `3` |
@@ -333,14 +333,14 @@ Las imágenes de galería deben estar en `public/brands/{slug}/gallery/` y refer
 ## `/blog` — Blog *(módulo secundario)*
 
 > Ruta: `src/pages/blog/index.astro`  
-> Feature flag: `globalConfig.modules.secondary.blog.enabled`  
-> Si deshabilitado: redirect `meta refresh` a `/` + mensaje "Página no disponible"
+> Feature flag: `globalConfig.modules.pages.blog.enabled`  
+> Si deshabilitado: muestra `<ModuleDisabled />` (UI tipo 404, sin redirect)
 
 ### Campos requeridos
 
 | Campo | Fuente | Consumidor | Notas |
 |-------|--------|------------|-------|
-| `modules.secondary.blog.enabled` | `CFG` | Guard en `blog/index.astro` | `false` → redirect a `/`; también omite `getStaticPaths` en `[slug].astro` |
+| `modules.pages.blog.enabled` | `CFG` | Guard en `blog/index.astro` | `false` → `<ModuleDisabled />`; también omite `getStaticPaths` en `[slug].astro` |
 | `posts[]` | `SVC` → `services/blog.getPosts()` | `BlogPostCard.astro` | Array vacío → "No hay artículos publicados" |
 | `post.title` | `DATA` → `data/blog-posts.ts` | `BlogPostCard.astro` | — |
 | `post.slug` | `DATA` | `getStaticPaths()` + links | — |
@@ -351,8 +351,8 @@ Las imágenes de galería deben estar en `public/brands/{slug}/gallery/` y refer
 
 | Campo | Fuente | Consumidor | Fallback |
 |-------|--------|------------|---------|
-| `modules.secondary.blog.title` | `CFG` | H1 del índice | `'Blog'` (literal en `blog/index.astro`) |
-| `modules.secondary.blog.subtitle` | `CFG` | Subtítulo del hero | No se renderiza |
+| `modules.pages.blog.title` | `CFG` | H1 del índice | `'Blog'` (literal en `blog/index.astro`) |
+| `modules.pages.blog.subtitle` | `CFG` | Subtítulo del hero | No se renderiza |
 | `post.coverImageUrl` | `DATA` | `BlogPostCard.astro` | Sin imagen de portada |
 | `post.tags[]` | `DATA` | `BlogPostCard.astro` | Sin etiquetas |
 | `post.author` | `DATA` | `BlogPostCard.astro` | Sin autor |
@@ -425,10 +425,10 @@ Estos campos son consumidos por `MainLayout.astro` en cada render, independiente
 |-------|---------|---------|
 | `identity.name` vacío | Título de página vacío, mensaje de WA sin nombre | Siempre requerido en `business-config.ts` |
 | `contact.whatsapp` no definido | Botones de pedido/contacto desaparecen sin aviso | Esperado: UI se adapta. Definir para habilitar conversión |
-| `aboutContent.story` array vacío | Sección de historia vacía (sin error de build) | Proveer mínimo 1 párrafo en `data/business-info.ts` |
+| `aboutContent.story` array vacío | Sección de historia vacía (sin error de build) | Proveer mínimo 1 párrafo en `data/about-content.ts` |
 | `galleryItems[n].src` apuntando a imagen inexistente | Imagen rota (`<img>` con `alt` vacío) | Verificar que el archivo existe en `public/brands/{slug}/gallery/` |
-| `modules.core.catalog = false` | Página `/catalog` con mensaje "no disponible" | Activar en `business-config.ts → modules.core.catalog` |
-| `modules.secondary.faq.enabled = false` | Visitar `/faq` redirige a `/` | Activar flag del módulo |
+| `modules.pages.catalog.enabled = false` | Página `/catalog` muestra `<ModuleDisabled />` | Activar en `business-config.ts → modules.pages.catalog.enabled` |
+| `modules.pages.faq.enabled = false` | Visitar `/faq` muestra `<ModuleDisabled />` | Activar flag del módulo |
 | `promotion.status` no definido + sin fechas | `getPromotionStatus` cae al retrocompat `isActive` | Definir siempre `status` explícito en `data/promotions.ts` |
 | `post.publishedAt` en formato incorrecto | Error de fecha en `[slug].astro` | Formato requerido: `"YYYY-MM-DD"` (string ISO sin hora) |
 

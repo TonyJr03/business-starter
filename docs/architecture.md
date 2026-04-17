@@ -133,11 +133,9 @@ Configuración centralizada del negocio. Es la fuente de verdad para el sitio es
 
 | Archivo | Contenido |
 |---------|----------|
-| `business-config.ts` | `BusinessGlobalConfig`: fuente de verdad única del negocio (identity, branding, contact, location, hours, social, navigation, modules, seoDefaults) |
-| `home-sections.ts` | `homeSections[]`: orden y props de las secciones de la Home |
-| `navigation.ts` | `headerNav`: items derivados de `globalConfig.navigation.main` |
-| `secondary-modules.ts` | `secondaryModules`: flags de módulos secundarios (faq, gallery, blog) |
-| `index.ts` | Re-exporta todo, incluyendo `globalConfig` |
+| `business-config.ts` | `globalConfig`: fuente de verdad única del negocio. Define `pageModules` (7 módulos de página) y `sectionModules` (7 secciones de home). Valida la config al arranque con `assertValidBusinessConfig()` |
+| `navigation.ts` | `headerNav`/`footerNav`: derivados 100% de `modules.pages` (solo módulos con `enabled: true`, en orden de declaración) |
+| `index.ts` | Re-exporta `globalConfig`, `headerNav`, `footerNav` |
 
 ---
 
@@ -150,7 +148,7 @@ Sin conexión a base de datos. Los servicios consumen este directorio; las pági
 - Consumir siempre a través de `@/services`, nunca directamente en components o pages
 - El barrel `index.ts` re-exporta todo
 
-**Archivos actuales:** `business-info.ts`, `blog-posts.ts`, `faq.ts`, `gallery.ts`, `categories.ts`, `products.ts`, `promotions.ts`, `testimonials.ts`
+**Archivos actuales:** `highlights.ts`, `about-content.ts`, `blog-posts.ts`, `faq.ts`, `gallery.ts`, `categories.ts`, `products.ts`, `promotions.ts`, `testimonials.ts`
 
 ---
 
@@ -165,10 +163,10 @@ Definiciones de tipos TypeScript del dominio. Sin lógica, solo interfaces y tip
 | `business-config.ts` | `BusinessGlobalConfig` y sus sub-interfaces (Sprint 7) |
 | `catalog.ts` | `Money`, `Category`, `Product`, `ProductTag`, `ProductVariant`, `ProductBadge` (Sprint 8) |
 | `promotion.ts` | `Promotion`, `PromotionStatus`, `PromotionRule`, `DiscountType` (Sprint 8) |
-| `home-sections.ts` | `HomeSectionEntry`, `HomeSectionId` y props por sección |
+| `page-modules.ts` | `PageModuleId`, `PageModuleConfig`, `PageModulesConfig` |
+| `section-modules.ts` | `SectionModuleId`, `SectionModuleEntry` y props por sección |
 | `navigation.ts` | `NavItem` |
-| `modules.ts` | Tipos internos de módulos core |
-| `secondary-modules.ts` | `SecondaryModuleId`, `SecondaryModuleConfig`, `FaqItem`, `GalleryItem`, `BlogPost` |
+| `secondary-modules.ts` | `FaqItem`, `GalleryItem`, `BlogPost` (solo tipos de contenido editorial) |
 | `content.ts` | `ContentFeature`, `AboutContent` |
 | `testimonial.ts` | `Testimonial` |
 
@@ -192,7 +190,7 @@ Utilidades puras, helpers y clientes externos. Sin componentes UI ni lógica de 
 ### `src/services/`
 Capa de acceso a datos. Abstrae la fuente (mock o Supabase). Las pages y sections consumen servicios, nunca datos directamente.
 
-- **Naming:** `catalog.service.ts`, `promotions.service.ts`, `blog.ts`
+- **Naming:** `catalog.service.ts`, `promotions.service.ts`, `blog.service.ts`
 - Funciones `async` que hoy devuelven datos de `src/data/` y mañana consultarán Supabase
 - El contrato (firma de funciones + tipos de retorno) **no cambia** al migrar a Supabase
 - Los helpers de dominio (`isProductAvailable`, `isPromotionActive`, `getPromotionStatus`) viven aquí
@@ -203,7 +201,7 @@ Capa de acceso a datos. Abstrae la fuente (mock o Supabase). Las pages y section
 |---|---|
 | `catalog.service.ts` | `getCategories`, `getProducts`, `getFeaturedProducts`, `getProductsByCategory`, `getProductBySlug`, `isProductAvailable` |
 | `promotions.service.ts` | `getPromotions`, `getActivePromotions`, `getPromotionById`, `getPromotionStatus`, `isPromotionActive` |
-| `blog.ts` | `getPosts`, `getPostBySlug` |
+| `blog.service.ts` | `getPosts`, `getPostBySlug` |
 
 ---
 
@@ -298,12 +296,13 @@ import { globalConfig } from '@/config';
 const { modules } = globalConfig;
 ---
 
-{modules.core.catalog && <CatalogSection />}
-{modules.core.promotions && <PromotionsSection />}
+{modules.pages.catalog.enabled && <CatalogSection />}
+{modules.pages.faq.enabled && <FaqSection />}
 ```
 
-Los módulos secundarios (faq, gallery, blog) se controlan desde `globalConfig.modules.secondary`
-y tienen su propia config individual (`title`, `subtitle`, `enabled`).
+Todos los módulos de página siguen el mismo patrón — no hay distinción entre "core" y "secundario".
+**Home (`/`) es la única ruta fija**; el resto son módulos de página activables en `modules.pages`.
+Cuando un módulo está desactivado, la página muestra `<ModuleDisabled />` en lugar de redirigir.
 
 ---
 

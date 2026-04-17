@@ -38,7 +38,8 @@ El sistema tiene una única fuente de verdad, más archivos de contenido separad
 | `src/data/categories.ts` | Categorías del catálogo |
 | `src/data/products.ts` | Productos con precios, disponibilidad, badges |
 | `src/data/promotions.ts` | Ofertas y descuentos con fechas |
-| `src/data/business-info.ts` | Features del home + historia de la página Nosotros |
+| `src/data/highlights.ts` | Ítems editoriales de la sección "¿Por qué elegirnos?" del Home |
+| `src/data/about-content.ts` | Historia, misión y diferenciadores de la página Nosotros |
 | `src/data/faq.ts` | Preguntas frecuentes (si el módulo FAQ está activo) |
 | `src/data/gallery.ts` | Imágenes de galería (si el módulo Galería está activo) |
 | `src/data/blog-posts.ts` | Artículos de blog (si el módulo Blog está activo) |
@@ -206,53 +207,32 @@ branding: {
 
 ## 5. Módulos — activar y desactivar
 
-### Módulos funcionales (`modules.core`)
+Todos los módulos de página viven en el mismo bloque `modules.pages` de
+`business-config.ts`. No hay distinción entre "core" y "secundario" — todos
+son equivalentes y se activan/desactivan del mismo modo.
 
-Controlan si las páginas de catálogo y promociones están activas:
+### Módulos de página (`modules.pages`)
 
-```ts
-modules: {
-  core: {
-    catalog:          true,   // página /catalog con productos
-    promotions:       true,   // página /promotions con ofertas
-    cart:             false,  // carrito de compras (fase 2)
-    whatsappOrdering: false,  // flujo de pedido por WhatsApp (fase 2)
-    testimonials:     false,  // sección de testimonios (pendiente)
-  },
-```
-
-Cuando `catalog: false`, la página `/catalog` muestra un mensaje de “no disponible”
-en lugar del catálogo. Lo mismo aplica a `promotions`.
-
-### Módulos secundarios (`modules.secondary`)
-
-FAQ, galería y blog son opcionales. Para activarlos:
+Edita `pageModules` en `src/config/business-config.ts`:
 
 ```ts
-secondary: {
-  faq: {
-    enabled:  true,                               // ← cambiar a true
-    title:    'Preguntas Frecuentes',
-    subtitle: 'Todo lo que necesitas saber.',
-  },
-  gallery: {
-    enabled: false,
-    title:   'Galería',
-    subtitle:'Conoce nuestro espacio.',
-  },
-  blog: {
-    enabled: false,
-    title:   'Blog',
-    subtitle:'Artículos e historias.',
-  },
-},
-```
+const pageModules: PageModulesConfig = {
+  catalog:    { enabled: true,  path: '/catalog',    navLabel: 'Catálogo' },
+  promotions: { enabled: true,  path: '/promotions', navLabel: 'Promociones' },
+  about:      { enabled: true,  path: '/about',      navLabel: 'Nosotros' },
+  contact:    { enabled: true,  path: '/contact',    navLabel: 'Contacto' },
+  faq:        { enabled: false, path: '/faq',        navLabel: 'FAQ',     title: '...', subtitle: '...' },
+  gallery:    { enabled: false, path: '/gallery',    navLabel: 'Galería', title: '...', subtitle: '...' },
+  blog:       { enabled: false, path: '/blog',       navLabel: 'Blog',    title: '...', subtitle: '...' },
+};```
 
-Al activar un módulo secundario con `enabled: true`, su enlace aparece
-**automáticamente** en el `<header>` y en el `<footer>`. No hace falta tocar
-los archivos de navegación.
+Al cambiar `enabled: true`, el módulo:
+- Aparece **automáticamente** en el `<header>` y `<footer>` (no hay que tocar `navigation.ts`).
+- Genera su ruta estática.
 
-> **Antes de activar** un módulo secundario, asegúrate de que su archivo de
+Con `enabled: false`, la ruta muestra el componente `<ModuleDisabled />` — una UI tipo 404 clara, sin redirecciones.
+
+> **Antes de activar** FAQ, galería o blog, asegúrate de que su archivo de
 > datos tiene contenido real: `src/data/faq.ts`, `src/data/gallery.ts` o
 > `src/data/blog-posts.ts`.
 
@@ -370,9 +350,9 @@ suficiente; la página refleja los cambios automáticamente.
 
 ## 8. Contenido secundario
 
-### Features del home (`src/data/business-info.ts`)
+### Features del home (`src/data/highlights.ts`)
 
-El array `homeFeatures` controla los tres íconos de la sección "¿Por qué
+El array `homeFeatures` controla los íconos de la sección "¿Por qué
 elegirnos?". Edita los textos para que reflejen la propuesta de valor real:
 
 ```ts
@@ -383,7 +363,7 @@ export const homeFeatures: ContentFeature[] = [
 ];
 ```
 
-### Historia de Nosotros (`src/data/business-info.ts`)
+### Historia de Nosotros (`src/data/about-content.ts`)
 
 El objeto `aboutContent` alimenta la página `/about`:
 
@@ -450,13 +430,14 @@ Usa esta lista antes de entregar o publicar el sitio.
 - [ ] Footer se ve correctamente con los colores de footer definidos
 
 ### Módulos
-- [ ] Módulos de `core` activados/desactivados según lo acordado con el cliente
-- [ ] Módulos secundarios (FAQ, galería, blog) con `enabled: false` si no tienen contenido
+- [ ] Módulos de página en `modules.pages` activados/desactivados según lo acordado con el cliente
+- [ ] FAQ, galería y blog con `enabled: false` si no tienen contenido real
 
 ### Contenido
 - [ ] `categories.ts` y `products.ts` con productos reales (no demo de Café La Esquina)
 - [ ] `promotions.ts` con ofertas reales o vacío si no hay (array `[]`)
-- [ ] `business-info.ts` con features y aboutContent reales
+- [ ] `highlights.ts` con los features reales del home (propuesta de valor)
+- [ ] `about-content.ts` con la historia, misión y diferenciadores reales
 - [ ] Imágenes en `/public/images/` (logo, cover, productos, galería)
 - [ ] Placeholders de picsum.photos eliminados de galería (si el módulo está activo)
 

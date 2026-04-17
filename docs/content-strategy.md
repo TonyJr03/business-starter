@@ -47,7 +47,7 @@ Módulos (faq/gallery/blog)  →  Contenido dinámico o editorial
 |-------|-----------------|---------|-------|
 | Links del header | `globalConfig` | `business-config.ts → navigation.main` | `headerNav` en `config/navigation.ts` los proyecta |
 | Links del footer | `globalConfig` | `business-config.ts → navigation.main` | `footerNav` filtra la segunda mitad |
-| Ítems de módulos secundarios | `config/navigation.ts` | `navigation.ts` | Se insertan automáticamente si el módulo está habilitado |
+| Ítems de módulos de página | `globalConfig` | `business-config.ts → modules.pages.*` | `navigation.ts` los filtra por `enabled: true`; orden = orden de declaración en `pageModules` |
 | Orden de ítems | `globalConfig` | `business-config.ts → navigation.main[].order` | No reordenar en componentes |
 
 > **Regla:** `Header.astro` y `Footer.astro` importan `headerNav` / `footerNav` desde `@/config`. Nunca construir arrays de links dentro de un componente.
@@ -103,9 +103,9 @@ página → catalog.service.ts → data/products.ts
 | Campo | Fuente de verdad | Archivo | Notas |
 |-------|-----------------|---------|-------|
 | Preguntas y respuestas | `src/data` | `data/faq.ts` | `FaqItem[]` |
-| Título de la sección | `globalConfig` | `business-config.ts → modules.secondary.faq.title` | También activa/desactiva el módulo |
-| Subtítulo de la sección | `globalConfig` | `business-config.ts → modules.secondary.faq.subtitle` | |
-| Flag de habilitación | `globalConfig` | `business-config.ts → modules.secondary.faq.enabled` | Controla ruta y nav |
+| Título de la sección | `globalConfig` | `business-config.ts → modules.pages.faq.title` | |
+| Subtítulo de la sección | `globalConfig` | `business-config.ts → modules.pages.faq.subtitle` | |
+| Flag de habilitación | `globalConfig` | `business-config.ts → modules.pages.faq.enabled` | Controla ruta y nav |
 
 > **Regla:** El módulo FAQ se activa/desactiva en **config**, pero su contenido (preguntas) vive en **data**. Son responsabilidades distintas.
 
@@ -116,9 +116,9 @@ página → catalog.service.ts → data/products.ts
 | Campo | Fuente de verdad | Archivo | Notas |
 |-------|-----------------|---------|-------|
 | Posts | `src/data` | `data/blog-posts.ts` | `BlogPost[]` con `slug`, `publishedAt`, `tags` |
-| Acceso | `src/services` | `services/blog.ts → getPosts() / getPostBySlug()` | Capa service obligatoria |
-| Título del módulo | `globalConfig` | `business-config.ts → modules.secondary.blog.title` | |
-| Flag de habilitación | `globalConfig` | `business-config.ts → modules.secondary.blog.enabled` | |
+| Acceso | `src/services` | `services/blog.service.ts → getPosts() / getPostBySlug()` | Capa service obligatoria |
+| Título del módulo | `globalConfig` | `business-config.ts → modules.pages.blog.title` | |
+| Flag de habilitación | `globalConfig` | `business-config.ts → modules.pages.blog.enabled` | |
 
 > **Regla:** `blog-posts.ts` es contenido editorial; puede crecer a decenas de entradas. Cuando se migre a CMS o Supabase, solo se actualiza `services/blog.ts`.
 
@@ -128,14 +128,14 @@ página → catalog.service.ts → data/products.ts
 
 | Campo | Fuente de verdad | Archivo | Notas |
 |-------|-----------------|---------|-------|
-| CTA principal del Hero | `globalConfig` | `business-config.ts → modules.homeSections[hero].props.primaryCta` | Label + href |
-| CTA secundario del Hero | `globalConfig` | `business-config.ts → modules.homeSections[hero].props.secondaryCta` | |
-| CTA WhatsApp de la Home | `globalConfig` | `business-config.ts → modules.homeSections[whatsapp_cta].props` | title, subtitle, buttonLabel, message |
-| CTA WhatsApp de `/catalog` | `globalConfig` | `business-config.ts → pages.catalog.cta` | title, subtitle, buttonLabel, message |
-| CTA WhatsApp de `/promotions` | `globalConfig` | `business-config.ts → pages.promotions.cta` | |
-| CTA WhatsApp de `/about` | `globalConfig` | `business-config.ts → pages.about.cta` | |
-| CTA WhatsApp de `/faq` | `globalConfig` | `business-config.ts → modules.secondary.faq.cta` | Opcional; si `undefined`, el CTA no se renderiza |
-| Headings de página (H1) | `globalConfig` | `business-config.ts → pages.{page}.heading` | catalog y promotions |
+| CTA principal del Hero | `globalConfig` | `business-config.ts → modules.sections[hero].props.primaryCta` | Label + href |
+| CTA secundario del Hero | `globalConfig` | `business-config.ts → modules.sections[hero].props.secondaryCta` | |
+| CTA WhatsApp de la Home | `globalConfig` | `business-config.ts → modules.sections[whatsapp_cta].props` | title, subtitle, buttonLabel, message |
+| CTA WhatsApp de `/catalog` | `globalConfig` | `business-config.ts → modules.pages.catalog.cta` | title, subtitle, buttonLabel, message |
+| CTA WhatsApp de `/promotions` | `globalConfig` | `business-config.ts → modules.pages.promotions.cta` | |
+| CTA WhatsApp de `/about` | `globalConfig` | `business-config.ts → modules.pages.about.cta` | |
+| CTA WhatsApp de `/faq` | `globalConfig` | `business-config.ts → modules.pages.faq.cta` | Opcional; si `undefined`, el CTA no se renderiza |
+| Headings de página (H1) | `globalConfig` | `business-config.ts → pages.{catalog\|promotions}.heading` | catalog y promotions |
 | Mensaje "sin promociones" | `globalConfig` | `business-config.ts → pages.promotions.emptyMessage` | |
 
 > **Regla:** Los textos de botones y secciones CTA visibles al cliente final viven en `globalConfig.pages.*` (por página) o en `homeSections.props` (para secciones de la home). Los componentes UI como `Button.astro` no definen labels propios.
@@ -160,7 +160,7 @@ página → catalog.service.ts → data/products.ts
 | Campo | Fuente de verdad | Archivo | Notas |
 |-------|-----------------|---------|-------|
 | Horario por día | `globalConfig` | `business-config.ts → hours` | Objeto `{ [day]: DayHours }` |
-| Título sección horarios | `globalConfig` | `business-config.ts → modules.homeSections[hours].props.title` | |
+| Título sección horarios | `globalConfig` | `business-config.ts → modules.sections[hours].props.title` | |
 
 > **Regla:** `OpeningHoursSection.astro` lee `globalConfig.hours` directamente. Si un día está cerrado, `DayHours.closed = true`; no escribir `"Cerrado"` hardcodeado en el componente.
 
@@ -185,8 +185,8 @@ página → catalog.service.ts → data/products.ts
 | Campo | Fuente de verdad | Archivo | Notas |
 |-------|-----------------|---------|-------|
 | Imágenes | `src/data` | `data/gallery.ts` | `GalleryItem[]` con `src`, `alt`, `caption?` |
-| Título del módulo | `globalConfig` | `business-config.ts → modules.secondary.gallery.title` | |
-| Flag de habilitación | `globalConfig` | `business-config.ts → modules.secondary.gallery.enabled` | |
+| Título del módulo | `globalConfig` | `business-config.ts → modules.pages.gallery.title` | |
+| Flag de habilitación | `globalConfig` | `business-config.ts → modules.pages.gallery.enabled` | |
 
 ---
 
@@ -200,7 +200,7 @@ página → catalog.service.ts → data/products.ts
 | Links de navegación como arrays inline | `headerNav` / `footerNav` desde `@/config` |
 | Título de página sin usar `titleTemplate` | `MainLayout` con prop `title` |
 | URLs de redes sociales | `globalConfig.social.*` |
-| Condición `if (module === 'faq')` | `isModuleEnabled('faq')` desde `@/config` |
+| Condición `if (module === 'faq')` | `globalConfig.modules.pages.faq.enabled` |
 | Arrays de productos/categorías inline | `catalog.service.ts` |
 | Cálculo de estado de promoción | `getPromotionStatus()` del service |
 | CTA o heading hardcodeado en página | `globalConfig.pages.{catalog|promotions|about}.*` |
