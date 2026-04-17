@@ -7,12 +7,10 @@ import Input from '@/components/ui/Input.astro';
 import Textarea from '@/components/ui/Textarea.astro';
 import Button from '@/components/ui/Button.astro';
 import OpeningHoursSection from '@/components/sections/OpeningHoursSection.astro';
-import ModuleDisabled from '@/components/common/ModuleDisabled.astro';
 import { globalConfig } from '@/config';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 
-const { identity, location, contact, hours, social, modules } = globalConfig;
-const contactModule = modules.pages.contact;
+const { identity, location, contact, hours, social } = globalConfig;
 const name = identity.name;
 
 const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`);
@@ -22,8 +20,6 @@ const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`
   title="Contacto"
   description={`Contáctanos por WhatsApp o visítanos en ${location.street ?? location.city}, ${location.city}.`}
 >
-  {!contactModule.enabled ? <ModuleDisabled /> : <>
-
   <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
   <Section bg="secondary" size="md">
     <div class="max-w-2xl mx-auto text-center">
@@ -52,7 +48,7 @@ const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`
           "
           aria-label="Escribirnos por WhatsApp"
         >
-          <!-- Ícono WhatsApp -->
+          {/*Ícono WhatsApp */}
           <span
             class="flex items-center justify-center size-14 rounded-full shrink-0"
             style="background-color: #25D366;"
@@ -63,14 +59,14 @@ const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`
               <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L.057 23.428a.75.75 0 0 0 .915.915l5.573-1.471A11.943 11.943 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.693 9.693 0 0 1-4.953-1.36l-.355-.212-3.683.972.985-3.595-.231-.37A9.694 9.694 0 0 1 2.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/>
             </svg>
           </span>
-          <!-- Texto -->
+          {/* Texto */}
           <div class="flex-1 min-w-0">
             <p class="font-semibold" style="color: var(--color-text);">Escríbenos por WhatsApp</p>
             <p class="text-sm truncate" style="color: var(--color-text-muted);">
               {contact.whatsapp} · Respuesta rápida
             </p>
           </div>
-          <!-- Flecha -->
+          {/* Flecha */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="size-5 shrink-0"
@@ -263,7 +259,5 @@ const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`
       size="md"
     />
   )}
-
-  </>}
 
 </MainLayout>

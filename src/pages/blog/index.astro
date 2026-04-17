@@ -2,7 +2,6 @@
 import MainLayout from '@/layouts/MainLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import BlogPostCard from '@/components/sections/BlogPostCard.astro';
-import ModuleDisabled from '@/components/common/ModuleDisabled.astro';
 import { globalConfig } from '@/config';
 import { getPosts } from '@/services/blog.service';
 
@@ -10,50 +9,44 @@ const { identity, modules } = globalConfig;
 const blogModule = modules.pages.blog;
 const { title: blogTitle, subtitle: blogSubtitle } = blogModule;
 
-const posts = blogModule.enabled ? await getPosts() : [];
+const posts = await getPosts();
 ---
 
 <MainLayout
   title="Blog"
   description={`Artículos, recetas y novedades de ${identity.name}.`}
 >
-  {!blogModule.enabled ? (
-    <ModuleDisabled />
-  ) : (
-    <>
-      <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
-      <Section bg="secondary" size="md">
-        <div class="max-w-2xl mx-auto text-center">
-          <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
-            {blogTitle ?? 'Blog'}
-          </h1>
-          {blogSubtitle && (
-            <p class="text-lg" style="color: var(--color-text-muted);">
-              {blogSubtitle}
-            </p>
-          )}
-        </div>
-      </Section>
+  <!-- ── Encabezado ────────────────────────────────────────────────────── -->
+  <Section bg="secondary" size="md">
+    <div class="max-w-2xl mx-auto text-center">
+      <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
+        {blogTitle ?? 'Blog'}
+      </h1>
+      {blogSubtitle && (
+        <p class="text-lg" style="color: var(--color-text-muted);">
+          {blogSubtitle}
+        </p>
+      )}
+    </div>
+  </Section>
 
-      <!-- ── Listado de artículos ────────────────────────────────────────────── -->
-      <Section bg="default" size="md">
-        <div class="max-w-5xl mx-auto">
-          {posts.length > 0 ? (
-            <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" role="list">
-              {posts.map((post) => (
-                <li>
-                  <BlogPostCard post={post} />
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p class="text-center py-12" style="color: var(--color-text-muted);">
-              No hay artículos publicados todavía.
-            </p>
-          )}
-        </div>
-      </Section>
-    </>
-  )}
+  <!-- ── Listado de artículos ────────────────────────────────────────────── -->
+  <Section bg="default" size="md">
+    <div class="max-w-5xl mx-auto">
+      {posts.length > 0 ? (
+        <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" role="list">
+          {posts.map((post) => (
+            <li>
+              <BlogPostCard post={post} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="text-center py-12" style="color: var(--color-text-muted);">
+          No hay artículos publicados todavía.
+        </p>
+      )}
+    </div>
+  </Section>
 
 </MainLayout>

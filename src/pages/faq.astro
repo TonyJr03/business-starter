@@ -3,7 +3,6 @@ import MainLayout from '@/layouts/MainLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import FaqSection from '@/components/sections/FaqSection.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
-import ModuleDisabled from '@/components/common/ModuleDisabled.astro';
 import { globalConfig } from '@/config';
 import { faqItems } from '@/data';
 
@@ -16,39 +15,33 @@ const { title: faqTitle, subtitle: faqSubtitle, cta: faqCta } = faqModule;
   title="Preguntas Frecuentes"
   description={`Resolvemos tus dudas sobre ${identity.name}: pedidos, horarios, menú y más.`}
 >
-  {!faqModule.enabled ? (
-    <ModuleDisabled />
-  ) : (
-    <>
-      <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
-      <Section bg="secondary" size="md">
-        <div class="max-w-2xl mx-auto text-center">
-          <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
-            {faqTitle ?? 'Preguntas Frecuentes'}
-          </h1>
-          {faqSubtitle && (
-            <p class="text-lg" style="color: var(--color-text-muted);">
-              {faqSubtitle}
-            </p>
-          )}
-        </div>
-      </Section>
-
-      <!-- ── Sección FAQ ───────────────────────────────────────────────────────── -->
-      <FaqSection items={faqItems} bg="default" size="md" />
-
-      <!-- ── Sección WhatsApp ────────────────────────────────────────────────────── -->
-      {contact.whatsapp && faqCta && (
-        <CtaWhatsappSection
-          title={faqCta.title}
-          subtitle={faqCta.subtitle}
-          message={faqCta.message}
-          buttonLabel={faqCta.buttonLabel}
-          bg="surface"
-          size="md"
-        />
+  <!-- ── Encabezado ────────────────────────────────────────────────────── -->
+  <Section bg="secondary" size="md">
+    <div class="max-w-2xl mx-auto text-center">
+      <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
+        {faqTitle ?? 'Preguntas Frecuentes'}
+      </h1>
+      {faqSubtitle && (
+        <p class="text-lg" style="color: var(--color-text-muted);">
+          {faqSubtitle}
+        </p>
       )}
-    </>
+    </div>
+  </Section>
+
+  <!-- ── Sección FAQ ───────────────────────────────────────────────────────── -->
+  <FaqSection items={faqItems} bg="default" size="md" />
+
+  <!-- ── Sección WhatsApp ────────────────────────────────────────────────────── -->
+  {contact.whatsapp && faqCta && (
+    <CtaWhatsappSection
+      title={faqCta.title}
+      subtitle={faqCta.subtitle}
+      message={faqCta.message}
+      buttonLabel={faqCta.buttonLabel}
+      bg="surface"
+      size="md"
+    />
   )}
 
 </MainLayout>

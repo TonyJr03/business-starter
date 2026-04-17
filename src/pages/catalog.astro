@@ -5,7 +5,6 @@ import SectionHeader from '@/components/common/SectionHeader.astro';
 import ProductCard from '@/components/catalog/ProductCard.astro';
 import CategoryNav from '@/components/catalog/CategoryNav.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
-import ModuleDisabled from '@/components/common/ModuleDisabled.astro';
 import { globalConfig } from '@/config';
 import { getCategories, getProducts, getFeaturedProducts } from '@/services/catalog.service';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
@@ -44,93 +43,87 @@ function productOrderUrl(productName: string): string | undefined {
   title="Catálogo"
   description={`Explora el catálogo completo de ${name}. ${seoDefaults.defaultDescription ?? ''}`}
 >
-  {!catalogModule.enabled ? (
-    <ModuleDisabled />
-  ) : (
-    <>
-      <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
-      <Section bg="secondary" size="md">
-        <div class="max-w-2xl mx-auto text-center">
-          <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
-            {catalogCopy.heading}
-          </h1>
-          <p class="text-lg" style="color: var(--color-text-muted);">
-            {catalogCopy.subheading}
-          </p>
-        </div>
-      </Section>
+  <!-- ── Encabezado ────────────────────────────────────────────────────── -->
+  <Section bg="secondary" size="md">
+    <div class="max-w-2xl mx-auto text-center">
+      <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
+        {catalogCopy.heading}
+      </h1>
+      <p class="text-lg" style="color: var(--color-text-muted);">
+        {catalogCopy.subheading}
+      </p>
+    </div>
+  </Section>
 
-      {/* Nav de categorías (sticky) */}
-      <CategoryNav categories={categories} />
+  <!-- Nav de categorías (sticky) -->
+  <CategoryNav categories={categories} />
 
-      {/* Destacados */}
-      {featuredProducts.length > 0 && (
-        <Section bg="surface" size="md">
-          <SectionHeader title={catalogCopy.featuredTitle} align="left" />
-          <ul class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredProducts.map((product) => (
-              <li>
-                <ProductCard
-                  product={product}
-                  orderHref={productOrderUrl(product.name)}
-                />
-              </li>
-            ))}
-          </ul>
-        </Section>
+  <!-- Destacados -->
+  {featuredProducts.length > 0 && (
+    <Section bg="surface" size="md">
+      <SectionHeader title={catalogCopy.featuredTitle} align="left" />
+      <ul class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        {featuredProducts.map((product) => (
+          <li>
+            <ProductCard
+              product={product}
+              orderHref={productOrderUrl(product.name)}
+            />
+          </li>
+        ))}
+      </ul>
+    </Section>
+  )}
+
+  <!-- Catálogo por categorías -->
+  {productsByCategory.map(({ category, products }) => (
+    <Section bg="default" size="md" id={category.slug}>
+      {/* Cabecera de categoría */}
+      <div class="flex items-center gap-4 mb-2">
+        <h2
+          class="text-2xl font-bold whitespace-nowrap"
+          style="color: var(--color-primary);"
+        >
+          {category.name}
+        </h2>
+        <div class="flex-1 h-px" style="background-color: var(--color-border);" />
+      </div>
+
+      {category.description && (
+        <p class="text-sm mb-8" style="color: var(--color-text-muted);">
+          {category.description}
+        </p>
       )}
 
-      {/* Catálogo por categorías */}
-      {productsByCategory.map(({ category, products }) => (
-        <Section bg="default" size="md" id={category.slug}>
-          {/* Cabecera de categoría */}
-          <div class="flex items-center gap-4 mb-2">
-            <h2
-              class="text-2xl font-bold whitespace-nowrap"
-              style="color: var(--color-primary);"
-            >
-              {category.name}
-            </h2>
-            <div class="flex-1 h-px" style="background-color: var(--color-border);" />
-          </div>
-
-          {category.description && (
-            <p class="text-sm mb-8" style="color: var(--color-text-muted);">
-              {category.description}
-            </p>
-          )}
-
-          {products.length === 0 ? (
-            <p class="text-sm py-4" style="color: var(--color-text-subtle);">
-              Sin productos en esta categoría por el momento.
-            </p>
-          ) : (
-            <ul class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6">
-              {products.map((product) => (
-                <li>
-                  <ProductCard
-                    product={product}
-                    orderHref={productOrderUrl(product.name)}
-                  />
-                </li>
-              ))}
-            </ul>
-          )}
-        </Section>
-      ))}
-
-      {/* CTA WhatsApp */}
-      {contact.whatsapp && catalogModule.cta && (
-        <CtaWhatsappSection
-          title={catalogModule.cta.title}
-          subtitle={catalogModule.cta.subtitle}
-          buttonLabel={catalogModule.cta.buttonLabel}
-          message={catalogModule.cta.message}
-          bg="secondary"
-          size="md"
-        />
+      {products.length === 0 ? (
+        <p class="text-sm py-4" style="color: var(--color-text-subtle);">
+          Sin productos en esta categoría por el momento.
+        </p>
+      ) : (
+        <ul class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+          {products.map((product) => (
+            <li>
+              <ProductCard
+                product={product}
+                orderHref={productOrderUrl(product.name)}
+              />
+            </li>
+          ))}
+        </ul>
       )}
-    </>
+    </Section>
+  ))}
+
+  <!-- CTA WhatsApp -->
+  {contact.whatsapp && catalogModule.cta && (
+    <CtaWhatsappSection
+      title={catalogModule.cta.title}
+      subtitle={catalogModule.cta.subtitle}
+      buttonLabel={catalogModule.cta.buttonLabel}
+      message={catalogModule.cta.message}
+      bg="secondary"
+      size="md"
+    />
   )}
 
 </MainLayout>

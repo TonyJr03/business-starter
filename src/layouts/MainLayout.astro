@@ -2,6 +2,7 @@
 import { globalConfig } from '@/config';
 import Header from '@/components/common/Header.astro';
 import Footer from '@/components/common/Footer.astro';
+import ModuleDisabled from '@/components/common/ModuleDisabled.astro';
 import '@/styles/global.css';
 
 interface Props {
@@ -33,6 +34,14 @@ const pageDescription = description ?? seoDefaults.defaultDescription;
 const resolvedOgImage = ogImage ?? seoDefaults.ogImage;
 
 const canonicalUrl = Astro.url.href;
+
+// ── Disabled module guard ─────────────────────────────────────────────────────
+// Cuando un módulo de página está desactivado (enabled: false), el layout
+// muestra <ModuleDisabled /> en lugar del slot, sin tocar las páginas .astro.
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isDisabledModule = Object.values(globalConfig.modules.pages).some(
+  (mod) => !mod.enabled && (currentPath === mod.path || currentPath.startsWith(mod.path + '/'))
+);
 
 // ── Branding / CSS vars ───────────────────────────────────────────────────────
 // Los fallbacks coinciden con los defaults de tokens.css para que cualquier
@@ -94,7 +103,7 @@ const brandVars = {
   <body class="min-h-screen flex flex-col">
     <Header />
     <main class="flex-1">
-      <slot />
+      {isDisabledModule ? <ModuleDisabled /> : <slot />}
     </main>
     <Footer />
   </body>

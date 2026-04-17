@@ -2,7 +2,6 @@
 import MainLayout from '@/layouts/MainLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import GalleryGrid from '@/components/sections/GalleryGrid.astro';
-import ModuleDisabled from '@/components/common/ModuleDisabled.astro';
 import { globalConfig } from '@/config';
 import { galleryItems } from '@/data';
 
@@ -15,27 +14,21 @@ const { title: galleryTitle, subtitle: gallerySubtitle } = galleryModule;
   title="Galería"
   description={`Conoce el espacio, los productos y el equipo de ${identity.name} a través de nuestra galería de imágenes.`}
 >
-  {!galleryModule.enabled ? (
-    <ModuleDisabled />
-  ) : (
-    <>
-      <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
-      <Section bg="secondary" size="md">
-        <div class="max-w-2xl mx-auto text-center">
-          <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
-            {galleryTitle ?? 'Galería'}
-          </h1>
-          {gallerySubtitle && (
-            <p class="text-lg" style="color: var(--color-text-muted);">
-              {gallerySubtitle}
-            </p>
-          )}
-        </div>
-      </Section>
+  <!-- ── Encabezado ────────────────────────────────────────────────────── -->
+  <Section bg="secondary" size="md">
+    <div class="max-w-2xl mx-auto text-center">
+      <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
+        {galleryTitle ?? 'Galería'}
+      </h1>
+      {gallerySubtitle && (
+        <p class="text-lg" style="color: var(--color-text-muted);">
+          {gallerySubtitle}
+        </p>
+      )}
+    </div>
+  </Section>
 
-      <!-- ── Grid de imágenes ──────────────────────────────────────────────────── -->
-      <GalleryGrid items={galleryItems} columns={3} bg="default" size="md" />
-    </>
-  )}
+  <!-- ── Grid de imágenes ──────────────────────────────────────────────────── -->
+  <GalleryGrid items={galleryItems} columns={3} bg="default" size="md" />
 
 </MainLayout>
