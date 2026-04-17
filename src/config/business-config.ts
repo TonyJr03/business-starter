@@ -19,10 +19,7 @@
  * ════════════════════════════════════════════════════════════════════════════
  */
 
-import type {
-  BusinessGlobalConfig,
-  BusinessIdentity,
-} from '@/types/business-config';
+import { assertValidBusinessConfig, type BusinessGlobalConfig, type BusinessIdentity } from '@/types/business-config';
 import type { SectionModuleEntry } from '@/types/section-modules';
 import type { PageModulesConfig } from '@/types/page-modules';
 
@@ -303,3 +300,9 @@ export const globalConfig: BusinessGlobalConfig = {
     },
   },
 };
+
+// ─── Validación de arranque ───────────────────────────────────────────────────
+// Se ejecuta al cargar el módulo (una sola vez por proceso / build worker).
+// Si globalConfig está mal formada, el build o el servidor fallan de inmediato
+// con un listado claro de errores — nunca de forma silenciosa.
+assertValidBusinessConfig(globalConfig);
