@@ -5,6 +5,7 @@ import SectionHeader from '@/components/common/SectionHeader.astro';
 import Card from '@/components/ui/Card.astro';
 import OpeningHoursSection from '@/components/sections/OpeningHoursSection.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
+import ModuleDisabled from '@/components/common/ModuleDisabled.astro';
 import { globalConfig } from '@/config';
 import { aboutContent } from '@/data';
 
@@ -16,6 +17,7 @@ const aboutModule = modules.pages.about;
   title="Nuestra Historia"
   description={`Conoce la historia, misión y valores detrás de ${identity.name}, tu cafetería de confianza en ${location.city}.`}
 >
+  {!aboutModule.enabled ? <ModuleDisabled /> : <>
 
   <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
   <Section bg="secondary" size="md">
@@ -203,5 +205,7 @@ const aboutModule = modules.pages.about;
       size="md"
     />
   )}
+
+  </>}
 
 </MainLayout>

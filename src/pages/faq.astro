@@ -3,12 +3,12 @@ import MainLayout from '@/layouts/MainLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import FaqSection from '@/components/sections/FaqSection.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
+import ModuleDisabled from '@/components/common/ModuleDisabled.astro';
 import { globalConfig } from '@/config';
 import { faqItems } from '@/data';
 
 const { identity, contact, modules } = globalConfig;
 const faqModule = modules.pages.faq;
-const faqEnabled = faqModule.enabled;
 const { title: faqTitle, subtitle: faqSubtitle, cta: faqCta } = faqModule;
 ---
 
@@ -16,62 +16,38 @@ const { title: faqTitle, subtitle: faqSubtitle, cta: faqCta } = faqModule;
   title="Preguntas Frecuentes"
   description={`Resolvemos tus dudas sobre ${identity.name}: pedidos, horarios, menú y más.`}
 >
-
-  <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
-  {faqEnabled && (
-    <Section bg="secondary" size="md">
-      <div class="max-w-2xl mx-auto text-center">
-        <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
-          {faqTitle ?? 'Preguntas Frecuentes'}
-        </h1>
-        {faqSubtitle && (
-          <p class="text-lg" style="color: var(--color-text-muted);">
-            {faqSubtitle}
-          </p>
-        )}
-      </div>
-    </Section>
-  )}
-  
-  <!-- ── Sección FAQ ───────────────────────────────────────────────────────── -->
-  {faqEnabled && (
-    <FaqSection items={faqItems} bg="default" size="md" />
-  )}
-
-  <!-- ── Sección WhatsApp ────────────────────────────────────────────────────── -->
-  {faqEnabled && contact.whatsapp && faqCta && (
-    <CtaWhatsappSection
-      title={faqCta.title}
-      subtitle={faqCta.subtitle}
-      message={faqCta.message}
-      buttonLabel={faqCta.buttonLabel}
-      bg="surface"
-      size="md"
-    />
-  )}
-
-  <!-- ── Módulo desactivado ────────────────────────────────────────────────── -->
-  {!faqEnabled && (
+  {!faqModule.enabled ? (
+    <ModuleDisabled />
+  ) : (
     <>
-      <meta http-equiv="refresh" content="0;url=/" />
-      <Section bg="default" size="lg">
-        <div class="max-w-md mx-auto text-center space-y-6">
-          <p class="text-5xl" aria-hidden="true">🔒</p>
-          <h1 class="text-2xl font-bold" style="color: var(--color-primary);">
-            Página no disponible
+      <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
+      <Section bg="secondary" size="md">
+        <div class="max-w-2xl mx-auto text-center">
+          <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
+            {faqTitle ?? 'Preguntas Frecuentes'}
           </h1>
-          <p class="text-base" style="color: var(--color-text-muted);">
-            Esta sección no está activa en este momento.
-          </p>
-          <a
-            href="/"
-            class="inline-block rounded-lg px-6 py-3 text-sm font-semibold transition-opacity hover:opacity-80"
-            style="background-color: var(--color-primary); color: white;"
-          >
-            Volver al inicio
-          </a>
+          {faqSubtitle && (
+            <p class="text-lg" style="color: var(--color-text-muted);">
+              {faqSubtitle}
+            </p>
+          )}
         </div>
       </Section>
+
+      <!-- ── Sección FAQ ───────────────────────────────────────────────────────── -->
+      <FaqSection items={faqItems} bg="default" size="md" />
+
+      <!-- ── Sección WhatsApp ────────────────────────────────────────────────────── -->
+      {contact.whatsapp && faqCta && (
+        <CtaWhatsappSection
+          title={faqCta.title}
+          subtitle={faqCta.subtitle}
+          message={faqCta.message}
+          buttonLabel={faqCta.buttonLabel}
+          bg="surface"
+          size="md"
+        />
+      )}
     </>
   )}
 

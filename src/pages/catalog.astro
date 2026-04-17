@@ -5,6 +5,7 @@ import SectionHeader from '@/components/common/SectionHeader.astro';
 import ProductCard from '@/components/catalog/ProductCard.astro';
 import CategoryNav from '@/components/catalog/CategoryNav.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
+import ModuleDisabled from '@/components/common/ModuleDisabled.astro';
 import { globalConfig } from '@/config';
 import { getCategories, getProducts, getFeaturedProducts } from '@/services/catalog.service';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
@@ -43,29 +44,22 @@ function productOrderUrl(productName: string): string | undefined {
   title="Catálogo"
   description={`Explora el catálogo completo de ${name}. ${seoDefaults.defaultDescription ?? ''}`}
 >
-
-  <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
-  <Section bg="secondary" size="md">
-    <div class="max-w-2xl mx-auto text-center">
-      <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
-        {catalogCopy.heading}
-      </h1>
-      <p class="text-lg" style="color: var(--color-text-muted);">
-        {catalogCopy.subheading}
-      </p>
-    </div>
-  </Section>
-
   {!catalogModule.enabled ? (
-    // Módulo desactivado
-    <Section bg="default" size="lg">
-      <p class="text-center" style="color: var(--color-text-subtle);">
-        El catálogo no está disponible en este momento.
-      </p>
-    </Section>
-
+    <ModuleDisabled />
   ) : (
     <>
+      <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
+      <Section bg="secondary" size="md">
+        <div class="max-w-2xl mx-auto text-center">
+          <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
+            {catalogCopy.heading}
+          </h1>
+          <p class="text-lg" style="color: var(--color-text-muted);">
+            {catalogCopy.subheading}
+          </p>
+        </div>
+      </Section>
+
       {/* Nav de categorías (sticky) */}
       <CategoryNav categories={categories} />
 

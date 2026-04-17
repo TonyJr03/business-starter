@@ -7,10 +7,12 @@ import Input from '@/components/ui/Input.astro';
 import Textarea from '@/components/ui/Textarea.astro';
 import Button from '@/components/ui/Button.astro';
 import OpeningHoursSection from '@/components/sections/OpeningHoursSection.astro';
+import ModuleDisabled from '@/components/common/ModuleDisabled.astro';
 import { globalConfig } from '@/config';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 
-const { identity, location, contact, hours, social } = globalConfig;
+const { identity, location, contact, hours, social, modules } = globalConfig;
+const contactModule = modules.pages.contact;
 const name = identity.name;
 
 const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`);
@@ -20,6 +22,7 @@ const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`
   title="Contacto"
   description={`Contáctanos por WhatsApp o visítanos en ${location.street ?? location.city}, ${location.city}.`}
 >
+  {!contactModule.enabled ? <ModuleDisabled /> : <>
 
   <!-- ── Encabezado ──────────────────────────────────────────────────────── -->
   <Section bg="secondary" size="md">
@@ -260,5 +263,7 @@ const whatsappUrl = getWhatsAppUrl(`Hola ${name}, quisiera ponerme en contacto.`
       size="md"
     />
   )}
+
+  </>}
 
 </MainLayout>

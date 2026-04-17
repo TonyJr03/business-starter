@@ -1,0 +1,39 @@
+---
+/**
+ * ModuleDisabled — contenido 404 mostrado cuando un módulo de página está desactivado.
+ *
+ * Se renderiza dentro de MainLayout (header + footer presentes).
+ * No hace redirect — el usuario verá esta pantalla solo si accede directamente
+ * a la URL (la navegación nunca muestra módulos desactivados).
+ */
+---
+
+<div class="flex items-center justify-center py-24 px-4">
+  <div class="max-w-md mx-auto text-center space-y-6">
+
+    <p
+      class="text-8xl font-black tracking-tighter select-none"
+      style="color: var(--color-border, #e5e7eb);"
+      aria-hidden="true"
+    >
+      404
+    </p>
+
+    <h1 class="text-2xl font-bold" style="color: var(--color-primary);">
+      Módulo no disponible
+    </h1>
+
+    <p class="text-base leading-relaxed" style="color: var(--color-text-muted);">
+      Esta sección no está activa en este sitio.
+    </p>
+
+    <a
+      href="/"
+      class="inline-block rounded-lg px-6 py-3 text-sm font-semibold transition-opacity hover:opacity-80"
+      style="background-color: var(--color-primary); color: white;"
+    >
+      Volver al inicio
+    </a>
+
+  </div>
+</div>
