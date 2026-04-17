@@ -3,7 +3,7 @@ import MainLayout from '@/layouts/MainLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import { globalConfig } from '@/config';
 import type { BlogPost } from '@/types';
-import { getPosts } from '@/services/blog';
+import { getPosts } from '@/services/blog.service';
 
 /**
  * getStaticPaths — genera una ruta por cada artículo publicado.
