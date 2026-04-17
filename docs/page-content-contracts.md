@@ -110,6 +110,10 @@ Configuradas en `homeSections` pero **no implementadas aún** (`implemented: fal
 | `category.description` | `DATA` → `categories.ts` | `CategoryNav.astro` | No se renderiza |
 | `category.imageUrl` | `DATA` → `categories.ts` | `CategoryNav.astro` | Sin imagen en nav |
 | `seoDefaults.defaultDescription` | `CFG` | `<meta description>` de la página | `''` |
+| `pages.catalog.heading` | `CFG` | H1 de la página de catálogo | — |
+| `pages.catalog.subheading` | `CFG` | Subtítulo bajo el H1 | No se renderiza |
+| `pages.catalog.featuredTitle` | `CFG` | Título sección Destacados | — |
+| `pages.catalog.cta.*` | `CFG` | `CtaWhatsappSection` al final | No se renderiza si `contact.whatsapp` es `undefined` |
 
 ### Contrato de `ProductCard.astro`
 
@@ -152,6 +156,9 @@ Configuradas en `homeSections` pero **no implementadas aún** (`implemented: fal
 | `promotion.imageUrl` | `DATA` → `promotions.ts` | `PromotionCard.astro` | Sin imagen |
 | `promotion.productIds[]` | `DATA` → `promotions.ts` | Lógica de vinculación | Sin productos vinculados |
 | `promotion.categoryIds[]` | `DATA` → `promotions.ts` | Lógica de vinculación | Sin categorías vinculadas |
+| `pages.promotions.heading` | `CFG` | H1 de la página de promociones | — |
+| `pages.promotions.emptyMessage` | `CFG` | Mensaje cuando no hay promociones | — |
+| `pages.promotions.cta.*` | `CFG` | `CtaWhatsappSection` al final | No se renderiza si `contact.whatsapp` es `undefined` |
 
 ### Estados resueltos por el servicio
 
@@ -198,6 +205,7 @@ El estado de cada promoción es calculado por `getPromotionStatus(promo, now)` a
 | `hours` | `CFG` → `globalConfig.hours` | `OpeningHoursSection.astro` | Sección de horarios no renderizada si array vacío |
 | `contact.whatsapp` | `CFG` | `CtaWhatsappSection.astro` | Sección CTA no renderizada |
 | `identity.coverImageUrl` | `CFG` | OG image fallback | Sin og:image |
+| `pages.about.cta.*` | `CFG` | `CtaWhatsappSection` al final | No se renderiza si `contact.whatsapp` es `undefined` |
 
 ### SEO
 
@@ -271,7 +279,8 @@ La página tiene un formulario HTML (campos nombre, teléfono, mensaje) renderiz
 | `modules.secondary.faq.subtitle` | `CFG` | Subtítulo del hero | No se renderiza el subtítulo |
 | `faqItems[n].id` | `DATA` | Anchor/categoría | Generado si no viene |
 | `faqItems[n].category` | `DATA` | Agrupación visual | Sin agrupación |
-| `contact.whatsapp` | `CFG` | `CtaWhatsappSection` al final | Sección CTA no renderizada |
+| `modules.secondary.faq.cta` | `CFG` | `CtaWhatsappSection` al final | Si `undefined`, sección CTA no renderizada |
+| `contact.whatsapp` | `CFG` | Guard del CTA | CTA omitido si el número no está definido |
 | `identity.name` | `CFG` | Mensaje de WhatsApp del CTA | Usado en texto pre-escrito |
 
 ### SEO

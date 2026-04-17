@@ -130,11 +130,15 @@ página → catalog.service.ts → data/products.ts
 |-------|-----------------|---------|-------|
 | CTA principal del Hero | `globalConfig` | `business-config.ts → modules.homeSections[hero].props.primaryCta` | Label + href |
 | CTA secundario del Hero | `globalConfig` | `business-config.ts → modules.homeSections[hero].props.secondaryCta` | |
-| Título del CTA WhatsApp | `globalConfig` | `business-config.ts → modules.homeSections[whatsapp_cta].props.title` | |
-| Mensaje pre-escrito WA | `globalConfig` | `business-config.ts → modules.homeSections[whatsapp_cta].props.message` | Usa `identity.name` sin duplicar |
-| Botón "Ver catálogo" y similares | `globalConfig` | `homeSections.props` o props del componente | No hardcodear labels en componentes |
+| CTA WhatsApp de la Home | `globalConfig` | `business-config.ts → modules.homeSections[whatsapp_cta].props` | title, subtitle, buttonLabel, message |
+| CTA WhatsApp de `/catalog` | `globalConfig` | `business-config.ts → pages.catalog.cta` | title, subtitle, buttonLabel, message |
+| CTA WhatsApp de `/promotions` | `globalConfig` | `business-config.ts → pages.promotions.cta` | |
+| CTA WhatsApp de `/about` | `globalConfig` | `business-config.ts → pages.about.cta` | |
+| CTA WhatsApp de `/faq` | `globalConfig` | `business-config.ts → modules.secondary.faq.cta` | Opcional; si `undefined`, el CTA no se renderiza |
+| Headings de página (H1) | `globalConfig` | `business-config.ts → pages.{page}.heading` | catalog y promotions |
+| Mensaje "sin promociones" | `globalConfig` | `business-config.ts → pages.promotions.emptyMessage` | |
 
-> **Regla:** Los textos de botones que tienen sentido de negocio (no UI genérica) viven en `globalConfig.modules.homeSections`. Los componentes UI como `Button.astro` no definen labels propios.
+> **Regla:** Los textos de botones y secciones CTA visibles al cliente final viven en `globalConfig.pages.*` (por página) o en `homeSections.props` (para secciones de la home). Los componentes UI como `Button.astro` no definen labels propios.
 
 ---
 
@@ -199,7 +203,7 @@ página → catalog.service.ts → data/products.ts
 | Condición `if (module === 'faq')` | `isModuleEnabled('faq')` desde `@/config` |
 | Arrays de productos/categorías inline | `catalog.service.ts` |
 | Cálculo de estado de promoción | `getPromotionStatus()` del service |
-| Mensaje de WhatsApp como string | `globalConfig → whatsapp_cta.props.message` |
+| CTA o heading hardcodeado en página | `globalConfig.pages.{catalog|promotions|about}.*` |
 | Descripción de la empresa | `globalConfig.identity.description` |
 | Ciudad / dirección | `globalConfig.location.*` |
 
@@ -383,6 +387,8 @@ const showFaq = isModuleEnabled('faq');
 ¿Módulo activo?                  → isModuleEnabled(id) (desde @/config)
 ¿Secciones del home?             → homeSections (desde @/config)
 ¿SEO título/descripción?         → globalConfig.seoDefaults
+¿Headings y CTAs de página?      → globalConfig.pages.{catalog|promotions|about}
+¿CTA del módulo FAQ?             → globalConfig.modules.secondary.faq.cta
 ¿Productos?                      → catalog.service.ts
 ¿Categorías?                     → catalog.service.ts
 ¿Promociones?                    → promotions.service.ts
