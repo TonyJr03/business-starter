@@ -72,10 +72,10 @@ export interface HoursSectionProps {
 // ─── Discriminated union ──────────────────────────────────────────────────────
 
 /**
- * Entrada de sección de la Home: identidad, visibilidad, orden y props visuales.
+ * Entrada de módulo de sección: identidad, visibilidad, orden y props visuales.
  * El campo `id` es el discriminante — TypeScript estrecha `props` automáticamente.
  */
-export type HomeSectionEntry =
+export type SectionModuleEntry =
   | (SectionBase & { id: 'hero';         props: HeroSectionProps })
   | (SectionBase & { id: 'highlights';   props: HighlightsSectionProps })
   | (SectionBase & { id: 'promotions';   props: PromotionsSectionProps })
@@ -85,4 +85,4 @@ export type HomeSectionEntry =
   | (SectionBase & { id: 'hours';        props: HoursSectionProps });
 
 /** Unión de todos los IDs de sección válidos — derivada del tipo, nunca duplicada. */
-export type HomeSectionId = HomeSectionEntry['id'];
+export type SectionModuleId = SectionModuleEntry['id'];

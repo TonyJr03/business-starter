@@ -9,8 +9,8 @@
  * `validateBusinessConfig()` / `assertValidBusinessConfig()` al final del archivo.
  */
 
-import type { HomeSectionEntry } from './home-sections';
-import type { SecondaryModuleId, SecondaryModuleConfig } from './secondary-modules';
+import type { SectionModuleEntry } from './section-modules';
+import type { PageModulesConfig } from './page-modules';
 import type { NavItem } from './navigation';
 
 // ─── Identity ─────────────────────────────────────────────────────────────────
@@ -148,28 +148,22 @@ export interface BusinessNavigation {
 
 // ─── Modules ──────────────────────────────────────────────────────────────────
 
-/** Feature flags para los módulos funcionales del negocio. */
-export interface CoreModules {
-  catalog: boolean;
-  promotions: boolean;
+/** Feature flags funcionales que no son módulos de página (no tienen ruta propia). */
+export interface BusinessFeatureFlags {
   cart: boolean;
   whatsappOrdering: boolean;
-  testimonials: boolean;
 }
 
 export interface BusinessModulesConfig {
-  /** Feature flags de módulos funcionales principales. */
-  core: CoreModules;
+  /** Módulos de página activables — cada uno con su ruta, label y config. */
+  pages: PageModulesConfig;
   /**
-   * Configuración de secciones de la página de inicio:
+   * Secciones de la página de inicio:
    * orden, visibilidad y props visuales de cada sección.
    */
-  homeSections: HomeSectionEntry[];
-  /**
-   * Módulos secundarios opcionales (FAQ, galería, blog).
-   * Cada entrada controla `enabled` y el texto de presentación.
-   */
-  secondary: Record<SecondaryModuleId, SecondaryModuleConfig>;
+  sections: SectionModuleEntry[];
+  /** Feature flags funcionales (no tienen página propia). */
+  features: BusinessFeatureFlags;
 }
 
 // ─── Page copy ────────────────────────────────────────────────────────────────
@@ -190,8 +184,6 @@ export interface CatalogPageCopy {
   subheading?: string;
   /** Título de la sección de productos destacados. */
   featuredTitle: string;
-  /** Texto del bloque CTA de WhatsApp al final de la página. */
-  cta: PageCtaCopy;
 }
 
 export interface PromotionsPageCopy {
@@ -199,23 +191,15 @@ export interface PromotionsPageCopy {
   heading: string;
   /** Mensaje mostrado cuando no hay promociones activas. */
   emptyMessage: string;
-  /** Texto del bloque CTA de WhatsApp al final de la página. */
-  cta: PageCtaCopy;
-}
-
-export interface AboutPageCopy {
-  /** Texto del bloque CTA de WhatsApp al final de la página. */
-  cta: PageCtaCopy;
 }
 
 /**
- * Textos visibles al cliente final para cada página del sitio.
- * Centraliza headings, CTAs y mensajes que varían por negocio.
+ * Textos visibles al cliente final para páginas con copy específica.
+ * Los campos genéricos (title, subtitle, cta) están en PageModuleConfig.
  */
 export interface BusinessPagesCopy {
   catalog: CatalogPageCopy;
   promotions: PromotionsPageCopy;
-  about: AboutPageCopy;
 }
 
 // ─── SEO Defaults ─────────────────────────────────────────────────────────────
@@ -249,7 +233,7 @@ export interface BusinessSeoDefaults {
  * | `hours`      | horarios por día de la semana                             |
  * | `social`     | URLs de redes sociales                                    |
  * | `navigation` | ítems de navegación principal                             |
- * | `modules`    | feature flags + secciones home + módulos secundarios      |
+ * | `modules`    | módulos de página + secciones home + feature flags        |
  * | `seoDefaults`| plantilla de título, descripción y og:image por defecto   |
  *
  * @example

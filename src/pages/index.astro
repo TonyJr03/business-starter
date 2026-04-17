@@ -1,11 +1,11 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
 import HomeSectionRenderer from '@/components/sections/HomeSectionRenderer.astro';
-import { globalConfig, homeSections } from '@/config';
+import { globalConfig } from '@/config';
 
-const { identity, seoDefaults } = globalConfig;
+const { identity, seoDefaults, modules } = globalConfig;
 
-const activeSections = homeSections
+const activeSections = modules.sections
   .filter(s => s.enabled)
   .sort((a, b) => a.order - b.order);
 ---

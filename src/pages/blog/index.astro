@@ -2,13 +2,13 @@
 import MainLayout from '@/layouts/MainLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import BlogPostCard from '@/components/sections/BlogPostCard.astro';
-import { globalConfig, isModuleEnabled, secondaryModules } from '@/config';
+import { globalConfig } from '@/config';
 import { getPosts } from '@/services/blog';
 
-const blogEnabled = isModuleEnabled('blog');
-const { title: blogTitle, subtitle: blogSubtitle } = secondaryModules.blog;
-
-const { identity } = globalConfig;
+const { identity, modules } = globalConfig;
+const blogModule = modules.pages.blog;
+const blogEnabled = blogModule.enabled;
+const { title: blogTitle, subtitle: blogSubtitle } = blogModule;
 
 const posts = blogEnabled ? await getPosts() : [];
 ---

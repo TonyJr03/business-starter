@@ -1,4 +1,4 @@
-import type { HomeSectionId } from '@/types';
+import type { SectionModuleId } from '@/types';
 
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 
@@ -23,14 +23,14 @@ export interface SectionMeta {
 /**
  * Registro central de secciones de la Home.
  *
- * Tipado como `Record<HomeSectionId, SectionMeta>` para que TypeScript
- * garantice exhaustividad: añadir un nuevo ID a `HomeSectionId` sin
+ * Tipado como `Record<SectionModuleId, SectionMeta>` para que TypeScript
+ * garantice exhaustividad: añadir un nuevo ID a `SectionModuleId` sin
  * una entrada aquí es un **error de compilación**.
  *
  * El despacho de renderizado vive en `HomeSectionRenderer.astro`;
  * este archivo es datos puros sin dependencias de Astro ni componentes.
  */
-export const SECTION_REGISTRY: Record<HomeSectionId, SectionMeta> = {
+export const SECTION_REGISTRY: Record<SectionModuleId, SectionMeta> = {
   hero: {
     label: 'Hero',
     needsRuntimeData: false,
@@ -71,10 +71,10 @@ export const SECTION_REGISTRY: Record<HomeSectionId, SectionMeta> = {
 // ─── Guards & helpers ─────────────────────────────────────────────────────────
 
 /**
- * Type guard — estrecha un string desconocido a `HomeSectionId`.
+ * Type guard — estrecha un string desconocido a `SectionModuleId`.
  * Úsalo para manejar valores de fuentes dinámicas (CMS, BD, query strings).
  */
-export function isRegisteredSection(id: string): id is HomeSectionId {
+export function isRegisteredSection(id: string): id is SectionModuleId {
   return Object.prototype.hasOwnProperty.call(SECTION_REGISTRY, id);
 }
 

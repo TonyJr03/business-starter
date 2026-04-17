@@ -4,13 +4,12 @@ import Section from '@/components/ui/Section.astro';
 import FaqSection from '@/components/sections/FaqSection.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
 import { globalConfig } from '@/config';
-import { isModuleEnabled, secondaryModules } from '@/config';
 import { faqItems } from '@/data';
 
-const faqEnabled = isModuleEnabled('faq');
-const { title: faqTitle, subtitle: faqSubtitle, cta: faqCta } = secondaryModules.faq;
-
-const { identity, contact } = globalConfig;
+const { identity, contact, modules } = globalConfig;
+const faqModule = modules.pages.faq;
+const faqEnabled = faqModule.enabled;
+const { title: faqTitle, subtitle: faqSubtitle, cta: faqCta } = faqModule;
 ---
 
 <MainLayout

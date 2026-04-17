@@ -2,13 +2,13 @@
 import MainLayout from '@/layouts/MainLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import GalleryGrid from '@/components/sections/GalleryGrid.astro';
-import { globalConfig, isModuleEnabled, secondaryModules } from '@/config';
+import { globalConfig } from '@/config';
 import { galleryItems } from '@/data';
 
-const galleryEnabled = isModuleEnabled('gallery');
-const { title: galleryTitle, subtitle: gallerySubtitle } = secondaryModules.gallery;
-
-const { identity } = globalConfig;
+const { identity, modules } = globalConfig;
+const galleryModule = modules.pages.gallery;
+const galleryEnabled = galleryModule.enabled;
+const { title: galleryTitle, subtitle: gallerySubtitle } = galleryModule;
 ---
 
 <MainLayout

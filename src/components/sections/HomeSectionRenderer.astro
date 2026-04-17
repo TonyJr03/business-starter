@@ -22,14 +22,14 @@ import FeatureSection from './FeatureSection.astro';
 import OpeningHoursSection from './OpeningHoursSection.astro';
 import CtaWhatsappSection from './CtaWhatsappSection.astro';
 
-import { SECTION_REGISTRY } from './home-section-registry';
+import { SECTION_REGISTRY } from './section-module-registry';
 import { globalConfig } from '@/config';
 import { homeFeatures } from '@/data';
 
-import type { HomeSectionEntry } from '@/types';
+import type { SectionModuleEntry } from '@/types';
 
 interface Props {
-  section: HomeSectionEntry;
+  section: SectionModuleEntry;
 }
 
 const { section } = Astro.props;
