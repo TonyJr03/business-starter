@@ -11,6 +11,7 @@ import { getWhatsAppUrl } from '@/lib/whatsapp';
 
 const { identity, modules, contact, seoDefaults, pages } = globalConfig;
 const name = identity.name;
+const catalogMod = modules.pages.catalog;
 const catalogCopy = pages.catalog;
 
 // Delegamos filtrado y ordenación al servicio de dominio.
@@ -55,7 +56,7 @@ function productOrderUrl(productName: string): string | undefined {
     </div>
   </Section>
 
-  {!modules.core.catalog ? (
+  {!catalogMod.enabled ? (
     // Módulo desactivado
     <Section bg="default" size="lg">
       <p class="text-center" style="color: var(--color-text-subtle);">
@@ -127,10 +128,10 @@ function productOrderUrl(productName: string): string | undefined {
       {/* CTA WhatsApp */}
       {contact.whatsapp && (
         <CtaWhatsappSection
-          title={catalogCopy.cta.title}
-          subtitle={catalogCopy.cta.subtitle}
-          buttonLabel={catalogCopy.cta.buttonLabel}
-          message={catalogCopy.cta.message}
+          title={catalogMod.cta?.title ?? ''}
+          subtitle={catalogMod.cta?.subtitle}
+          buttonLabel={catalogMod.cta?.buttonLabel ?? 'Escribir por WhatsApp'}
+          message={catalogMod.cta?.message ?? ''}
           bg="secondary"
           size="md"
         />

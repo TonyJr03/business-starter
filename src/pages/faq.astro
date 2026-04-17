@@ -4,11 +4,10 @@ import Section from '@/components/ui/Section.astro';
 import FaqSection from '@/components/sections/FaqSection.astro';
 import CtaWhatsappSection from '@/components/sections/CtaWhatsappSection.astro';
 import { globalConfig } from '@/config';
-import { isModuleEnabled, secondaryModules } from '@/config';
 import { faqItems } from '@/data';
 
-const faqEnabled = isModuleEnabled('faq');
-const { title: faqTitle, subtitle: faqSubtitle, cta: faqCta } = secondaryModules.faq;
+const faqMod = globalConfig.modules.pages.faq;
+const faqEnabled = faqMod.enabled;
 
 const { identity, contact } = globalConfig;
 ---
@@ -23,11 +22,11 @@ const { identity, contact } = globalConfig;
     <Section bg="secondary" size="md">
       <div class="max-w-2xl mx-auto text-center">
         <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
-          {faqTitle ?? 'Preguntas Frecuentes'}
+          {faqMod.title ?? 'Preguntas Frecuentes'}
         </h1>
-        {faqSubtitle && (
+        {faqMod.subtitle && (
           <p class="text-lg" style="color: var(--color-text-muted);">
-            {faqSubtitle}
+            {faqMod.subtitle}
           </p>
         )}
       </div>
@@ -40,12 +39,12 @@ const { identity, contact } = globalConfig;
   )}
 
   <!-- ── Sección WhatsApp ────────────────────────────────────────────────────── -->
-  {faqEnabled && contact.whatsapp && faqCta && (
+  {faqEnabled && contact.whatsapp && faqMod.cta && (
     <CtaWhatsappSection
-      title={faqCta.title}
-      subtitle={faqCta.subtitle}
-      message={faqCta.message}
-      buttonLabel={faqCta.buttonLabel}
+      title={faqMod.cta.title}
+      subtitle={faqMod.cta.subtitle}
+      message={faqMod.cta.message}
+      buttonLabel={faqMod.cta.buttonLabel}
       bg="surface"
       size="md"
     />

@@ -86,3 +86,17 @@ export type HomeSectionEntry =
 
 /** Unión de todos los IDs de sección válidos — derivada del tipo, nunca duplicada. */
 export type HomeSectionId = HomeSectionEntry['id'];
+
+// ─── Aliases del modelo unificado de módulos ──────────────────────────────────
+
+/**
+ * Alias semántico para los IDs de secciones de la home.
+ * Refleja el modelo unificado donde las secciones de la home son "section modules".
+ */
+export type SectionModuleId = HomeSectionId;
+
+/**
+ * Alias semántico para las entradas de sección de la home.
+ * Refleja el modelo unificado donde cada sección activable es un módulo.
+ */
+export type SectionModuleEntry = HomeSectionEntry;

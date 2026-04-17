@@ -10,6 +10,7 @@ import { getWhatsAppUrl } from '@/lib/whatsapp';
 
 const { identity, modules, contact, pages } = globalConfig;
 const name = identity.name;
+const promotionsMod = modules.pages.promotions;
 const promoCopy = pages.promotions;
 
 // Traemos todas —activas e inactivas— para mostrar estado visual completo.
@@ -72,7 +73,7 @@ const activeCount = enriched.filter((e) => e.status === 'active').length;
     </div>
   </Section>
 
-  {!modules.core.promotions ? (
+  {!promotionsMod.enabled ? (
     // Módulo desactivado
     <Section bg="default" size="lg">
       <p class="text-center" style="color: var(--color-text-subtle);">
@@ -109,10 +110,10 @@ const activeCount = enriched.filter((e) => e.status === 'active').length;
   <!-- ── CTA WhatsApp ────────────────────────────────────────────────────── -->
   {contact.whatsapp && (
     <CtaWhatsappSection
-      title={promoCopy.cta.title}
-      subtitle={promoCopy.cta.subtitle}
-      buttonLabel={promoCopy.cta.buttonLabel}
-      message={promoCopy.cta.message}
+      title={promotionsMod.cta?.title ?? ''}
+      subtitle={promotionsMod.cta?.subtitle}
+      buttonLabel={promotionsMod.cta?.buttonLabel ?? 'Escribir por WhatsApp'}
+      message={promotionsMod.cta?.message ?? ''}
       bg="secondary"
       size="md"
     />

@@ -10,7 +10,7 @@
  */
 
 import type { HomeSectionEntry } from './home-sections';
-import type { SecondaryModuleId, SecondaryModuleConfig } from './secondary-modules';
+import type { PageModulesConfig } from './page-modules';
 import type { NavItem } from './navigation';
 
 // ─── Identity ─────────────────────────────────────────────────────────────────
@@ -148,28 +148,41 @@ export interface BusinessNavigation {
 
 // ─── Modules ──────────────────────────────────────────────────────────────────
 
-/** Feature flags para los módulos funcionales del negocio. */
-export interface CoreModules {
-  catalog: boolean;
-  promotions: boolean;
+/**
+ * Feature flags funcionales transversales — no corresponden a una sola página,
+ * sino a capacidades que cruzan varios módulos (carrito, pedidos por WhatsApp).
+ */
+export interface BusinessFeatureFlags {
+  /** Activa el carrito de compras persistente. */
   cart: boolean;
+  /** Permite recibir pedidos directamente por WhatsApp. */
   whatsappOrdering: boolean;
-  testimonials: boolean;
 }
 
+/**
+ * Configuración unificada de módulos del negocio.
+ *
+ * | campo      | responsabilidad                                              |
+ * |------------|--------------------------------------------------------------|
+ * | `pages`    | Todos los módulos de página (activación, ruta, nav, textos)  |
+ * | `sections` | Secciones de la home: orden, visibilidad y props visuales    |
+ * | `features` | Feature flags transversales (cart, whatsappOrdering)         |
+ */
 export interface BusinessModulesConfig {
-  /** Feature flags de módulos funcionales principales. */
-  core: CoreModules;
   /**
-   * Configuración de secciones de la página de inicio:
-   * orden, visibilidad y props visuales de cada sección.
+   * Módulos de página: cada ruta no-home con su estado, ruta,
+   * etiqueta de navegación y textos de presentación opcionales.
+   * Incluye tanto módulos esenciales (catalog, promotions, about, contact)
+   * como opcionales (faq, gallery, blog).
    */
-  homeSections: HomeSectionEntry[];
+  pages: PageModulesConfig;
   /**
-   * Módulos secundarios opcionales (FAQ, galería, blog).
-   * Cada entrada controla `enabled` y el texto de presentación.
+   * Secciones de la página de inicio: orden, visibilidad y props visuales.
+   * Ver `HomeSectionEntry` / `SectionModuleEntry` en types/home-sections.ts.
    */
-  secondary: Record<SecondaryModuleId, SecondaryModuleConfig>;
+  sections: HomeSectionEntry[];
+  /** Feature flags funcionales transversales (cart, whatsappOrdering). */
+  features: BusinessFeatureFlags;
 }
 
 // ─── Page copy ────────────────────────────────────────────────────────────────
@@ -190,8 +203,6 @@ export interface CatalogPageCopy {
   subheading?: string;
   /** Título de la sección de productos destacados. */
   featuredTitle: string;
-  /** Texto del bloque CTA de WhatsApp al final de la página. */
-  cta: PageCtaCopy;
 }
 
 export interface PromotionsPageCopy {
@@ -199,23 +210,16 @@ export interface PromotionsPageCopy {
   heading: string;
   /** Mensaje mostrado cuando no hay promociones activas. */
   emptyMessage: string;
-  /** Texto del bloque CTA de WhatsApp al final de la página. */
-  cta: PageCtaCopy;
-}
-
-export interface AboutPageCopy {
-  /** Texto del bloque CTA de WhatsApp al final de la página. */
-  cta: PageCtaCopy;
 }
 
 /**
  * Textos visibles al cliente final para cada página del sitio.
- * Centraliza headings, CTAs y mensajes que varían por negocio.
+ * Centraliza headings y mensajes específicos de página que varían por negocio.
+ * Los CTAs de WhatsApp se configuran en `globalConfig.modules.pages[id].cta`.
  */
 export interface BusinessPagesCopy {
   catalog: CatalogPageCopy;
   promotions: PromotionsPageCopy;
-  about: AboutPageCopy;
 }
 
 // ─── SEO Defaults ─────────────────────────────────────────────────────────────
@@ -249,7 +253,7 @@ export interface BusinessSeoDefaults {
  * | `hours`      | horarios por día de la semana                             |
  * | `social`     | URLs de redes sociales                                    |
  * | `navigation` | ítems de navegación principal                             |
- * | `modules`    | feature flags + secciones home + módulos secundarios      |
+ * | `modules`    | módulos de página + secciones home + feature flags        |
  * | `seoDefaults`| plantilla de título, descripción y og:image por defecto   |
  *
  * @example

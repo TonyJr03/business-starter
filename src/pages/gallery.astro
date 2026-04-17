@@ -2,11 +2,11 @@
 import MainLayout from '@/layouts/MainLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import GalleryGrid from '@/components/sections/GalleryGrid.astro';
-import { globalConfig, isModuleEnabled, secondaryModules } from '@/config';
+import { globalConfig } from '@/config';
 import { galleryItems } from '@/data';
 
-const galleryEnabled = isModuleEnabled('gallery');
-const { title: galleryTitle, subtitle: gallerySubtitle } = secondaryModules.gallery;
+const galleryMod = globalConfig.modules.pages.gallery;
+const galleryEnabled = galleryMod.enabled;
 
 const { identity } = globalConfig;
 ---
@@ -21,11 +21,11 @@ const { identity } = globalConfig;
     <Section bg="secondary" size="md">
       <div class="max-w-2xl mx-auto text-center">
         <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
-          {galleryTitle ?? 'Galería'}
+          {galleryMod.title ?? 'Galería'}
         </h1>
-        {gallerySubtitle && (
+        {galleryMod.subtitle && (
           <p class="text-lg" style="color: var(--color-text-muted);">
-            {gallerySubtitle}
+            {galleryMod.subtitle}
           </p>
         )}
       </div>

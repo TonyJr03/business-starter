@@ -1,7 +1,7 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
 import Section from '@/components/ui/Section.astro';
-import { isModuleEnabled } from '@/config';
+import { globalConfig } from '@/config';
 import type { BlogPost } from '@/types';
 import { getPosts } from '@/services/blog';
 
@@ -12,7 +12,7 @@ import { getPosts } from '@/services/blog';
  * ninguna ruta /blog/[slug] se pre-genera y el host devuelve 404 nativo.
  */
 export async function getStaticPaths() {
-  if (!isModuleEnabled('blog')) return [];
+  if (!globalConfig.modules.pages.blog.enabled) return [];
 
   const posts = await getPosts();
   return posts.map((post: BlogPost) => ({

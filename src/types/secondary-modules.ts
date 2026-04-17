@@ -1,12 +1,10 @@
-import type { PageCtaCopy } from './business-config';
-
-// ─── IDs de Módulos Secundarios ────────────────────────────────────────────────────
-
 /**
- * Unión de todos los identificadores de módulos secundarios soportados.
- * Añade nuevos módulos aquí para extender el sistema.
+ * Tipos de contenido para módulos de página opcionales.
+ *
+ * Los tipos de configuración (habilitación, ruta, etiqueta) han sido
+ * unificados en `PageModuleConfig` / `PageModulesConfig` (ver page-modules.ts).
+ * Este archivo conserva únicamente las estructuras de datos de dominio.
  */
-export type SecondaryModuleId = 'faq' | 'gallery' | 'blog';
 
 // ─── Tipos de contenido ────────────────────────────────────────────────────────────
 
@@ -47,24 +45,3 @@ export interface BlogPost {
   tags?: string[];
 }
 
-// ─── Configuración por módulo ──────────────────────────────────────────────────────
-
-/** Configuración compartida por cada módulo secundario. */
-export interface SecondaryModuleConfig {
-  /** Si este módulo está activo y debe ser renderizado. */
-  enabled: boolean;
-  /** Encabezado opcional para la sección principal del módulo. */
-  title?: string;
-  /** Texto de apoyo opcional mostrado bajo el título. */
-  subtitle?: string;
-  /** Bloque CTA de WhatsApp al final de la página del módulo (opcional). */
-  cta?: PageCtaCopy;
-}
-
-// ─── Mapa completo ────────────────────────────────────────────────────────────────
-
-/**
- * Registro de cada módulo secundario, indexado por SecondaryModuleId.
- * Type-safe: añadir un nuevo ID a la unión fuerza una entrada correspondiente aquí.
- */
-export type SecondaryModulesConfig = Record<SecondaryModuleId, SecondaryModuleConfig>;

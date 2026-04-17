@@ -2,11 +2,11 @@
 import MainLayout from '@/layouts/MainLayout.astro';
 import Section from '@/components/ui/Section.astro';
 import BlogPostCard from '@/components/sections/BlogPostCard.astro';
-import { globalConfig, isModuleEnabled, secondaryModules } from '@/config';
+import { globalConfig } from '@/config';
 import { getPosts } from '@/services/blog';
 
-const blogEnabled = isModuleEnabled('blog');
-const { title: blogTitle, subtitle: blogSubtitle } = secondaryModules.blog;
+const blogMod = globalConfig.modules.pages.blog;
+const blogEnabled = blogMod.enabled;
 
 const { identity } = globalConfig;
 
@@ -23,11 +23,11 @@ const posts = blogEnabled ? await getPosts() : [];
     <Section bg="secondary" size="md">
       <div class="max-w-2xl mx-auto text-center">
         <h1 class="text-4xl font-bold tracking-tight mb-3" style="color: var(--color-primary);">
-          {blogTitle ?? 'Blog'}
+          {blogMod.title ?? 'Blog'}
         </h1>
-        {blogSubtitle && (
+        {blogMod.subtitle && (
           <p class="text-lg" style="color: var(--color-text-muted);">
-            {blogSubtitle}
+            {blogMod.subtitle}
           </p>
         )}
       </div>

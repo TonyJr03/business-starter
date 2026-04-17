@@ -1,23 +1,36 @@
 /**
- * Wrapper de compatibilidad — proyecta los módulos secundarios desde globalConfig.
+ * Compat shim — mantiene las exportaciones históricas mientras las páginas
+ * migran al acceso directo a `globalConfig.modules.pages`.
  *
- * Para activar/desactivar un módulo o cambiar su título, edita
- * `src/config/business-config.ts` → `modules.secondary`.
+ * Para activar/desactivar cualquier módulo de página, edita
+ * `src/config/business-config.ts` → `modules.pages`.
+ *
+ * @deprecated Usa `globalConfig.modules.pages[id]` directamente.
  */
-import type { SecondaryModuleId, SecondaryModulesConfig } from '@/types/secondary-modules';
+import type { PageModuleId } from '@/types/page-modules';
 import { globalConfig } from './business-config';
 
-/** Módulos secundarios extraídos directamente del config global. */
-export const secondaryModules: SecondaryModulesConfig = globalConfig.modules.secondary;
-
-// ─── Helper ────────────────────────────────────────────────────────────────────────────
-
 /**
- * Devuelve `true` cuando el módulo secundario dado está habilitado en la configuración.
+ * Devuelve `true` cuando el módulo de página dado está habilitado.
+ *
+ * Acepta cualquier `PageModuleId` (catalog, promotions, about, contact,
+ * faq, gallery, blog) en lugar de solo los módulos secundarios anteriores.
  *
  * @example
  * if (isModuleEnabled('faq')) { ... }
+ * if (isModuleEnabled('catalog')) { ... }
  */
-export function isModuleEnabled(moduleId: SecondaryModuleId): boolean {
-  return globalConfig.modules.secondary[moduleId]?.enabled ?? false;
+export function isModuleEnabled(moduleId: PageModuleId): boolean {
+  return globalConfig.modules.pages[moduleId]?.enabled ?? false;
 }
+
+/**
+ * Acceso agrupado a los módulos de página opcionales (faq, gallery, blog).
+ *
+ * @deprecated Accede directamente a `globalConfig.modules.pages.faq` etc.
+ */
+export const secondaryModules = {
+  faq:     globalConfig.modules.pages.faq,
+  gallery: globalConfig.modules.pages.gallery,
+  blog:    globalConfig.modules.pages.blog,
+} as const;

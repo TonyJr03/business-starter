@@ -24,6 +24,7 @@ import type {
   BusinessIdentity,
 } from '@/types/business-config';
 import type { HomeSectionEntry } from '@/types/home-sections';
+import type { PageModulesConfig } from '@/types/page-modules';
 
 // ─── Identity ────────────────────────────────────────────────────────────────
 // Definida primero para poder referenciarla dentro de `homeSections`.
@@ -129,6 +130,81 @@ const homeSections: HomeSectionEntry[] = [
   },
 ];
 
+// ─── Módulos de página ────────────────────────────────────────────────────────
+// Todos los módulos de página no-home: activación, ruta, navegación y textos.
+// El orden de declaración define el orden en la navegación generada automáticamente.
+
+const pageModules: PageModulesConfig = {
+  catalog: {
+    enabled:  true,
+    path:     '/catalog',
+    navLabel: 'Catálogo',
+    title:    'Nuestro Catálogo',
+    subtitle: 'Todo lo que tenemos para ofrecerte hoy.',
+    cta: {
+      title:       '¿Ves algo que te gusta?',
+      subtitle:    'Escríbenos por WhatsApp y te atendemos de inmediato.',
+      buttonLabel: 'Hacer un pedido',
+      message:     `Hola ${identity.name}, quisiera hacer un pedido.`,
+    },
+  },
+  promotions: {
+    enabled:  true,
+    path:     '/promotions',
+    navLabel: 'Promociones',
+    title:    'Ofertas y Promociones',
+    cta: {
+      title:       '¿Tienes alguna consulta?',
+      subtitle:    'Escríbenos por WhatsApp y te informamos sobre cualquier oferta.',
+      buttonLabel: 'Consultar por WhatsApp',
+      message:     `Hola ${identity.name}, quisiera información sobre sus ofertas.`,
+    },
+  },
+  about: {
+    enabled:  true,
+    path:     '/about',
+    navLabel: 'Nosotros',
+    cta: {
+      title:       '¿Tienes alguna pregunta?',
+      subtitle:    'Escríbenos directamente y te respondemos de inmediato.',
+      buttonLabel: 'Escribir por WhatsApp',
+      message:     `Hola ${identity.name}, quisiera más información sobre el café.`,
+    },
+  },
+  contact: {
+    enabled:  true,
+    path:     '/contact',
+    navLabel: 'Contacto',
+  },
+  faq: {
+    enabled:  false,
+    path:     '/faq',
+    navLabel: 'FAQ',
+    title:    'Preguntas Frecuentes',
+    subtitle: 'Todo lo que necesitas saber antes de visitarnos.',
+    cta: {
+      title:       '¿No encontraste lo que buscabas?',
+      subtitle:    'Escríbenos directamente y te respondemos enseguida.',
+      buttonLabel: 'Preguntar por WhatsApp',
+      message:     `Hola ${identity.name}, tengo una pregunta que no encontré en el FAQ.`,
+    },
+  },
+  gallery: {
+    enabled:  false,
+    path:     '/gallery',
+    navLabel: 'Galería',
+    title:    'Galería',
+    subtitle: 'Conoce nuestro espacio y nuestras creaciones.',
+  },
+  blog: {
+    enabled:  false,
+    path:     '/blog',
+    navLabel: 'Blog',
+    title:    'Blog',
+    subtitle: 'Noticias, recetas y artículos de interés.',
+  },
+};
+
 // ─── Config global ────────────────────────────────────────────────────────────
 
 export const globalConfig: BusinessGlobalConfig = {
@@ -184,9 +260,10 @@ export const globalConfig: BusinessGlobalConfig = {
     facebook:  'https://facebook.com/cafelaesquina',
   },
 
-  // ── Navegación principal (ítems estáticos) ────────────────────────────────
-  // Los módulos secundarios (FAQ, Galería, Blog) se insertan automáticamente
-  // por `config/navigation.ts` según su estado `enabled` en `modules.secondary`.
+  // ── Navegación principal (referencia) ──────────────────────────────────
+  // Los ítems de navegación se generan automáticamente desde `modules.pages`
+  // (filtrados por `enabled`, en orden de declaración) via config/navigation.ts.
+  // Esta lista puede usarse como override manual si se necesita un orden diferente.
   navigation: {
     main: [
       { label: 'Inicio',      href: '/'          },
@@ -199,41 +276,17 @@ export const globalConfig: BusinessGlobalConfig = {
 
   // ── Módulos ───────────────────────────────────────────────────────────────
   modules: {
-    // Feature flags de módulos funcionales principales
-    core: {
-      catalog:          true,
-      promotions:       true,
+    // Módulos de página: todos los módulos no-home, activables/desactivables.
+    // El orden de declaración en `pageModules` define el orden en la nav.
+    pages: pageModules,
+
+    // Secciones de la home: orden, visibilidad y props visuales.
+    sections: homeSections,
+
+    // Feature flags transversales (no corresponden a una sola página).
+    features: {
       cart:             false,
       whatsappOrdering: false,
-      testimonials:     false,
-    },
-
-    // Secciones de la home: orden, visibilidad y props visuales
-    homeSections,
-
-    // Módulos secundarios: actívalos con `enabled: true` cuando el contenido esté listo
-    secondary: {
-      faq: {
-        enabled:  false,
-        title:    'Preguntas Frecuentes',
-        subtitle: 'Todo lo que necesitas saber antes de visitarnos.',
-        cta: {
-          title:       '¿No encontraste lo que buscabas?',
-          subtitle:    'Escríbenos directamente y te respondemos enseguida.',
-          buttonLabel: 'Preguntar por WhatsApp',
-          message:     `Hola ${identity.name}, tengo una pregunta que no encontré en el FAQ.`,
-        },
-      },
-      gallery: {
-        enabled:  false,
-        title:    'Galería',
-        subtitle: 'Conoce nuestro espacio y nuestras creaciones.',
-      },
-      blog: {
-        enabled:  false,
-        title:    'Blog',
-        subtitle: 'Noticias, recetas y artículos de interés.',
-      },
     },
   },
 
@@ -245,37 +298,17 @@ export const globalConfig: BusinessGlobalConfig = {
   },
 
   // ── Textos de página ──────────────────────────────────────────────────────
-  // Headings, subheadings y CTAs visibles al cliente final por página.
-  // Centraliza aquí cualquier texto de negocio que un operador deba cambiar.
+  // Contenido específico por página que no encaja en PageModuleConfig genérico.
+  // Los CTAs de WhatsApp viven en `modules.pages[id].cta`.
   pages: {
     catalog: {
       heading:      'Nuestro Catálogo',
       subheading:   'Todo lo que tenemos para ofrecerte hoy.',
       featuredTitle: 'Destacados',
-      cta: {
-        title:       '¿Ves algo que te gusta?',
-        subtitle:    'Escríbenos por WhatsApp y te atendemos de inmediato.',
-        buttonLabel: 'Hacer un pedido',
-        message:     `Hola ${identity.name}, quisiera hacer un pedido.`,
-      },
     },
     promotions: {
       heading:      'Ofertas y Promociones',
       emptyMessage: 'Pronto tendremos novedades. ¡Vuelve a visitarnos!',
-      cta: {
-        title:       '¿Tienes alguna consulta?',
-        subtitle:    'Escríbenos por WhatsApp y te informamos sobre cualquier oferta.',
-        buttonLabel: 'Consultar por WhatsApp',
-        message:     `Hola ${identity.name}, quisiera información sobre sus ofertas.`,
-      },
-    },
-    about: {
-      cta: {
-        title:       '¿Tienes alguna pregunta?',
-        subtitle:    'Escríbenos directamente y te respondemos de inmediato.',
-        buttonLabel: 'Escribir por WhatsApp',
-        message:     `Hola ${identity.name}, quisiera más información sobre el café.`,
-      },
     },
   },
 };
