@@ -37,10 +37,10 @@ const identity: BusinessIdentity = {
   shortDescription:
     'Tu cafetería de confianza en La Habana. Café cubano, ambiente acogedor y los mejores sabores.',
   logo: {
-    url: '/images/logo.png',
+    url: '/brands/cafe-la-esquina/logo/logo.svg',
     alt: 'Café La Esquina',
   },
-  coverImageUrl: '/images/cover.jpg',
+  coverImageUrl: '/brands/cafe-la-esquina/hero/cover.svg',
 };
 
 // ─── Home sections ───────────────────────────────────────────────────────────

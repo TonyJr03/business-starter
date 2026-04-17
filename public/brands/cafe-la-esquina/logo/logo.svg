@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="72" viewBox="0 0 240 72" role="img" aria-label="Café La Esquina">
+  <!-- PLACEHOLDER — reemplazar con el logo real del negocio -->
+  <!-- Ruta final: /brands/cafe-la-esquina/logo/logo.svg -->
+  <!-- Formatos recomendados: SVG (preferido) · PNG 2x con fondo transparente -->
+
+  <!-- Fondo -->
+  <rect width="240" height="72" rx="8" fill="#6F4E37"/>
+
+  <!-- Ícono de taza (simplificado) -->
+  <g transform="translate(16, 14)">
+    <rect x="2" y="12" width="28" height="22" rx="3" fill="none" stroke="#F5E6D3" stroke-width="2.5"/>
+    <path d="M30 18 Q38 18 38 25 Q38 32 30 32" fill="none" stroke="#F5E6D3" stroke-width="2.5"/>
+    <path d="M10 12 Q10 6 16 6 Q22 6 22 12" fill="none" stroke="#F5E6D3" stroke-width="2"/>
+  </g>
+
+  <!-- Nombre del negocio -->
+  <text
+    x="60"
+    y="30"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="15"
+    font-weight="bold"
+    fill="#F5E6D3"
+    letter-spacing="0.5"
+  >Café La Esquina</text>
+
+  <!-- Tagline -->
+  <text
+    x="61"
+    y="50"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="10"
+    fill="#D4A574"
+    letter-spacing="1.5"
+  >LA HABANA · CUBA</text>
+</svg>

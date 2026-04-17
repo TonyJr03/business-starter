@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Café La Esquina — hero placeholder">
+  <!-- PLACEHOLDER — reemplazar con la imagen hero real del negocio -->
+  <!-- Ruta final: /brands/cafe-la-esquina/hero/cover.jpg (o .webp) -->
+  <!-- Dimensiones recomendadas: 1200×630 px (ratio 1.91:1, óptimo para og:image) -->
+  <!-- Formatos recomendados: WebP · JPEG · Avif  |  Máx. 300 KB  |  sRGB -->
+
+  <!-- Fondo degradado cálido -->
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#3B1F0C"/>
+      <stop offset="60%"  stop-color="#6F4E37"/>
+      <stop offset="100%" stop-color="#D4A574"/>
+    </linearGradient>
+    <linearGradient id="vignette" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#000000" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Base -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#vignette)"/>
+
+  <!-- Cuadrícula decorativa -->
+  <g opacity="0.08" stroke="#F5E6D3" stroke-width="1">
+    <line x1="0" y1="210" x2="1200" y2="210"/>
+    <line x1="0" y1="420" x2="1200" y2="420"/>
+    <line x1="400" y1="0" x2="400" y2="630"/>
+    <line x1="800" y1="0" x2="800" y2="630"/>
+  </g>
+
+  <!-- Ícono central (taza decorativa) -->
+  <g transform="translate(600, 255)" opacity="0.18">
+    <ellipse cx="0" cy="0" rx="90" ry="90" fill="#F5E6D3"/>
+  </g>
+
+  <!-- Etiqueta: PLACEHOLDER -->
+  <rect x="500" y="110" width="200" height="28" rx="4" fill="#D4A574" opacity="0.9"/>
+  <text
+    x="600" y="129"
+    text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="12"
+    font-weight="600"
+    fill="#3B1F0C"
+    letter-spacing="2"
+  >IMAGEN PLACEHOLDER</text>
+
+  <!-- Nombre principal -->
+  <text
+    x="600" y="310"
+    text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="64"
+    font-weight="bold"
+    fill="#F5E6D3"
+    opacity="0.95"
+  >Café La Esquina</text>
+
+  <!-- Separador -->
+  <line x1="480" y1="340" x2="720" y2="340" stroke="#D4A574" stroke-width="1.5" opacity="0.7"/>
+
+  <!-- Tagline -->
+  <text
+    x="600" y="375"
+    text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="22"
+    fill="#D4A574"
+    letter-spacing="3"
+  >EL RINCÓN DEL BUEN CAFÉ HABANERO</text>
+
+  <!-- Indicador de dimensión -->
+  <text
+    x="600" y="570"
+    text-anchor="middle"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="12"
+    fill="#F5E6D3"
+    opacity="0.4"
+  >1200 × 630 px · /brands/cafe-la-esquina/hero/cover.{webp,jpg}</text>
+</svg>

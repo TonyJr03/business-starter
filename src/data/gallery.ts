@@ -4,7 +4,7 @@ import type { GalleryItem } from '@/types';
  * galleryItems — imágenes de la galería (demo).
  *
  * Usa imágenes de Picsum Photos como placeholder.
- * Reemplaza `src` con las rutas reales (ej. `/images/galeria/foto-1.webp`)
+ * Reemplaza `src` con las rutas reales (ej. `/brands/cafe-la-esquina/gallery/espacio-01.webp`)
  * y actualiza `alt` y `caption` con descripciones reales del negocio.
  *
  * Dimensiones recomendadas para producción: 800×600 px (landscape).
