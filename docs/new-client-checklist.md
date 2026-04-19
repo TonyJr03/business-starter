@@ -320,7 +320,7 @@ Abre `http://localhost:4321` y recorre esta lista página por página.
 - [ ] Ejecutar `npm run preview` y repetir el QA rápido desde la build de producción
 
 ### Variables de entorno (si aplica)
-- [ ] Crear `.env` con `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_ANON_KEY` si Supabase está activo
+- [ ] Crear `.env` con `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_PUBLISHABLE_KEY` si Supabase está activo
 - [ ] Configurar las mismas variables en el panel de Vercel / hosting
 
 ### Deploy

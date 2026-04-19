@@ -35,7 +35,9 @@ El proyecto está en **transición gradual hacia Supabase**. Algunos datos ya se
 └────────────────┘                └──────────────────┘
 
         ↑                                    ↑
-    Leer: Migración 20260419000000_initial_schema.sql
+    Leer: Migraciones:
+      - 20260419000000_initial_schema.sql (tablas businesses, categories, products, promotions)
+      - 20260419000001_businesses_settings_columns.sql (extiende businesses con config)
     Seed: supabase/seed.sql (10 productos, 4 promos, 3 categorías)
 ```
 
