@@ -190,8 +190,8 @@ Utilidades puras, helpers y clientes externos. Sin componentes UI ni lógica de 
 Capa de acceso a datos. Abstrae la fuente (mock o Supabase). Las pages y sections consumen servicios, nunca datos directamente.
 
 - **Naming:** `catalog.service.ts`, `promotions.service.ts`, `blog.service.ts`
-- Funciones `async` que hoy devuelven datos de `src/data/` y mañana consultarán Supabase
-- El contrato (firma de funciones + tipos de retorno) **no cambia** al migrar a Supabase
+- Funciones `async` con estrategia **Supabase-first**: consultan la BD y caen a `src/data/` como fallback si Supabase no está disponible
+- El contrato (firma de funciones + tipos de retorno) **no cambia** independientemente de la fuente
 - Los helpers de dominio (`isProductAvailable`, `isPromotionActive`, `getPromotionStatus`) viven aquí
 
 **Servicios actuales:**
@@ -310,8 +310,8 @@ Cuando un módulo está desactivado, la página muestra `<ModuleDisabled />` en 
 Las variables de entorno necesarias van en `.env` (nunca en el repositorio):
 
 ```
-PUBLIC_SUPABASE_URL=        # URL del proyecto Supabase
-PUBLIC_SUPABASE_ANON_KEY=   # Clave anónima pública de Supabase
+PUBLIC_SUPABASE_URL=                # URL del proyecto Supabase
+PUBLIC_SUPABASE_PUBLISHABLE_KEY=   # Clave publicable (anon) de Supabase
 ```
 
 Variables `PUBLIC_` son accesibles en el cliente. Variables sin prefijo solo en servidor/SSR.
