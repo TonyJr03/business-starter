@@ -382,7 +382,7 @@ export const aboutContent: AboutContent = {
 
 ### FAQ (`src/data/faq.ts`)
 
-Solo relevante cuando `modules.secondary.faq.enabled: true`. Reemplaza las
+Solo relevante cuando `modules.pages.faq.enabled: true`. Reemplaza las
 preguntas demo con las reales del negocio. El campo `category` agrupa las
 preguntas en secciones dentro de la página:
 
@@ -392,7 +392,7 @@ preguntas en secciones dentro de la página:
 
 ### Galería (`src/data/gallery.ts`)
 
-Solo relevante cuando `modules.secondary.gallery.enabled: true`. Reemplaza las
+Solo relevante cuando `modules.pages.gallery.enabled: true`. Reemplaza las
 URLs de placeholder de picsum.photos con rutas reales en `/public/images/`:
 
 ```ts

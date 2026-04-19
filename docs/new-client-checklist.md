@@ -185,7 +185,7 @@ Si el cliente **tiene promociones**:
 
 ## FASE 7 — Módulos opcionales
 
-> Archivo: `src/config/business-config.ts` — bloque `modules.secondary`
+> Archivo: `src/config/business-config.ts` — bloque `modules.pages`
 
 ### FAQ
 - [ ] Si el cliente tiene FAQ: cambiar `faq.enabled: true`
@@ -208,9 +208,9 @@ Si el cliente **tiene promociones**:
 - [ ] Actualizar `blog.title` y `blog.subtitle`
 - [ ] Editar `src/data/blog-posts.ts` — añadir posts con `slug`, `title`, `summary`, `publishedAt`, `body[]`
 
-### Módulos core desactivados
-- [ ] Si el cliente **no quiere** página de promociones: `modules.core.promotions: false`
-- [ ] Si el cliente **no quiere** catálogo: `modules.core.catalog: false`
+### Módulos de página desactivados
+- [ ] Si el cliente **no quiere** página de promociones: `modules.pages.promotions.enabled: false`
+- [ ] Si el cliente **no quiere** catálogo: `modules.pages.catalog.enabled: false`
 
 ---
 
@@ -345,8 +345,8 @@ Abre `http://localhost:4321` y recorre esta lista página por página.
 | Nombre, tagline, colores, contacto, horarios, nav | `src/config/business-config.ts` |
 | Textos de CTA y headings de página | `src/config/business-config.ts → pages` |
 | Módulos activos (catálogo, promo, faq, gallery, blog) | `src/config/business-config.ts → modules` |
-| Historia y misión (About) | `src/data/business-info.ts` |
-| Propuesta de valor (home highlights) | `src/data/business-info.ts → homeFeatures` |
+| Historia y misión (About) | `src/data/about-content.ts` |
+| Propuesta de valor (home highlights) | `src/data/highlights.ts → homeFeatures` |
 | Categorías del catálogo | `src/data/categories.ts` |
 | Productos | `src/data/products.ts` |
 | Promociones | `src/data/promotions.ts` |

@@ -388,15 +388,15 @@ const showFaq = isModuleEnabled('faq');
 ¿Secciones del home?             → homeSections (desde @/config)
 ¿SEO título/descripción?         → globalConfig.seoDefaults
 ¿Headings y CTAs de página?      → globalConfig.pages.{catalog|promotions|about}
-¿CTA del módulo FAQ?             → globalConfig.modules.secondary.faq.cta
+¿CTA del módulo FAQ?             → globalConfig.modules.pages.faq.cta
 ¿Productos?                      → catalog.service.ts
 ¿Categorías?                     → catalog.service.ts
 ¿Promociones?                    → promotions.service.ts
 ¿FAQ items?                      → data/faq.ts
 ¿Galería?                        → data/gallery.ts
-¿Blog posts?                     → services/blog.ts
-¿Propuesta de valor (features)?  → data/business-info.ts → homeFeatures
-¿Historia del negocio (about)?   → data/business-info.ts → aboutContent
+¿Blog posts?                     → services/blog.service.ts
+¿Propuesta de valor (features)?  → data/highlights.ts → homeFeatures
+¿Historia del negocio (about)?   → data/about-content.ts → aboutContent
 ¿Testimonios?                    → data/testimonials.ts
 ```
 

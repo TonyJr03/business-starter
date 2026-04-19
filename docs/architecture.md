@@ -166,8 +166,7 @@ Definiciones de tipos TypeScript del dominio. Sin lógica, solo interfaces y tip
 | `page-modules.ts` | `PageModuleId`, `PageModuleConfig`, `PageModulesConfig` |
 | `section-modules.ts` | `SectionModuleId`, `SectionModuleEntry` y props por sección |
 | `navigation.ts` | `NavItem` |
-| `secondary-modules.ts` | `FaqItem`, `GalleryItem`, `BlogPost` (solo tipos de contenido editorial) |
-| `content.ts` | `ContentFeature`, `AboutContent` |
+| `content.ts` | `FaqItem`, `GalleryItem`, `BlogPost`, `ContentFeature`, `AboutContent` (tipos de contenido editorial) |
 | `testimonial.ts` | `Testimonial` |
 
 ---
