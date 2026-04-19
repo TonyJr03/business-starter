@@ -1,12 +1,78 @@
-import type { Promotion, PromotionStatus } from '@/types';
-import { promotions } from '@/data';
+import type { Promotion, PromotionStatus, PromotionRule } from '@/types';
+import { promotions as localPromotions } from '@/data';
+import { getSupabaseClient } from '@/lib/supabase/client';
 
 /**
  * Servicio de promociones — lectura y resolución de estado.
  *
- * Contrato estable: las firmas de estas funciones no cambian al migrar
- * la fuente de datos de local a Supabase. Solo se reemplaza el cuerpo.
+ * Estrategia de fuente de datos:
+ *   1. Supabase (si las env vars están presentes y la consulta tiene éxito)
+ *   2. Datos locales como fallback (sin env, fallo de red, BD vacía)
+ *
+ * Contrato estable: las firmas públicas no cambian al migrar la fuente.
  */
+
+// ─── Tipo de fila SQL ─────────────────────────────────────────────────────────
+
+interface PromotionRow {
+  id: string;
+  business_id: string;
+  title: string;
+  description: string | null;
+  status: PromotionStatus;
+  discount_label: string | null;
+  image_url: string | null;
+  starts_at: string | null;
+  ends_at: string | null;
+  rules: PromotionRule[] | null;
+  product_ids: string[] | null;
+  category_ids: string[] | null;
+  sort_order: number;
+}
+
+// ─── Mapeador SQL → Dominio ───────────────────────────────────────────────────
+
+function rowToPromotion(row: PromotionRow): Promotion {
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description ?? '',
+    status: row.status,
+    discountLabel: row.discount_label ?? undefined,
+    imageUrl: row.image_url ?? undefined,
+    startsAt: row.starts_at ?? undefined,
+    endsAt: row.ends_at ?? undefined,
+    rules: row.rules ?? undefined,
+    productIds: row.product_ids ?? undefined,
+    categoryIds: row.category_ids ?? undefined,
+    sortOrder: row.sort_order,
+  };
+}
+
+// ─── Lector privado de Supabase ───────────────────────────────────────────────
+// Devuelve null si Supabase no está disponible o la consulta falla,
+// lo que activa el fallback a datos locales.
+
+async function fetchPromotionsFromDB(): Promise<Promotion[] | null> {
+  const db = getSupabaseClient();
+  if (!db) return null;
+
+  const { data, error } = await db
+    .from('promotions')
+    .select('*')
+    .order('sort_order');
+
+  if (error) {
+    if (import.meta.env.DEV) {
+      console.warn('[promotions.service] Error al leer promociones de Supabase:', error.message);
+    }
+    return null;
+  }
+
+  if (!data || data.length === 0) return null;
+
+  return (data as PromotionRow[]).map(rowToPromotion);
+}
 
 // ─── Estado ───────────────────────────────────────────────────────────────────
 
@@ -44,33 +110,38 @@ export function getPromotionStatus(
   return 'active';
 }
 
-// ─── Lectura ──────────────────────────────────────────────────────────────────
+// ─── API pública ──────────────────────────────────────────────────────────────
 
 /**
  * Devuelve todas las promociones sin filtrar.
+ * Fuente: Supabase → fallback local.
  */
 export async function getPromotions(): Promise<Promotion[]> {
-  return promotions;
+  return (await fetchPromotionsFromDB()) ?? localPromotions;
 }
 
 /**
  * Devuelve solo las promociones cuyo estado resuelto es 'active'.
+ * Fuente: Supabase → fallback local.
  *
  * @param now - Fecha de referencia. Por defecto: Date actual.
  */
 export async function getActivePromotions(now: Date = new Date()): Promise<Promotion[]> {
-  return promotions.filter((p) => getPromotionStatus(p, now) === 'active');
+  const all = await getPromotions();
+  return all.filter((p) => getPromotionStatus(p, now) === 'active');
 }
 
 /**
  * Busca una promoción por su id.
  * Devuelve undefined si no existe.
+ * Fuente: Supabase → fallback local.
  */
 export async function getPromotionById(id: string): Promise<Promotion | undefined> {
-  return promotions.find((p) => p.id === id);
+  const all = await getPromotions();
+  return all.find((p) => p.id === id);
 }
 
-// ─── Helpers de dominio ─────────────────────────────────────────────────────────
+// ─── Helpers de dominio ───────────────────────────────────────────────────────
 
 /**
  * Devuelve true si la promoción está activa en el momento indicado.
