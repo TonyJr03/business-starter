@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
 // Variables de entorno públicas requeridas para conectar con Supabase.
 // Prefijo PUBLIC_ para que Astro las exponga al cliente y al servidor.
@@ -35,4 +36,21 @@ export function getSupabaseClient(): SupabaseClient | null {
   }
 
   return _client;
+}
+
+/**
+ * Crea un cliente de Supabase para uso en el navegador (componentes React, scripts client-side).
+ *
+ * A diferencia de getSupabaseClient(), este cliente usa @supabase/ssr y almacena
+ * la sesión en cookies (en lugar de localStorage), de modo que el servidor puede
+ * leerla en cada request y validar la autenticación.
+ *
+ * IMPORTANTE: Solo invocar desde código que se ejecuta en el browser.
+ * Para uso en servidor/middleware, usar createSupabaseServerClient() de @/lib/supabase/server.
+ *
+ * Devuelve null si las variables de entorno no están configuradas.
+ */
+export function getSupabaseBrowserClient() {
+  if (!hasSupabaseEnv()) return null;
+  return createBrowserClient(supabaseUrl!, supabasePublishableKey!);
 }
