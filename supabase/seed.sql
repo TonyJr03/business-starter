@@ -278,21 +278,4 @@ BEGIN
       4
     );
 
-END $$   'Tarde de Batidos',
-      'Lleva dos batidos y paga uno. De 2:00 PM a 6:00 PM, de martes a jueves.',
-      'paused', '2×1',
-      '2026-04-15 00:00:00+00', '2026-05-15 23:59:59+00',
-      jsonb_build_array(
-        jsonb_build_object(
-          'type',        'bogo',
-          'minItems',    2,
-          'categoryIds', jsonb_build_array(cat_2::text),
-          'description', 'Segundo batido gratis al comprar el primero en el horario indicado.'
-        )
-      ),
-      NULL,
-      jsonb_build_array(cat_2::text),  -- Categoría: Bebidas frías
-      4
-    );
-
 END $$;
