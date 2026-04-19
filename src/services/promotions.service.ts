@@ -1,6 +1,7 @@
-import type { Promotion, PromotionStatus, PromotionRule } from '@/types';
+import type { Promotion, PromotionStatus } from '@/types';
 import { promotions as localPromotions } from '@/data';
 import { getSupabaseClient } from '@/lib/supabase/client';
+import { type PromotionRow, rowToPromotion } from '@/lib/persistence';
 
 /**
  * Servicio de promociones — lectura y resolución de estado.
@@ -11,43 +12,6 @@ import { getSupabaseClient } from '@/lib/supabase/client';
  *
  * Contrato estable: las firmas públicas no cambian al migrar la fuente.
  */
-
-// ─── Tipo de fila SQL ─────────────────────────────────────────────────────────
-
-interface PromotionRow {
-  id: string;
-  business_id: string;
-  title: string;
-  description: string | null;
-  status: PromotionStatus;
-  discount_label: string | null;
-  image_url: string | null;
-  starts_at: string | null;
-  ends_at: string | null;
-  rules: PromotionRule[] | null;
-  product_ids: string[] | null;
-  category_ids: string[] | null;
-  sort_order: number;
-}
-
-// ─── Mapeador SQL → Dominio ───────────────────────────────────────────────────
-
-function rowToPromotion(row: PromotionRow): Promotion {
-  return {
-    id: row.id,
-    title: row.title,
-    description: row.description ?? '',
-    status: row.status,
-    discountLabel: row.discount_label ?? undefined,
-    imageUrl: row.image_url ?? undefined,
-    startsAt: row.starts_at ?? undefined,
-    endsAt: row.ends_at ?? undefined,
-    rules: row.rules ?? undefined,
-    productIds: row.product_ids ?? undefined,
-    categoryIds: row.category_ids ?? undefined,
-    sortOrder: row.sort_order,
-  };
-}
 
 // ─── Lector privado de Supabase ───────────────────────────────────────────────
 // Devuelve null si Supabase no está disponible o la consulta falla,
