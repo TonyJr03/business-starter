@@ -1,9 +1,12 @@
 ---
 import { globalConfig, headerNav } from '@/config';
-import { getWhatsAppUrl } from '@/lib/whatsapp';
+import { getBusinessSettings } from '@/services/business.service';
 
+const settings = await getBusinessSettings();
+// Logo permanece en globalConfig (asset estático, no dato de BD)
 const { identity } = globalConfig;
-const whatsappUrl = getWhatsAppUrl();
+const waNumber = (settings.whatsapp ?? globalConfig.contact.whatsapp).replace(/\D/g, '');
+const whatsappUrl = `https://wa.me/${waNumber}`;
 ---
 
 <header class="sticky top-0 z-50 shadow-sm" style="background-color: var(--color-bg);">
@@ -13,7 +16,7 @@ const whatsappUrl = getWhatsAppUrl();
       <a href="/" class="text-xl font-bold" style="color: var(--color-primary);">
         {identity.logo?.url
           ? <img src={identity.logo.url} alt={identity.logo.alt} class="h-8 w-auto" />
-          : identity.name
+          : settings.name
         }
       </a>
 
