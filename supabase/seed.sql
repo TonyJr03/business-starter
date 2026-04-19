@@ -21,11 +21,30 @@ TRUNCATE promotions, products, categories, businesses RESTART IDENTITY CASCADE;
 -- =============================================================================
 -- 1. Business: Café La Esquina
 -- =============================================================================
-INSERT INTO businesses (id, slug, name) VALUES
+INSERT INTO businesses 
+  (id, slug, name, short_description, whatsapp, phone, email, address, city, country, social, hours) 
+VALUES 
   (
     '10000000-0000-0000-0000-000000000001',
     'cafe-la-esquina',
-    'Café La Esquina'
+    'Café La Esquina',
+    'Tu cafetería de confianza en La Habana. Café cubano, ambiente acogedor y los mejores sabores.',
+    '+5350000000',
+    '+5372000000',
+    'contacto@cafelaesquina.cu',
+    'Calle 23 esquina a L, Vedado',
+    'La Habana',
+    'Cuba',
+    '{"instagram":"https://instagram.com/cafelaesquina","facebook":"https://facebook.com/cafelaesquina"}'::jsonb,
+    '[
+      {"day":"Lunes",     "open":"08:00","close":"22:00","isClosed":false},
+      {"day":"Martes",    "open":"08:00","close":"22:00","isClosed":false},
+      {"day":"Miércoles", "open":"08:00","close":"22:00","isClosed":false},
+      {"day":"Jueves",    "open":"08:00","close":"22:00","isClosed":false},
+      {"day":"Viernes",   "open":"08:00","close":"22:00","isClosed":false},
+      {"day":"Sábado",    "open":"08:00","close":"22:00","isClosed":false},
+      {"day":"Domingo",   "open":"09:00","close":"18:00","isClosed":false}
+    ]'::jsonb
   );
 
 
@@ -71,7 +90,6 @@ INSERT INTO products
   (id, business_id, category_id, slug, name, description,
    money_amount, money_currency, is_available, is_featured, badge, sort_order)
 VALUES
-
   -- ── Cafés ────────────────────────────────────────────────────────────────
   (
     '30000000-0000-0000-0000-000000000001',
@@ -169,7 +187,6 @@ INSERT INTO promotions
   (id, business_id, title, description, status, discount_label,
    starts_at, ends_at, rules, product_ids, category_ids, sort_order)
 VALUES
-
   -- promo-1: Desayuno Completo (active)
   (
     '40000000-0000-0000-0000-000000000001',
