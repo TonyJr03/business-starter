@@ -19,6 +19,7 @@
 CREATE OR REPLACE FUNCTION set_updated_at()
 RETURNS TRIGGER
 LANGUAGE plpgsql
+SET search_path = public
 AS $$
 BEGIN
   NEW.updated_at = now();
@@ -92,6 +93,7 @@ CREATE TABLE products (
   money_currency   TEXT           NOT NULL DEFAULT 'CUP',  -- ISO 4217
   is_available     BOOLEAN        NOT NULL DEFAULT true,
   is_featured      BOOLEAN        NOT NULL DEFAULT false,
+  badge            TEXT,                      -- 'new' | 'popular' | 'offer'
   -- tags: array de objetos { id, label, color? } — ej. [{"id":"v","label":"Vegano"}]
   tags             JSONB,
   image_url        TEXT,

@@ -35,9 +35,15 @@ const dateFormatter = new Intl.DateTimeFormat('es-CU', {
 
 function formatDateRange(startsAt?: string, endsAt?: string): string | undefined {
   if (!startsAt && !endsAt) return undefined;
+
+  // Las fechas son fechas de calendario (YYYY-MM-DD), no momentos exactos.
+  // Parseamos solo los primeros 10 caracteres para evitar conversión de zona horaria.
+  // Usamos mediodía UTC (T12:00:00Z) para que el día sea el mismo en cualquier timezone.
+  const toDate = (s: string) => new Date(`${s.slice(0, 10)}T12:00:00Z`);
+
   const parts: string[] = [];
-  if (startsAt) parts.push(`Desde el ${dateFormatter.format(new Date(startsAt + 'T00:00:00'))}`);
-  if (endsAt)   parts.push(`hasta el ${dateFormatter.format(new Date(endsAt   + 'T00:00:00'))}`);
+  if (startsAt) parts.push(`Desde el ${dateFormatter.format(toDate(startsAt))}`);
+  if (endsAt)   parts.push(`hasta el ${dateFormatter.format(toDate(endsAt))}`);
   return parts.join(' ');
 }
 

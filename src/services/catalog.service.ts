@@ -55,6 +55,7 @@ interface ProductRow {
   money_currency: string;
   is_available: boolean;
   is_featured: boolean;
+  badge: string | null;
   tags: ProductTag[] | null;
   image_url: string | null;
   sort_order: number;
@@ -87,6 +88,7 @@ function rowToProduct(row: ProductRow): Product {
     slug: row.slug,
     description: row.description ?? '',
     money,
+    badge: row.badge ? (row.badge as any) : undefined,
     imageUrl: row.image_url ?? undefined,
     tags: row.tags ?? undefined,
     isAvailable: row.is_available,
