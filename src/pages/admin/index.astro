@@ -1,0 +1,217 @@
+---
+/**
+ * Dashboard principal del panel administrativo.
+ *
+ * Página de entrada tras el login. Muestra un resumen placeholder
+ * con accesos rápidos a las secciones del panel.
+ */
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { getUser } from '@/lib/auth';
+
+export const prerender = false;
+
+const usuario = await getUser(Astro.cookies, Astro.request);
+const emailUsuario = usuario?.email ?? undefined;
+
+// Secciones futuras del panel (Sprint 13+)
+const secciones = [
+  {
+    href:        '/admin/catalog',
+    titulo:      'Catálogo',
+    descripcion: 'Gestiona categorías y productos disponibles.',
+    icono:       'package',
+    disponible:  false,
+  },
+  {
+    href:        '/admin/promotions',
+    titulo:      'Promociones',
+    descripcion: 'Crea y edita ofertas especiales.',
+    icono:       'tag',
+    disponible:  false,
+  },
+  {
+    href:        '/admin/settings',
+    titulo:      'Ajustes del negocio',
+    descripcion: 'Contacto, horarios, redes sociales.',
+    icono:       'settings',
+    disponible:  false,
+  },
+];
+---
+
+<AdminLayout titulo="Dashboard" usuario={emailUsuario}>
+  <!-- Bienvenida -->
+  <section class="welcome">
+    <div class="welcome__text">
+      <h2 class="welcome__heading">Bienvenido al panel de administración</h2>
+      <p class="welcome__sub">
+        Desde aquí podrás gestionar el contenido de tu negocio.
+        {emailUsuario && (
+          <span> Conectado como <strong>{emailUsuario}</strong>.</span>
+        )}
+      </p>
+    </div>
+  </section>
+
+  <!-- Accesos rápidos -->
+  <section class="quick-access">
+    <h3 class="section-label">Secciones del panel</h3>
+    <div class="cards-grid">
+      {secciones.map(({ href, titulo, descripcion, icono, disponible }) => (
+        <a
+          href={disponible ? href : undefined}
+          class:list={['panel-card', { 'panel-card--disabled': !disponible }]}
+          aria-disabled={!disponible ? 'true' : undefined}
+          tabindex={!disponible ? -1 : undefined}
+        >
+          <div class="panel-card__icon">
+            {icono === 'package' && (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+              </svg>
+            )}
+            {icono === 'tag' && (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/>
+                <line x1="7" y1="7" x2="7.01" y2="7"/>
+              </svg>
+            )}
+            {icono === 'settings' && (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+              </svg>
+            )}
+          </div>
+          <div class="panel-card__body">
+            <span class="panel-card__title">{titulo}</span>
+            <span class="panel-card__desc">{descripcion}</span>
+            {!disponible && (
+              <span class="panel-card__badge">Próximamente</span>
+            )}
+          </div>
+          {disponible && (
+            <svg class="panel-card__arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          )}
+        </a>
+      ))}
+    </div>
+  </section>
+</AdminLayout>
+
+<style>
+  /* ── Bienvenida ─────────────────────────────────────────────────────── */
+  .welcome {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .welcome__heading {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 0.375rem;
+  }
+
+  .welcome__sub {
+    font-size: 0.875rem;
+    color: #6B7280;
+    margin: 0;
+  }
+
+  /* ── Sección de accesos ─────────────────────────────────────────────── */
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #9CA3AF;
+    margin: 0 0 0.875rem;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.875rem;
+  }
+
+  /* ── Panel card ─────────────────────────────────────────────────────── */
+  .panel-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    padding: 1.125rem 1.25rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .panel-card:not(.panel-card--disabled):hover {
+    border-color: #6F4E37;
+    box-shadow: 0 2px 8px rgba(111,78,55,0.1);
+  }
+
+  .panel-card--disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .panel-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    background: #F3F4F6;
+    border-radius: 8px;
+    color: #6B7280;
+    flex-shrink: 0;
+  }
+
+  .panel-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .panel-card__title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .panel-card__desc {
+    font-size: 0.8125rem;
+    color: #6B7280;
+  }
+
+  .panel-card__badge {
+    display: inline-block;
+    margin-top: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: #F3F4F6;
+    color: #9CA3AF;
+    border-radius: 99px;
+    width: fit-content;
+  }
+
+  .panel-card__arrow {
+    color: #D1D5DB;
+    flex-shrink: 0;
+  }
+</style>
