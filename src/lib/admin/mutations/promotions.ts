@@ -1,0 +1,106 @@
+import { z } from 'zod';
+import { ok, fail } from '../response';
+import { rowToPromotion } from '@/lib/persistence';
+import type { AdminContext } from '../guard';
+import type { MutationResult } from '../response';
+import type { Promotion } from '@/types';
+
+// ─── Esquemas de validación ───────────────────────────────────────────────────
+
+export const promotionCreateSchema = z.object({
+  title:         z.string().min(1, 'El título es obligatorio').max(200),
+  description:   z.string().max(1000).optional(),
+  status:        z.enum(['upcoming', 'active', 'expired', 'paused']).default('active'),
+  discountLabel: z.string().max(50).optional(),
+  /**
+   * Fechas opcionales en formato ISO 8601 o datetime-local (YYYY-MM-DDTHH:mm).
+   * Se almacenan directamente en la columna TIMESTAMPTZ de Supabase.
+   */
+  startsAt:      z.string().optional(),
+  endsAt:        z.string().optional(),
+  sortOrder:     z.coerce.number().int().min(0).default(0),
+});
+
+export const promotionUpdateSchema = promotionCreateSchema.partial();
+
+export type PromotionCreateInput = z.infer<typeof promotionCreateSchema>;
+export type PromotionUpdateInput = z.infer<typeof promotionUpdateSchema>;
+
+// ─── Mutaciones ───────────────────────────────────────────────────────────────
+
+/**
+ * Crea una promoción nueva para el negocio del contexto.
+ * rules, product_ids y category_ids quedan en null hasta S14+ (builder visual).
+ */
+export async function createPromotion(
+  ctx: AdminContext,
+  input: PromotionCreateInput,
+): Promise<MutationResult<Promotion>> {
+  const { data, error } = await ctx.supabase
+    .from('promotions')
+    .insert({
+      business_id:    ctx.businessId,
+      title:          input.title,
+      description:    input.description ?? null,
+      status:         input.status,
+      discount_label: input.discountLabel ?? null,
+      image_url:      null,
+      starts_at:      input.startsAt ?? null,
+      ends_at:        input.endsAt ?? null,
+      rules:          null,
+      product_ids:    null,
+      category_ids:   null,
+      sort_order:     input.sortOrder,
+    })
+    .select()
+    .single();
+
+  if (error) return fail(error.message);
+
+  return ok(rowToPromotion(data));
+}
+
+/** Actualiza los campos indicados de una promoción existente. */
+export async function updatePromotion(
+  ctx: AdminContext,
+  id: string,
+  input: PromotionUpdateInput,
+): Promise<MutationResult<Promotion>> {
+  const patch: Record<string, unknown> = {};
+  if (input.title         !== undefined) patch.title          = input.title;
+  if (input.description   !== undefined) patch.description    = input.description;
+  if (input.status        !== undefined) patch.status         = input.status;
+  if (input.discountLabel !== undefined) patch.discount_label = input.discountLabel ?? null;
+  if (input.startsAt      !== undefined) patch.starts_at      = input.startsAt ?? null;
+  if (input.endsAt        !== undefined) patch.ends_at        = input.endsAt ?? null;
+  if (input.sortOrder     !== undefined) patch.sort_order     = input.sortOrder;
+
+  const { data, error } = await ctx.supabase
+    .from('promotions')
+    .update(patch)
+    .eq('id', id)
+    .eq('business_id', ctx.businessId) // RLS: solo el negocio propietario
+    .select()
+    .single();
+
+  if (error) return fail(error.message);
+  if (!data)  return fail('Promoción no encontrada');
+
+  return ok(rowToPromotion(data));
+}
+
+/** Elimina una promoción por ID. */
+export async function deletePromotion(
+  ctx: AdminContext,
+  id: string,
+): Promise<MutationResult<{ id: string }>> {
+  const { error } = await ctx.supabase
+    .from('promotions')
+    .delete()
+    .eq('id', id)
+    .eq('business_id', ctx.businessId); // RLS: solo el negocio propietario
+
+  if (error) return fail(error.message);
+
+  return ok({ id });
+}
