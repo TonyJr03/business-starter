@@ -1,0 +1,251 @@
+---
+/**
+ * /admin/catalog/products/new — Formulario para crear un producto.
+ *
+ * GET  → muestra el formulario vacío con el selector de categorías cargado.
+ * POST → valida con Zod, llama createProduct(), redirige al listado.
+ *        Si hay error, re-renderiza con valores y mensajes.
+ */
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import {
+  requireAdmin,
+  productCreateSchema,
+  createProduct,
+} from '@/lib/admin';
+
+export const prerender = false;
+
+const guard = await requireAdmin(Astro.cookies, Astro.request);
+if (!guard.ok) return Astro.redirect('/admin/login');
+const { ctx } = guard;
+
+// Cargar categorías activas para el selector
+const { data: catRows } = await ctx.supabase
+  .from('categories')
+  .select('id, name')
+  .eq('business_id', ctx.businessId)
+  .eq('is_active', true)
+  .order('sort_order', { ascending: true })
+  .order('name',       { ascending: true });
+
+const categorias = catRows ?? [];
+
+// Estado del formulario
+let formError: string | undefined;
+let fieldErrors: Record<string, string[]> = {};
+let formValues = {
+  name:          '',
+  description:   '',
+  categoryId:    '',
+  moneyAmount:   0,
+  moneyCurrency: 'CUP',
+  isAvailable:   true,
+  isFeatured:    false,
+  badge:         '',
+  sortOrder:     0,
+};
+
+if (Astro.request.method === 'POST') {
+  const fd = await Astro.request.formData();
+
+  const raw = {
+    name:          String(fd.get('name')          ?? ''),
+    description:   String(fd.get('description')   ?? '') || undefined,
+    categoryId:    String(fd.get('categoryId')     ?? ''),
+    moneyAmount:   String(fd.get('moneyAmount')    ?? '0'),
+    moneyCurrency: String(fd.get('moneyCurrency')  ?? 'CUP'),
+    isAvailable:   fd.get('isAvailable')  === 'on',
+    isFeatured:    fd.get('isFeatured')   === 'on',
+    badge:         String(fd.get('badge') ?? '') || undefined,
+    sortOrder:     String(fd.get('sortOrder')      ?? '0'),
+  };
+
+  formValues = {
+    name:          raw.name,
+    description:   raw.description ?? '',
+    categoryId:    raw.categoryId,
+    moneyAmount:   Number(raw.moneyAmount)  || 0,
+    moneyCurrency: raw.moneyCurrency,
+    isAvailable:   raw.isAvailable,
+    isFeatured:    raw.isFeatured,
+    badge:         raw.badge ?? '',
+    sortOrder:     Number(raw.sortOrder)   || 0,
+  };
+
+  const parsed = productCreateSchema.safeParse(raw);
+
+  if (!parsed.success) {
+    fieldErrors = parsed.error.flatten().fieldErrors as Record<string, string[]>;
+  } else {
+    const result = await createProduct(ctx, parsed.data);
+    if (result.ok) {
+      return Astro.redirect('/admin/catalog/products?created=1');
+    }
+    if (result.field) {
+      fieldErrors[result.field] = [result.error];
+    } else {
+      formError = result.error;
+    }
+  }
+}
+---
+
+<AdminLayout titulo="Nuevo producto" usuario={ctx.userEmail}>
+
+  <a href="/admin/catalog/products" class="back-link">← Volver a productos</a>
+
+  <div class="page-header">
+    <h2 class="page-title">Nuevo producto</h2>
+  </div>
+
+  {formError && (
+    <div class="alert alert--error" role="alert">{formError}</div>
+  )}
+
+  {categorias.length === 0 && (
+    <div class="alert alert--error" role="alert">
+      No hay categorías activas.{' '}
+      <a href="/admin/catalog/categories/new">Crea una categoría</a> primero.
+    </div>
+  )}
+
+  <div class="card card--padded" style="max-width: 640px;">
+    <form method="POST" novalidate>
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="name" class="form-label form-label--required">Nombre</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            class:list={['form-input', { 'form-input--error': fieldErrors.name }]}
+            value={formValues.name}
+            required
+            autofocus
+            maxlength="200"
+          />
+          {fieldErrors.name && (
+            <span class="form-field-error" role="alert">{fieldErrors.name[0]}</span>
+          )}
+          <span class="form-hint">El slug se genera automáticamente desde el nombre.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="categoryId" class="form-label form-label--required">Categoría</label>
+          <select
+            id="categoryId"
+            name="categoryId"
+            class:list={['form-select', { 'form-input--error': fieldErrors.categoryId }]}
+            required
+          >
+            <option value="">Selecciona una categoría…</option>
+            {categorias.map((c: any) => (
+              <option value={c.id} selected={formValues.categoryId === c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+          {fieldErrors.categoryId && (
+            <span class="form-field-error" role="alert">{fieldErrors.categoryId[0]}</span>
+          )}
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="form-label">Descripción</label>
+          <textarea
+            id="description"
+            name="description"
+            class="form-textarea"
+            rows="3"
+            maxlength="1000"
+          >{formValues.description}</textarea>
+        </div>
+
+        {/* Precio en dos columnas */}
+        <div style="display: grid; grid-template-columns: 1fr auto; gap: 0.75rem; align-items: end;">
+          <div class="form-group">
+            <label for="moneyAmount" class="form-label form-label--required">Precio</label>
+            <input
+              type="number"
+              id="moneyAmount"
+              name="moneyAmount"
+              class:list={['form-input', { 'form-input--error': fieldErrors.moneyAmount }]}
+              value={formValues.moneyAmount}
+              min="0"
+              step="0.01"
+              required
+            />
+            {fieldErrors.moneyAmount && (
+              <span class="form-field-error" role="alert">{fieldErrors.moneyAmount[0]}</span>
+            )}
+          </div>
+          <div class="form-group">
+            <label for="moneyCurrency" class="form-label">Divisa</label>
+            <select id="moneyCurrency" name="moneyCurrency" class="form-select" style="width: 90px;">
+              <option value="CUP" selected={formValues.moneyCurrency === 'CUP'}>CUP</option>
+              <option value="USD" selected={formValues.moneyCurrency === 'USD'}>USD</option>
+              <option value="EUR" selected={formValues.moneyCurrency === 'EUR'}>EUR</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="badge" class="form-label">Badge</label>
+          <select id="badge" name="badge" class="form-select" style="max-width: 200px;">
+            <option value=""        selected={formValues.badge === ''}>Sin badge</option>
+            <option value="new"     selected={formValues.badge === 'new'}>Nuevo</option>
+            <option value="popular" selected={formValues.badge === 'popular'}>Popular</option>
+            <option value="offer"   selected={formValues.badge === 'offer'}>Oferta</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="sortOrder" class="form-label">Orden</label>
+          <input
+            type="number"
+            id="sortOrder"
+            name="sortOrder"
+            class="form-input"
+            value={formValues.sortOrder}
+            min="0"
+            style="max-width: 120px;"
+          />
+          <span class="form-hint">Menor número aparece primero.</span>
+        </div>
+
+        <div class="form-group" style="gap: 0.625rem;">
+          <div class="form-checkbox-row">
+            <input
+              type="checkbox"
+              id="isAvailable"
+              name="isAvailable"
+              class="form-checkbox"
+              checked={formValues.isAvailable}
+            />
+            <label for="isAvailable" class="form-label" style="margin: 0;">Disponible</label>
+          </div>
+          <div class="form-checkbox-row">
+            <input
+              type="checkbox"
+              id="isFeatured"
+              name="isFeatured"
+              class="form-checkbox"
+              checked={formValues.isFeatured}
+            />
+            <label for="isFeatured" class="form-label" style="margin: 0;">Destacado</label>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn--primary" disabled={categorias.length === 0}>
+          Crear producto
+        </button>
+        <a href="/admin/catalog/products" class="btn btn--secondary">Cancelar</a>
+      </div>
+    </form>
+  </div>
+
+</AdminLayout>

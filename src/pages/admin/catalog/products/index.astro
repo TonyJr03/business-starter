@@ -1,0 +1,115 @@
+---
+/**
+ * /admin/catalog/products — Listado de productos del negocio.
+ *
+ * Muestra todos los productos con su categoría, precio y estado.
+ * Acepta feedback via query string:
+ *   ?created=1  → producto creado
+ *   ?updated=1  → producto actualizado
+ *   ?deleted=1  → producto eliminado
+ */
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { requireAdmin } from '@/lib/admin';
+
+export const prerender = false;
+
+const guard = await requireAdmin(Astro.cookies, Astro.request);
+if (!guard.ok) return Astro.redirect('/admin/login');
+const { ctx } = guard;
+
+// Cargar productos con nombre de categoría (JOIN)
+const { data: rows, error: queryError } = await ctx.supabase
+  .from('products')
+  .select('id, slug, name, money_amount, money_currency, is_available, is_featured, badge, sort_order, categories(name)')
+  .eq('business_id', ctx.businessId)
+  .order('sort_order', { ascending: true })
+  .order('name',       { ascending: true });
+
+const productos = rows ?? [];
+
+// Feedback
+const created = Astro.url.searchParams.get('created') === '1';
+const updated = Astro.url.searchParams.get('updated') === '1';
+const deleted = Astro.url.searchParams.get('deleted') === '1';
+---
+
+<AdminLayout titulo="Productos" usuario={ctx.userEmail}>
+
+  {created && <div class="alert alert--success" role="status">Producto creado correctamente.</div>}
+  {updated && <div class="alert alert--success" role="status">Producto actualizado correctamente.</div>}
+  {deleted && <div class="alert alert--success" role="status">Producto eliminado.</div>}
+  {queryError && (
+    <div class="alert alert--error" role="alert">
+      Error al cargar los productos: {queryError.message}
+    </div>
+  )}
+
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Productos</h2>
+      <p class="page-subtitle">
+        {productos.length} {productos.length === 1 ? 'producto' : 'productos'}
+      </p>
+    </div>
+    <a href="/admin/catalog/products/new" class="btn btn--primary">
+      + Nuevo producto
+    </a>
+  </div>
+
+  <div class="card">
+    {productos.length === 0 ? (
+      <div class="empty-state">
+        <p>No hay productos aún.</p>
+        <p><a href="/admin/catalog/products/new">Crea el primer producto</a>.</p>
+      </div>
+    ) : (
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th>Estado</th>
+            <th>Orden</th>
+            <th class="col-actions"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {productos.map((p: any) => (
+            <tr>
+              <td>
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <span>{p.name}</span>
+                  {p.badge && (
+                    <span class="row-slug">{p.badge}</span>
+                  )}
+                </div>
+              </td>
+              <td>{p.categories?.name ?? '—'}</td>
+              <td style="white-space: nowrap;">
+                {Number(p.money_amount).toFixed(2)} {p.money_currency}
+              </td>
+              <td>
+                <span class:list={['badge', p.is_available ? 'badge--active' : 'badge--inactive']}>
+                  {p.is_available ? 'Disponible' : 'Agotado'}
+                </span>
+                {p.is_featured && (
+                  <span class="badge badge--active" style="margin-left: 4px; background: #FEF3C7; color: #92400E;">
+                    Destacado
+                  </span>
+                )}
+              </td>
+              <td>{p.sort_order}</td>
+              <td class="col-actions">
+                <a href={`/admin/catalog/products/${p.id}`} class="btn btn--ghost btn--sm">
+                  Editar
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )}
+  </div>
+
+</AdminLayout>
