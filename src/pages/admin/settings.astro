@@ -1,0 +1,313 @@
+---
+/**
+ * /admin/settings — Editar ajustes básicos del negocio.
+ *
+ * GET  → carga datos de la BD (fallback a globalConfig si no hay fila)
+ * POST → valida, llama updateSettings(), redirige con ?updated=1
+ *
+ * Campos excluidos en S13:
+ *   · hours  → gestión de horarios requiere UI más compleja (S14+)
+ *   · slug   → no editable (cambiaría URLs y referencias)
+ *   · branding/modules/navigation → gestionados por código
+ */
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import {
+  requireAdmin,
+  settingsUpdateSchema,
+  updateSettings,
+} from '@/lib/admin';
+import type { BusinessSettings } from '@/lib/persistence';
+
+export const prerender = false;
+
+const guard = await requireAdmin(Astro.cookies, Astro.request);
+if (!guard.ok) return Astro.redirect('/admin/login');
+const { ctx } = guard;
+
+// Cargar ajustes actuales del negocio desde BD
+const { data: row } = await ctx.supabase
+  .from('businesses')
+  .select(
+    'id, slug, name, short_description, whatsapp, phone, email, address, city, country, social, hours',
+  )
+  .eq('id', ctx.businessId)
+  .single();
+
+// Estado del formulario — poblado desde BD o vacío
+let formError: string | undefined;
+let fieldErrors: Record<string, string[]> = {};
+let saved = Astro.url.searchParams.has('updated');
+
+let formValues = {
+  name:             (row?.name             ?? '') as string,
+  shortDescription: (row?.short_description ?? '') as string,
+  whatsapp:         (row?.whatsapp          ?? '') as string,
+  phone:            (row?.phone             ?? '') as string,
+  email:            (row?.email             ?? '') as string,
+  address:          (row?.address           ?? '') as string,
+  city:             (row?.city              ?? '') as string,
+  country:          (row?.country           ?? '') as string,
+  socialInstagram:  (row?.social?.instagram ?? '') as string,
+  socialFacebook:   (row?.social?.facebook  ?? '') as string,
+  socialTelegram:   (row?.social?.telegram  ?? '') as string,
+  socialTwitter:    (row?.social?.twitter   ?? '') as string,
+  socialYoutube:    (row?.social?.youtube   ?? '') as string,
+};
+
+if (Astro.request.method === 'POST') {
+  const fd = await Astro.request.formData();
+
+  const raw = {
+    name:             String(fd.get('name')             ?? ''),
+    shortDescription: String(fd.get('shortDescription') ?? '') || undefined,
+    whatsapp:         String(fd.get('whatsapp')         ?? '') || undefined,
+    phone:            String(fd.get('phone')            ?? '') || undefined,
+    email:            String(fd.get('email')            ?? '') || undefined,
+    address:          String(fd.get('address')          ?? '') || undefined,
+    city:             String(fd.get('city')             ?? '') || undefined,
+    country:          String(fd.get('country')          ?? '') || undefined,
+    socialInstagram:  String(fd.get('socialInstagram')  ?? '') || undefined,
+    socialFacebook:   String(fd.get('socialFacebook')   ?? '') || undefined,
+    socialTelegram:   String(fd.get('socialTelegram')   ?? '') || undefined,
+    socialTwitter:    String(fd.get('socialTwitter')    ?? '') || undefined,
+    socialYoutube:    String(fd.get('socialYoutube')    ?? '') || undefined,
+  };
+
+  // Preservar valores del formulario en caso de error
+  formValues = {
+    name:             raw.name,
+    shortDescription: raw.shortDescription     ?? '',
+    whatsapp:         raw.whatsapp             ?? '',
+    phone:            raw.phone                ?? '',
+    email:            raw.email                ?? '',
+    address:          raw.address              ?? '',
+    city:             raw.city                 ?? '',
+    country:          raw.country              ?? '',
+    socialInstagram:  raw.socialInstagram      ?? '',
+    socialFacebook:   raw.socialFacebook       ?? '',
+    socialTelegram:   raw.socialTelegram       ?? '',
+    socialTwitter:    raw.socialTwitter        ?? '',
+    socialYoutube:    raw.socialYoutube        ?? '',
+  };
+
+  const parsed = settingsUpdateSchema.safeParse(raw);
+
+  if (!parsed.success) {
+    fieldErrors = parsed.error.flatten().fieldErrors as Record<string, string[]>;
+  } else {
+    const result = await updateSettings(ctx, parsed.data);
+    if (result.ok) {
+      return Astro.redirect('/admin/settings?updated=1');
+    }
+    formError = result.error;
+  }
+}
+---
+
+<AdminLayout titulo="Ajustes del negocio" usuario={ctx.userEmail}>
+
+  <div class="page-header">
+    <h2 class="page-title">Ajustes del negocio</h2>
+  </div>
+
+  {saved && (
+    <div class="alert alert--success" role="status">
+      Ajustes guardados correctamente.
+    </div>
+  )}
+
+  {formError && (
+    <div class="alert alert--error" role="alert">{formError}</div>
+  )}
+
+  <form method="POST" novalidate style="max-width: 680px;">
+
+    <!-- Información general -->
+    <div class="card card--padded" style="margin-bottom: 1.5rem;">
+      <h3 class="section-heading">Información general</h3>
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="name" class="form-label form-label--required">Nombre del negocio</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            class:list={['form-input', { 'form-input--error': fieldErrors.name }]}
+            value={formValues.name}
+            required maxlength="200" autofocus
+          />
+          {fieldErrors.name && (
+            <span class="form-field-error" role="alert">{fieldErrors.name[0]}</span>
+          )}
+        </div>
+
+        <div class="form-group">
+          <label for="shortDescription" class="form-label">Descripción breve</label>
+          <textarea
+            id="shortDescription"
+            name="shortDescription"
+            class="form-textarea"
+            rows="2"
+            maxlength="300"
+            placeholder="Una línea descriptiva para el footer y meta tags."
+          >{formValues.shortDescription}</textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Contacto -->
+    <div class="card card--padded" style="margin-bottom: 1.5rem;">
+      <h3 class="section-heading">Contacto</h3>
+      <div class="form-grid">
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="whatsapp" class="form-label">WhatsApp</label>
+            <input
+              type="text"
+              id="whatsapp"
+              name="whatsapp"
+              class:list={['form-input', { 'form-input--error': fieldErrors.whatsapp }]}
+              value={formValues.whatsapp}
+              placeholder="+5350000000"
+              maxlength="30"
+            />
+            {fieldErrors.whatsapp && (
+              <span class="form-field-error" role="alert">{fieldErrors.whatsapp[0]}</span>
+            )}
+          </div>
+          <div class="form-group">
+            <label for="phone" class="form-label">Teléfono</label>
+            <input
+              type="text"
+              id="phone"
+              name="phone"
+              class:list={['form-input', { 'form-input--error': fieldErrors.phone }]}
+              value={formValues.phone}
+              placeholder="+5350000000"
+              maxlength="30"
+            />
+            {fieldErrors.phone && (
+              <span class="form-field-error" role="alert">{fieldErrors.phone[0]}</span>
+            )}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">Email de contacto</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class:list={['form-input', { 'form-input--error': fieldErrors.email }]}
+            value={formValues.email}
+            placeholder="hola@ejemplo.com"
+            maxlength="200"
+          />
+          {fieldErrors.email && (
+            <span class="form-field-error" role="alert">{fieldErrors.email[0]}</span>
+          )}
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Ubicación -->
+    <div class="card card--padded" style="margin-bottom: 1.5rem;">
+      <h3 class="section-heading">Ubicación</h3>
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="address" class="form-label">Dirección</label>
+          <input
+            type="text"
+            id="address"
+            name="address"
+            class="form-input"
+            value={formValues.address}
+            placeholder="Calle, número, municipio"
+            maxlength="300"
+          />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="city" class="form-label">Ciudad / Municipio</label>
+            <input
+              type="text"
+              id="city"
+              name="city"
+              class="form-input"
+              value={formValues.city}
+              maxlength="100"
+            />
+          </div>
+          <div class="form-group">
+            <label for="country" class="form-label">País</label>
+            <input
+              type="text"
+              id="country"
+              name="country"
+              class="form-input"
+              value={formValues.country}
+              maxlength="100"
+            />
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Redes sociales -->
+    <div class="card card--padded" style="margin-bottom: 1.5rem;">
+      <h3 class="section-heading">Redes sociales</h3>
+      <p class="form-hint" style="margin-bottom: 0.75rem;">
+        Ingresa la URL completa o el @usuario según la red.
+      </p>
+      <div class="form-grid">
+
+        {[
+          { id: 'socialInstagram', label: 'Instagram', placeholder: 'https://instagram.com/tunegocio', value: formValues.socialInstagram },
+          { id: 'socialFacebook',  label: 'Facebook',  placeholder: 'https://facebook.com/tunegocio', value: formValues.socialFacebook },
+          { id: 'socialTelegram',  label: 'Telegram',  placeholder: 'https://t.me/tunegocio',         value: formValues.socialTelegram },
+          { id: 'socialTwitter',   label: 'Twitter / X', placeholder: 'https://x.com/tunegocio',     value: formValues.socialTwitter },
+          { id: 'socialYoutube',   label: 'YouTube',   placeholder: 'https://youtube.com/@tunegocio', value: formValues.socialYoutube },
+        ].map(({ id, label, placeholder, value }) => (
+          <div class="form-group">
+            <label for={id} class="form-label">{label}</label>
+            <input
+              type="text"
+              id={id}
+              name={id}
+              class="form-input"
+              value={value}
+              placeholder={placeholder}
+              maxlength="200"
+            />
+          </div>
+        ))}
+
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="form-actions">
+      <button type="submit" class="btn btn--primary">Guardar ajustes</button>
+    </div>
+
+  </form>
+
+</AdminLayout>
+
+<style>
+  .section-heading {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #F3F4F6;
+  }
+</style>
