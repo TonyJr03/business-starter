@@ -1,0 +1,21 @@
+---
+/**
+ * Endpoint de logout admin.
+ *
+ * Acepta solo POST (formulario de logout).
+ * Cierra la sesión en Supabase e invalida las cookies de auth,
+ * luego redirige al login.
+ */
+import { signOut } from '@/lib/auth';
+
+export const prerender = false;
+
+const { request, cookies, redirect } = Astro;
+
+if (request.method !== 'POST') {
+  return redirect('/admin');
+}
+
+await signOut(cookies, request);
+return redirect('/admin/login');
+---

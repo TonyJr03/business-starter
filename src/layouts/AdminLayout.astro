@@ -1,0 +1,180 @@
+---
+/**
+ * AdminLayout — Layout base del panel administrativo.
+ *
+ * Completamente separado de MainLayout y del sitio público.
+ * Estructura: sidebar fijo a la izquierda + área de contenido principal.
+ *
+ * @prop titulo - Título de la sección actual (aparece en el header interno)
+ * @prop usuario - Email o nombre del usuario autenticado (opcional, para mostrar en header)
+ */
+import AdminSidebar from '@/components/admin/AdminSidebar.astro';
+import '@/styles/global.css';
+
+interface Props {
+  titulo: string;
+  usuario?: string;
+}
+
+const { titulo, usuario } = Astro.props;
+const rutaActual = Astro.url.pathname.replace(/\/$/, '') || '/admin';
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo} — Admin</title>
+    <!-- No indexar el panel de administración -->
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+
+  <body>
+    <div class="admin-shell">
+      <!-- Sidebar de navegación -->
+      <AdminSidebar rutaActual={rutaActual} />
+
+      <!-- Área de contenido -->
+      <div class="admin-content">
+        <!-- Header interno del panel -->
+        <header class="admin-header">
+          <h1 class="admin-header__title">{titulo}</h1>
+
+          <div class="admin-header__actions">
+            {usuario && (
+              <span class="admin-header__user" title={usuario}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+                {usuario}
+              </span>
+            )}
+
+            <!-- Logout via formulario POST — sin JS requerido -->
+            <form method="POST" action="/admin/logout" class="logout-form">
+              <button type="submit" class="btn-logout">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Cerrar sesión
+              </button>
+            </form>
+          </div>
+        </header>
+
+        <!-- Contenido de la página -->
+        <main class="admin-main">
+          <slot />
+        </main>
+      </div>
+    </div>
+
+    <style>
+      /* ── Reset y base ───────────────────────────────────────────────── */
+      *, *::before, *::after { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #F3F4F6;
+        color: #111827;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ── Shell: sidebar + contenido en fila ─────────────────────────── */
+      .admin-shell {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .admin-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0; /* evita overflow con contenidos anchos */
+      }
+
+      /* ── Header interno ─────────────────────────────────────────────── */
+      .admin-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0 1.5rem;
+        height: 56px;
+        background: #FFFFFF;
+        border-bottom: 1px solid #E5E7EB;
+        flex-shrink: 0;
+      }
+
+      .admin-header__title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+      }
+
+      .admin-header__actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .admin-header__user {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.8125rem;
+        color: #6B7280;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* ── Botón logout ───────────────────────────────────────────────── */
+      .logout-form { margin: 0; }
+
+      .btn-logout {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: #374151;
+        background: transparent;
+        border: 1px solid #D1D5DB;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s, border-color 0.15s;
+      }
+
+      .btn-logout:hover {
+        background: #FEF2F2;
+        color: #991B1B;
+        border-color: #FECACA;
+      }
+
+      /* ── Área de contenido principal ────────────────────────────────── */
+      .admin-main {
+        flex: 1;
+        padding: 1.75rem 1.5rem;
+        overflow-y: auto;
+      }
+
+      /* ── Responsive: sidebar colapsado en mobile ─────────────────────
+         (Expansión completa queda para Sprint 13+)                    */
+      @media (max-width: 768px) {
+        .admin-shell {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </body>
+</html>

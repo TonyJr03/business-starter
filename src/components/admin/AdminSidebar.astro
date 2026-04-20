@@ -1,0 +1,168 @@
+---
+/**
+ * AdminSidebar — Navegación lateral del panel administrativo.
+ *
+ * Recibe la ruta activa para resaltar el ítem correspondiente.
+ * Los items futuros (Sprint 13+) se pueden agregar al array `navItems`.
+ */
+
+interface Props {
+  rutaActual: string;
+}
+
+const { rutaActual } = Astro.props;
+
+const navItems = [
+  { href: '/admin',       label: 'Dashboard', icono: 'grid'     },
+  { href: '/admin/catalog',   label: 'Catálogo',  icono: 'package'  },
+  { href: '/admin/promotions',label: 'Promociones',icono: 'tag'      },
+];
+
+function esActivo(href: string): boolean {
+  // Coincidencia exacta para /admin, prefijo para subrutas.
+  if (href === '/admin') return rutaActual === '/admin';
+  return rutaActual.startsWith(href);
+}
+---
+
+<aside class="admin-sidebar">
+  <!-- Marca del panel -->
+  <div class="sidebar-brand">
+    <span class="brand-dot" aria-hidden="true"></span>
+    <span class="brand-label">Admin</span>
+  </div>
+
+  <!-- Navegación principal -->
+  <nav aria-label="Navegación admin">
+    <ul class="nav-list">
+      {navItems.map(({ href, label, icono }) => (
+        <li>
+          <a
+            href={href}
+            class:list={['nav-item', { 'nav-item--active': esActivo(href) }]}
+            aria-current={esActivo(href) ? 'page' : undefined}
+          >
+            <!-- Icono SVG inline según tipo -->
+            {icono === 'grid' && (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+              </svg>
+            )}
+            {icono === 'package' && (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+              </svg>
+            )}
+            {icono === 'tag' && (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/>
+                <line x1="7" y1="7" x2="7.01" y2="7"/>
+              </svg>
+            )}
+            <span>{label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  <!-- Separador + enlace al sitio público -->
+  <div class="sidebar-footer">
+    <a href="/" class="site-link" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+        <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+      </svg>
+      <span>Ver sitio</span>
+    </a>
+  </div>
+</aside>
+
+<style>
+  .admin-sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 220px;
+    min-height: 100vh;
+    background: #111827;
+    color: #D1D5DB;
+    flex-shrink: 0;
+  }
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 1.5rem 1.25rem 1.25rem;
+    border-bottom: 1px solid #1F2937;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: #F9FAFB;
+    letter-spacing: 0.02em;
+  }
+
+  .brand-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #6F4E37;
+    flex-shrink: 0;
+  }
+
+  .nav-list {
+    list-style: none;
+    padding: 1rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #9CA3AF;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .nav-item:hover {
+    background: #1F2937;
+    color: #F9FAFB;
+  }
+
+  .nav-item--active {
+    background: #1F2937;
+    color: #F9FAFB;
+  }
+
+  .nav-item--active svg {
+    color: #D4A574;
+  }
+
+  .sidebar-footer {
+    padding: 1rem 0.75rem 1.25rem;
+    border-top: 1px solid #1F2937;
+  }
+
+  .site-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: #6B7280;
+    text-decoration: none;
+    padding: 0.375rem 0.5rem;
+    border-radius: 4px;
+    transition: color 0.15s;
+  }
+
+  .site-link:hover { color: #9CA3AF; }
+</style>
