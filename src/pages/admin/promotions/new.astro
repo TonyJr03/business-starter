@@ -1,0 +1,238 @@
+---
+/**
+ * /admin/promotions/new — Formulario para crear una promoción.
+ *
+ * GET  → formulario vacío.
+ * POST → valida con Zod, llama createPromotion(), redirige al listado.
+ */
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { requireAdmin, promotionCreateSchema, createPromotion } from '@/lib/admin';
+
+export const prerender = false;
+
+const guard = await requireAdmin(Astro.cookies, Astro.request);
+if (!guard.ok) return Astro.redirect('/admin/login');
+const { ctx } = guard;
+
+let formError: string | undefined;
+let fieldErrors: Record<string, string[]> = {};
+let formValues = {
+  title:           '',
+  description:     '',
+  status:          'active' as string,
+  discountLabel:   '',
+  startsAt:        '',
+  endsAt:          '',
+  sortOrder:       0,
+  ruleType:        '' as string,
+  ruleValue:       '' as string,
+  ruleDescription: '',
+};
+
+if (Astro.request.method === 'POST') {
+  const fd = await Astro.request.formData();
+
+  const raw = {
+    title:           String(fd.get('title')           ?? ''),
+    description:     String(fd.get('description')     ?? '') || undefined,
+    status:          String(fd.get('status')           ?? 'active'),
+    discountLabel:   String(fd.get('discountLabel')    ?? '') || undefined,
+    startsAt:        String(fd.get('startsAt')         ?? '') || undefined,
+    endsAt:          String(fd.get('endsAt')           ?? '') || undefined,
+    sortOrder:       String(fd.get('sortOrder')        ?? '0'),
+    ruleType:        String(fd.get('ruleType')         ?? '') || undefined,
+    ruleValue:       String(fd.get('ruleValue')        ?? '') || undefined,
+    ruleDescription: String(fd.get('ruleDescription')  ?? '') || undefined,
+  };
+
+  formValues = {
+    title:           raw.title,
+    description:     raw.description     ?? '',
+    status:          raw.status,
+    discountLabel:   raw.discountLabel   ?? '',
+    startsAt:        raw.startsAt        ?? '',
+    endsAt:          raw.endsAt          ?? '',
+    sortOrder:       Number(raw.sortOrder) || 0,
+    ruleType:        raw.ruleType        ?? '',
+    ruleValue:       raw.ruleValue       ?? '',
+    ruleDescription: raw.ruleDescription ?? '',
+  };
+
+  const parsed = promotionCreateSchema.safeParse(raw);
+
+  if (!parsed.success) {
+    fieldErrors = parsed.error.flatten().fieldErrors as Record<string, string[]>;
+  } else {
+    const result = await createPromotion(ctx, parsed.data);
+    if (result.ok) {
+      return Astro.redirect('/admin/promotions?created=1');
+    }
+    formError = result.error;
+  }
+}
+---
+
+<AdminLayout titulo="Nueva promoción" usuario={ctx.userEmail}>
+
+  <a href="/admin/promotions" class="back-link">← Volver a promociones</a>
+
+  <div class="page-header">
+    <h2 class="page-title">Nueva promoción</h2>
+  </div>
+
+  {formError && <div class="alert alert--error" role="alert">{formError}</div>}
+
+  <div class="card card--padded" style="max-width: 640px;">
+    <form method="POST" novalidate>
+      <div class="form-grid">
+
+        {/* Título */}
+        <div class="form-group">
+          <label for="title" class="form-label form-label--required">Título</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            class:list={['form-input', { 'form-input--error': fieldErrors.title }]}
+            value={formValues.title}
+            required autofocus maxlength="200"
+          />
+          {fieldErrors.title && (
+            <span class="form-field-error" role="alert">{fieldErrors.title[0]}</span>
+          )}
+        </div>
+
+        {/* Descripción */}
+        <div class="form-group">
+          <label for="description" class="form-label">Descripción</label>
+          <textarea
+            id="description"
+            name="description"
+            class="form-textarea"
+            rows="3"
+            maxlength="1000"
+          >{formValues.description}</textarea>
+        </div>
+
+        {/* Estado + Etiqueta descuento en fila */}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="status" class="form-label form-label--required">Estado</label>
+            <select id="status" name="status" class="form-select">
+              {['active','upcoming','paused','expired'].map(s => (
+                <option value={s} selected={formValues.status === s}>
+                  {{ active:'Activa', upcoming:'Próxima', paused:'Pausada', expired:'Expirada' }[s]}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="discountLabel" class="form-label">Etiqueta de descuento</label>
+            <input
+              type="text"
+              id="discountLabel"
+              name="discountLabel"
+              class="form-input"
+              value={formValues.discountLabel}
+              placeholder="ej. 20% OFF"
+              maxlength="50"
+            />
+          </div>
+        </div>
+
+        {/* Fechas */}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="startsAt" class="form-label">Fecha inicio</label>
+            <input
+              type="datetime-local"
+              id="startsAt"
+              name="startsAt"
+              class="form-input"
+              value={formValues.startsAt}
+            />
+          </div>
+          <div class="form-group">
+            <label for="endsAt" class="form-label">Fecha fin</label>
+            <input
+              type="datetime-local"
+              id="endsAt"
+              name="endsAt"
+              class="form-input"
+              value={formValues.endsAt}
+            />
+          </div>
+        </div>
+
+        {/* Orden */}
+        <div class="form-group">
+          <label for="sortOrder" class="form-label">Orden</label>
+          <input
+            type="number"
+            id="sortOrder"
+            name="sortOrder"
+            class="form-input"
+            value={formValues.sortOrder}
+            min="0"
+            style="max-width: 120px;"
+          />
+        </div>
+
+        {/* Regla de descuento */}
+        <fieldset style="border: 1px solid #E5E7EB; border-radius: 6px; padding: 1rem; margin: 0;">
+          <legend style="font-size: 0.875rem; font-weight: 500; color: #374151; padding: 0 0.5rem;">
+            Regla de descuento <span style="font-weight: 400; color: #9CA3AF;">(opcional)</span>
+          </legend>
+          <div class="form-grid" style="margin-top: 0.5rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+              <div class="form-group">
+                <label for="ruleType" class="form-label">Tipo</label>
+                <select id="ruleType" name="ruleType" class="form-select">
+                  <option value="" selected={formValues.ruleType === ''}>Sin regla</option>
+                  <option value="percentage" selected={formValues.ruleType === 'percentage'}>Porcentaje (%)</option>
+                  <option value="fixed"      selected={formValues.ruleType === 'fixed'}>Monto fijo</option>
+                  <option value="bogo"       selected={formValues.ruleType === 'bogo'}>2×1</option>
+                  <option value="combo"      selected={formValues.ruleType === 'combo'}>Combo</option>
+                  <option value="custom"     selected={formValues.ruleType === 'custom'}>Personalizado</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="ruleValue" class="form-label">Valor</label>
+                <input
+                  type="number"
+                  id="ruleValue"
+                  name="ruleValue"
+                  class="form-input"
+                  value={formValues.ruleValue}
+                  min="0"
+                  step="0.01"
+                  placeholder="ej. 20"
+                />
+                <span class="form-hint">Solo para % y monto fijo.</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="ruleDescription" class="form-label">Descripción de la regla</label>
+              <input
+                type="text"
+                id="ruleDescription"
+                name="ruleDescription"
+                class="form-input"
+                value={formValues.ruleDescription}
+                placeholder="ej. 20% de descuento en el segundo café"
+                maxlength="300"
+              />
+            </div>
+          </div>
+        </fieldset>
+
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn--primary">Crear promoción</button>
+        <a href="/admin/promotions" class="btn btn--secondary">Cancelar</a>
+      </div>
+    </form>
+  </div>
+
+</AdminLayout>

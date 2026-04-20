@@ -1,0 +1,117 @@
+---
+/**
+ * /admin/promotions — Listado de promociones del negocio.
+ *
+ * Acepta feedback vía query string:
+ *   ?created=1 | ?updated=1 | ?deleted=1
+ */
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { requireAdmin } from '@/lib/admin';
+
+export const prerender = false;
+
+const guard = await requireAdmin(Astro.cookies, Astro.request);
+if (!guard.ok) return Astro.redirect('/admin/login');
+const { ctx } = guard;
+
+const { data: rows, error: queryError } = await ctx.supabase
+  .from('promotions')
+  .select('id, title, status, discount_label, starts_at, ends_at, sort_order')
+  .eq('business_id', ctx.businessId)
+  .order('sort_order', { ascending: true })
+  .order('title',      { ascending: true });
+
+const promociones = rows ?? [];
+
+const ESTADO_LABEL: Record<string, string> = {
+  active:   'Activa',
+  upcoming: 'Próxima',
+  paused:   'Pausada',
+  expired:  'Expirada',
+};
+const ESTADO_CLASS: Record<string, string> = {
+  active:   'badge--active',
+  upcoming: 'badge--upcoming',
+  paused:   'badge--paused',
+  expired:  'badge--inactive',
+};
+
+const created = Astro.url.searchParams.get('created') === '1';
+const updated = Astro.url.searchParams.get('updated') === '1';
+const deleted = Astro.url.searchParams.get('deleted') === '1';
+
+function formatDate(iso: string | null): string {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+---
+
+<AdminLayout titulo="Promociones" usuario={ctx.userEmail}>
+
+  {created && <div class="alert alert--success" role="status">Promoción creada correctamente.</div>}
+  {updated && <div class="alert alert--success" role="status">Promoción actualizada correctamente.</div>}
+  {deleted && <div class="alert alert--success" role="status">Promoción eliminada.</div>}
+  {queryError && (
+    <div class="alert alert--error" role="alert">
+      Error al cargar las promociones: {queryError.message}
+    </div>
+  )}
+
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Promociones</h2>
+      <p class="page-subtitle">
+        {promociones.length} {promociones.length === 1 ? 'promoción' : 'promociones'}
+      </p>
+    </div>
+    <a href="/admin/promotions/new" class="btn btn--primary">+ Nueva promoción</a>
+  </div>
+
+  <div class="card">
+    {promociones.length === 0 ? (
+      <div class="empty-state">
+        <p>No hay promociones aún.</p>
+        <p><a href="/admin/promotions/new">Crea la primera promoción</a>.</p>
+      </div>
+    ) : (
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Estado</th>
+            <th>Descuento</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th class="col-actions"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {promociones.map((p: any) => (
+            <tr>
+              <td>{p.title}</td>
+              <td>
+                <span class:list={['badge', ESTADO_CLASS[p.status] ?? 'badge--inactive']}>
+                  {ESTADO_LABEL[p.status] ?? p.status}
+                </span>
+              </td>
+              <td>{p.discount_label ?? '—'}</td>
+              <td style="white-space: nowrap;">{formatDate(p.starts_at)}</td>
+              <td style="white-space: nowrap;">{formatDate(p.ends_at)}</td>
+              <td class="col-actions">
+                <a href={`/admin/promotions/${p.id}`} class="btn btn--ghost btn--sm">
+                  Editar
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )}
+  </div>
+</AdminLayout>
+
+<style>
+  /* Badges adicionales para estados de promoción */
+  .badge--upcoming { background: #EFF6FF; color: #1D4ED8; }
+  .badge--paused   { background: #FEF3C7; color: #92400E; }
+</style>

@@ -19,6 +19,13 @@ export const promotionCreateSchema = z.object({
   startsAt:      z.string().optional(),
   endsAt:        z.string().optional(),
   sortOrder:     z.coerce.number().int().min(0).default(0),
+  /**
+   * Regla simple opcional. Se almacena como rules: [PromotionRule] en JSONB.
+   * El panel admin solo gestiona una regla a la vez (S13). Múltiples reglas: S14+.
+   */
+  ruleType:        z.enum(['percentage', 'fixed', 'bogo', 'combo', 'custom']).optional(),
+  ruleValue:       z.coerce.number().min(0).optional(),
+  ruleDescription: z.string().max(300).optional(),
 });
 
 export const promotionUpdateSchema = promotionCreateSchema.partial();
@@ -28,9 +35,19 @@ export type PromotionUpdateInput = z.infer<typeof promotionUpdateSchema>;
 
 // ─── Mutaciones ───────────────────────────────────────────────────────────────
 
+// ─── Helper: compone PromotionRule[] desde los campos simples del formulario ──
+function buildRules(input: PromotionCreateInput | PromotionUpdateInput) {
+  if (!input.ruleType) return null;
+  return [{
+    type:        input.ruleType,
+    value:       input.ruleValue       ?? undefined,
+    description: input.ruleDescription ?? undefined,
+  }];
+}
+
 /**
  * Crea una promoción nueva para el negocio del contexto.
- * rules, product_ids y category_ids quedan en null hasta S14+ (builder visual).
+ * product_ids y category_ids quedan en null hasta S14+ (builder visual).
  */
 export async function createPromotion(
   ctx: AdminContext,
@@ -47,7 +64,7 @@ export async function createPromotion(
       image_url:      null,
       starts_at:      input.startsAt ?? null,
       ends_at:        input.endsAt ?? null,
-      rules:          null,
+      rules:          buildRules(input),
       product_ids:    null,
       category_ids:   null,
       sort_order:     input.sortOrder,
@@ -74,6 +91,10 @@ export async function updatePromotion(
   if (input.startsAt      !== undefined) patch.starts_at      = input.startsAt ?? null;
   if (input.endsAt        !== undefined) patch.ends_at        = input.endsAt ?? null;
   if (input.sortOrder     !== undefined) patch.sort_order     = input.sortOrder;
+  // Siempre actualiza rules cuando viene el tipo (incluyendo borrado con ruleType vacío)
+  if (input.ruleType !== undefined || input.ruleDescription !== undefined || input.ruleValue !== undefined) {
+    patch.rules = buildRules(input);
+  }
 
   const { data, error } = await ctx.supabase
     .from('promotions')
