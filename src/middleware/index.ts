@@ -41,5 +41,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
   }
 
   // Ruta admin con sesión → acceso permitido.
-  return next();
+  // Se añade Cache-Control: no-store para que el browser no cachee las páginas admin.
+  // Esto evita que tras el logout el botón "atrás" muestre contenido protegido sin
+  // hacer un nuevo request al servidor (que fallaría la verificación de sesión).
+  const respuesta = await next();
+  respuesta.headers.set('Cache-Control', 'no-store');
+  return respuesta;
 });
