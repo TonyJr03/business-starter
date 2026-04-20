@@ -16,6 +16,8 @@ export interface AdminContext {
   businessId: string;
   /** UUID del usuario autenticado en Supabase Auth. */
   userId: string;
+  /** Email del usuario autenticado (para mostrar en la UI del panel). */
+  userEmail: string;
   /** Cliente Supabase inicializado con la sesión activa del request entrante. */
   supabase: SupabaseServerClient;
 }
@@ -70,6 +72,7 @@ export async function requireAdmin(
     ctx: {
       businessId: business.id,
       userId: user.id,
+      userEmail: user.email ?? '',
       supabase,
     },
   };

@@ -1,0 +1,150 @@
+---
+/**
+ * /admin/catalog/categories/new — Formulario para crear una nueva categoría.
+ *
+ * GET  → muestra el formulario vacío.
+ * POST → valida con Zod, llama createCategory(), redirige al listado si todo va bien.
+ *        Si hay error, vuelve a renderizar el formulario con el mensaje y los valores.
+ *
+ * El slug se genera automáticamente desde el nombre (ver lib/utils/slug.ts).
+ */
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { requireAdmin, categoryCreateSchema, createCategory } from '@/lib/admin';
+
+export const prerender = false;
+
+const guard = await requireAdmin(Astro.cookies, Astro.request);
+if (!guard.ok) return Astro.redirect('/admin/login');
+const { ctx } = guard;
+
+// Estado del formulario — se modifica en POST si hay error
+let formError: string | undefined;
+let fieldErrors: Record<string, string[]> = {};
+let formValues = {
+  name:        '',
+  description: '',
+  sortOrder:   0,
+  isActive:    true,
+};
+
+if (Astro.request.method === 'POST') {
+  const fd = await Astro.request.formData();
+
+  const raw = {
+    name:        String(fd.get('name')        ?? ''),
+    description: String(fd.get('description') ?? '') || undefined,
+    sortOrder:   String(fd.get('sortOrder')   ?? '0'),
+    isActive:    fd.get('isActive') === 'on',
+  };
+
+  // Preservar valores para re-renderizar el formulario si hay error
+  formValues = {
+    name:        raw.name,
+    description: raw.description ?? '',
+    sortOrder:   Number(raw.sortOrder) || 0,
+    isActive:    raw.isActive,
+  };
+
+  const parsed = categoryCreateSchema.safeParse(raw);
+
+  if (!parsed.success) {
+    fieldErrors = parsed.error.flatten().fieldErrors as Record<string, string[]>;
+  } else {
+    const result = await createCategory(ctx, parsed.data);
+    if (result.ok) {
+      return Astro.redirect('/admin/catalog/categories?created=1');
+    }
+    if (result.field) {
+      fieldErrors[result.field] = [result.error];
+    } else {
+      formError = result.error;
+    }
+  }
+}
+---
+
+<AdminLayout titulo="Nueva categoría" usuario={ctx.userEmail}>
+
+  <a href="/admin/catalog/categories" class="back-link">← Volver a categorías</a>
+
+  <div class="page-header">
+    <h2 class="page-title">Nueva categoría</h2>
+  </div>
+
+  {formError && (
+    <div class="alert alert--error" role="alert">{formError}</div>
+  )}
+
+  <div class="card card--padded" style="max-width: 600px;">
+    <form method="POST" novalidate>
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="name" class="form-label form-label--required">Nombre</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            class:list={['form-input', { 'form-input--error': fieldErrors.name }]}
+            value={formValues.name}
+            required
+            autofocus
+            maxlength="100"
+          />
+          {fieldErrors.name && (
+            <span class="form-field-error" role="alert">{fieldErrors.name[0]}</span>
+          )}
+          <span class="form-hint">El slug se genera automáticamente desde el nombre.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="form-label">Descripción</label>
+          <textarea
+            id="description"
+            name="description"
+            class="form-textarea"
+            rows="3"
+            maxlength="500"
+          >{formValues.description}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="sortOrder" class="form-label">Orden</label>
+          <input
+            type="number"
+            id="sortOrder"
+            name="sortOrder"
+            class="form-input"
+            value={formValues.sortOrder}
+            min="0"
+            style="max-width: 120px;"
+          />
+          <span class="form-hint">Menor número aparece primero en el catálogo.</span>
+        </div>
+
+        <div class="form-group">
+          <div class="form-checkbox-row">
+            <input
+              type="checkbox"
+              id="isActive"
+              name="isActive"
+              class="form-checkbox"
+              checked={formValues.isActive}
+            />
+            <label for="isActive" class="form-label" style="margin: 0;">Activa</label>
+          </div>
+          <span class="form-hint">
+            Las categorías inactivas no aparecen en el catálogo público.
+          </span>
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn--primary">Crear categoría</button>
+        <a href="/admin/catalog/categories" class="btn btn--secondary">Cancelar</a>
+      </div>
+    </form>
+  </div>
+
+</AdminLayout>

@@ -1,0 +1,34 @@
+---
+/**
+ * Hub del catálogo — punto de entrada a la gestión de categorías y productos.
+ */
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { requireAdmin } from '@/lib/admin';
+
+export const prerender = false;
+
+const guard = await requireAdmin(Astro.cookies, Astro.request);
+if (!guard.ok) return Astro.redirect('/admin/login');
+const { ctx } = guard;
+---
+
+<AdminLayout titulo="Catálogo" usuario={ctx.userEmail}>
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Catálogo</h2>
+      <p class="page-subtitle">Gestiona las categorías y productos de tu negocio.</p>
+    </div>
+  </div>
+
+  <div class="hub-grid">
+    <a href="/admin/catalog/categories" class="hub-card">
+      <span class="hub-card__title">Categorías</span>
+      <span class="hub-card__desc">Organiza el catálogo en grupos.</span>
+    </a>
+    <div class="hub-card hub-card--disabled">
+      <span class="hub-card__title">Productos</span>
+      <span class="hub-card__desc">Gestiona los ítems del catálogo.</span>
+      <span style="font-size: 0.75rem; color: #9CA3AF; margin-top: 0.25rem;">Próximamente</span>
+    </div>
+  </div>
+</AdminLayout>

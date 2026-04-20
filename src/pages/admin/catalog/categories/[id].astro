@@ -1,0 +1,213 @@
+---
+/**
+ * /admin/catalog/categories/[id] — Editar o eliminar una categoría.
+ *
+ * GET              → carga la categoría desde DB y muestra el formulario de edición.
+ * POST _action=update → valida, llama updateCategory(), redirige al listado.
+ * POST _action=delete → llama deleteCategory(), redirige al listado.
+ *
+ * Si el id no pertenece al negocio actual (RLS), redirige al listado.
+ * El slug se muestra como readonly: no puede cambiarse para preservar URLs.
+ */
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import {
+  requireAdmin,
+  categoryUpdateSchema,
+  updateCategory,
+  deleteCategory,
+} from '@/lib/admin';
+
+export const prerender = false;
+
+const { id } = Astro.params;
+if (!id) return Astro.redirect('/admin/catalog/categories');
+
+const guard = await requireAdmin(Astro.cookies, Astro.request);
+if (!guard.ok) return Astro.redirect('/admin/login');
+const { ctx } = guard;
+
+// Cargar la categoría — siempre, independientemente del método HTTP
+const { data: catRow } = await ctx.supabase
+  .from('categories')
+  .select('id, slug, name, description, sort_order, is_active')
+  .eq('id', id)
+  .eq('business_id', ctx.businessId) // aislamiento por negocio
+  .single();
+
+// Si no existe o pertenece a otro negocio → volver al listado
+if (!catRow) return Astro.redirect('/admin/catalog/categories');
+
+// Estado del formulario
+let formError: string | undefined;
+let fieldErrors: Record<string, string[]> = {};
+let formValues = {
+  name:        catRow.name        as string,
+  description: (catRow.description ?? '') as string,
+  sortOrder:   catRow.sort_order  as number,
+  isActive:    catRow.is_active   as boolean,
+};
+
+if (Astro.request.method === 'POST') {
+  const fd = await Astro.request.formData();
+  const action = fd.get('_action');
+
+  if (action === 'delete') {
+    // ── Eliminar ──────────────────────────────────────────────────
+    const result = await deleteCategory(ctx, id);
+    if (result.ok) {
+      return Astro.redirect('/admin/catalog/categories?deleted=1');
+    }
+    formError = result.error;
+
+  } else {
+    // ── Actualizar ────────────────────────────────────────────────
+    const raw = {
+      name:        String(fd.get('name')        ?? ''),
+      description: String(fd.get('description') ?? '') || undefined,
+      sortOrder:   String(fd.get('sortOrder')   ?? '0'),
+      isActive:    fd.get('isActive') === 'on',
+    };
+
+    // Preservar valores para re-renderizar si hay error
+    formValues = {
+      name:        raw.name,
+      description: raw.description ?? '',
+      sortOrder:   Number(raw.sortOrder) || 0,
+      isActive:    raw.isActive,
+    };
+
+    const parsed = categoryUpdateSchema.safeParse(raw);
+
+    if (!parsed.success) {
+      fieldErrors = parsed.error.flatten().fieldErrors as Record<string, string[]>;
+    } else {
+      const result = await updateCategory(ctx, id, parsed.data);
+      if (result.ok) {
+        return Astro.redirect('/admin/catalog/categories?updated=1');
+      }
+      if (result.field) {
+        fieldErrors[result.field] = [result.error];
+      } else {
+        formError = result.error;
+      }
+    }
+  }
+}
+---
+
+<AdminLayout titulo="Editar categoría" usuario={ctx.userEmail}>
+
+  <a href="/admin/catalog/categories" class="back-link">← Volver a categorías</a>
+
+  <div class="page-header">
+    <h2 class="page-title">Editar categoría</h2>
+  </div>
+
+  {formError && (
+    <div class="alert alert--error" role="alert">{formError}</div>
+  )}
+
+  {/* Formulario de edición */}
+  <div class="card card--padded" style="max-width: 600px;">
+    <form method="POST" novalidate>
+      <input type="hidden" name="_action" value="update" />
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label for="slug" class="form-label">Slug</label>
+          <input
+            type="text"
+            id="slug"
+            class="form-input form-input--readonly"
+            value={catRow.slug}
+            readonly
+            tabindex="-1"
+          />
+          <span class="form-hint">El slug no puede modificarse una vez creada la categoría.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="name" class="form-label form-label--required">Nombre</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            class:list={['form-input', { 'form-input--error': fieldErrors.name }]}
+            value={formValues.name}
+            required
+            autofocus
+            maxlength="100"
+          />
+          {fieldErrors.name && (
+            <span class="form-field-error" role="alert">{fieldErrors.name[0]}</span>
+          )}
+        </div>
+
+        <div class="form-group">
+          <label for="description" class="form-label">Descripción</label>
+          <textarea
+            id="description"
+            name="description"
+            class="form-textarea"
+            rows="3"
+            maxlength="500"
+          >{formValues.description}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="sortOrder" class="form-label">Orden</label>
+          <input
+            type="number"
+            id="sortOrder"
+            name="sortOrder"
+            class="form-input"
+            value={formValues.sortOrder}
+            min="0"
+            style="max-width: 120px;"
+          />
+          <span class="form-hint">Menor número aparece primero en el catálogo.</span>
+        </div>
+
+        <div class="form-group">
+          <div class="form-checkbox-row">
+            <input
+              type="checkbox"
+              id="isActive"
+              name="isActive"
+              class="form-checkbox"
+              checked={formValues.isActive}
+            />
+            <label for="isActive" class="form-label" style="margin: 0;">Activa</label>
+          </div>
+          <span class="form-hint">
+            Las categorías inactivas no aparecen en el catálogo público.
+          </span>
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn--primary">Guardar cambios</button>
+        <a href="/admin/catalog/categories" class="btn btn--secondary">Cancelar</a>
+      </div>
+    </form>
+  </div>
+
+  {/* Zona de peligro: eliminar */}
+  <div class="danger-zone" style="max-width: 600px;">
+    <p class="danger-zone__title">Eliminar categoría</p>
+    <p class="danger-zone__desc">
+      Esta acción es permanente. Si la categoría tiene productos asociados,
+      deberás reasignarlos primero.
+    </p>
+    <form
+      method="POST"
+      onsubmit="return confirm('¿Eliminar esta categoría? Esta acción no se puede deshacer.')"
+    >
+      <input type="hidden" name="_action" value="delete" />
+      <button type="submit" class="btn btn--danger">Eliminar categoría</button>
+    </form>
+  </div>
+
+</AdminLayout>

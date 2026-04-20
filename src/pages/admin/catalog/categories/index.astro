@@ -1,0 +1,102 @@
+---
+/**
+ * /admin/catalog/categories — Listado de categorías del negocio.
+ *
+ * Muestra todas las categorías (activas e inactivas) con sus datos
+ * principales. Desde aquí se accede a crear y editar.
+ *
+ * Acepta parámetros de feedback vía query string:
+ *   ?created=1  → categoría creada con éxito
+ *   ?updated=1  → categoría actualizada con éxito
+ *   ?deleted=1  → categoría eliminada
+ */
+import AdminLayout from '@/layouts/AdminLayout.astro';
+import { requireAdmin } from '@/lib/admin';
+
+export const prerender = false;
+
+const guard = await requireAdmin(Astro.cookies, Astro.request);
+if (!guard.ok) return Astro.redirect('/admin/login');
+const { ctx } = guard;
+
+// Leer todas las categorías del negocio (incluidas inactivas — vista admin)
+const { data: rows, error: queryError } = await ctx.supabase
+  .from('categories')
+  .select('id, slug, name, description, sort_order, is_active')
+  .eq('business_id', ctx.businessId)
+  .order('sort_order', { ascending: true })
+  .order('name',       { ascending: true });
+
+const categorias = rows ?? [];
+
+// Mensajes de feedback tras redirección
+const created = Astro.url.searchParams.get('created') === '1';
+const updated = Astro.url.searchParams.get('updated') === '1';
+const deleted = Astro.url.searchParams.get('deleted') === '1';
+---
+
+<AdminLayout titulo="Categorías" usuario={ctx.userEmail}>
+
+  {/* Alertas de feedback */}
+  {created && <div class="alert alert--success" role="status">Categoría creada correctamente.</div>}
+  {updated && <div class="alert alert--success" role="status">Categoría actualizada correctamente.</div>}
+  {deleted && <div class="alert alert--success" role="status">Categoría eliminada.</div>}
+  {queryError && (
+    <div class="alert alert--error" role="alert">
+      Error al cargar las categorías: {queryError.message}
+    </div>
+  )}
+
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Categorías</h2>
+      <p class="page-subtitle">
+        {categorias.length} {categorias.length === 1 ? 'categoría' : 'categorías'}
+      </p>
+    </div>
+    <a href="/admin/catalog/categories/new" class="btn btn--primary">
+      + Nueva categoría
+    </a>
+  </div>
+
+  <div class="card">
+    {categorias.length === 0 ? (
+      <div class="empty-state">
+        <p>No hay categorías aún.</p>
+        <p><a href="/admin/catalog/categories/new">Crea la primera categoría</a>.</p>
+      </div>
+    ) : (
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Slug</th>
+            <th>Estado</th>
+            <th>Orden</th>
+            <th class="col-actions"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {categorias.map((cat: any) => (
+            <tr>
+              <td>{cat.name}</td>
+              <td><span class="row-slug">{cat.slug}</span></td>
+              <td>
+                <span class:list={['badge', cat.is_active ? 'badge--active' : 'badge--inactive']}>
+                  {cat.is_active ? 'Activa' : 'Inactiva'}
+                </span>
+              </td>
+              <td>{cat.sort_order}</td>
+              <td class="col-actions">
+                <a href={`/admin/catalog/categories/${cat.id}`} class="btn btn--ghost btn--sm">
+                  Editar
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )}
+  </div>
+
+</AdminLayout>
