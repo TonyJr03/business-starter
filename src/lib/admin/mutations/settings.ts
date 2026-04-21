@@ -44,6 +44,9 @@ export type SettingsUpdateInput = z.infer<typeof settingsUpdateSchema>;
  * El objeto social se reemplaza completo: campos con valor se incluyen,
  * campos vacíos se excluyen (null en DB si no hay ninguno).
  * El campo hours NO se modifica — se preserva el valor existente en DB.
+ *
+ * RLS: el .eq('id', ctx.businessId) garantiza que solo se actualiza
+ * el negocio autenticado.
  */
 export async function updateSettings(
   ctx: AdminContext,
@@ -75,7 +78,9 @@ export async function updateSettings(
     .select()
     .single();
 
-  if (error) return fail(error.message);
+  if (error) {
+    return fail('No se pudieron guardar los ajustes. Por favor, intenta de nuevo.');
+  }
   if (!data)  return fail('Negocio no encontrado');
 
   return ok(rowToBusinessSettings(data));

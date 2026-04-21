@@ -26,7 +26,19 @@ export const promotionCreateSchema = z.object({
   ruleType:        z.enum(['percentage', 'fixed', 'bogo', 'combo', 'custom']).optional(),
   ruleValue:       z.coerce.number().min(0).optional(),
   ruleDescription: z.string().max(300).optional(),
-});
+}).refine(
+  (data) => {
+    // Si ambas fechas están presentes, startsAt debe ser < endsAt
+    if (data.startsAt && data.endsAt) {
+      return new Date(data.startsAt) < new Date(data.endsAt);
+    }
+    return true;
+  },
+  {
+    message: 'La fecha de inicio debe ser anterior a la fecha de fin',
+    path: ['startsAt'],
+  },
+);
 
 export const promotionUpdateSchema = promotionCreateSchema.partial();
 
@@ -48,6 +60,9 @@ function buildRules(input: PromotionCreateInput | PromotionUpdateInput) {
 /**
  * Crea una promoción nueva para el negocio del contexto.
  * product_ids y category_ids quedan en null hasta S14+ (builder visual).
+ *
+ * Validación:
+ *   - Schema Zod valida que startsAt < endsAt si ambas están presentes.
  */
 export async function createPromotion(
   ctx: AdminContext,
@@ -72,12 +87,19 @@ export async function createPromotion(
     .select()
     .single();
 
-  if (error) return fail(error.message);
+  if (error) {
+    return fail('No se pudo crear la promoción. Por favor, intenta de nuevo.');
+  }
 
   return ok(rowToPromotion(data));
 }
 
-/** Actualiza los campos indicados de una promoción existente. */
+/**
+ * Actualiza los campos indicados de una promoción existente.
+ *
+ * RLS: el .eq('business_id', ctx.businessId) garantiza que solo se actualiza
+ * si la promoción pertenece al negocio autenticado.
+ */
 export async function updatePromotion(
   ctx: AdminContext,
   id: string,
@@ -104,13 +126,20 @@ export async function updatePromotion(
     .select()
     .single();
 
-  if (error) return fail(error.message);
+  if (error) {
+    return fail('No se pudo actualizar la promoción. Por favor, intenta de nuevo.');
+  }
   if (!data)  return fail('Promoción no encontrada');
 
   return ok(rowToPromotion(data));
 }
 
-/** Elimina una promoción por ID. */
+/**
+ * Elimina una promoción por ID.
+ *
+ * RLS: el .eq('business_id', ctx.businessId) garantiza que solo se elimina
+ * si la promoción pertenece al negocio autenticado.
+ */
 export async function deletePromotion(
   ctx: AdminContext,
   id: string,
@@ -121,7 +150,9 @@ export async function deletePromotion(
     .eq('id', id)
     .eq('business_id', ctx.businessId); // RLS: solo el negocio propietario
 
-  if (error) return fail(error.message);
+  if (error) {
+    return fail('No se pudo eliminar la promoción. Por favor, intenta de nuevo.');
+  }
 
   return ok({ id });
 }

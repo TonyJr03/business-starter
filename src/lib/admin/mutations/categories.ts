@@ -53,7 +53,7 @@ export async function createCategory(
     if (error.code === '23505') {
       return fail('Ya existe una categoría con ese nombre.', 'name');
     }
-    return fail(error.message);
+    return fail('No se pudo crear la categoría. Por favor, intenta de nuevo.');
   }
 
   return ok(rowToCategory(data));
@@ -62,6 +62,9 @@ export async function createCategory(
 /**
  * Actualiza los campos indicados de una categoría existente.
  * El slug NO se modifica en actualizaciones para preservar URLs.
+ *
+ * RLS: el .eq('business_id', ctx.businessId) garantiza que solo se actualiza
+ * si la categoría pertenece al negocio autenticado.
  */
 export async function updateCategory(
   ctx: AdminContext,
@@ -82,7 +85,9 @@ export async function updateCategory(
     .select()
     .single();
 
-  if (error) return fail(error.message);
+  if (error) {
+    return fail('No se pudo actualizar la categoría. Por favor, intenta de nuevo.');
+  }
   if (!data)  return fail('Categoría no encontrada');
 
   return ok(rowToCategory(data));
@@ -91,6 +96,9 @@ export async function updateCategory(
 /**
  * Elimina una categoría.
  * Falla con mensaje claro si tiene productos asociados (FK RESTRICT en DB).
+ *
+ * RLS: el .eq('business_id', ctx.businessId) garantiza que solo se elimina
+ * si la categoría pertenece al negocio autenticado.
  */
 export async function deleteCategory(
   ctx: AdminContext,
@@ -107,7 +115,7 @@ export async function deleteCategory(
     if (error.code === '23503') {
       return fail('No se puede eliminar: la categoría tiene productos asociados.');
     }
-    return fail(error.message);
+    return fail('No se pudo eliminar la categoría. Por favor, intenta de nuevo.');
   }
 
   return ok({ id });

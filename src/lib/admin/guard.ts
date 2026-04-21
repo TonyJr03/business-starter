@@ -10,6 +10,12 @@ type SupabaseServerClient = ReturnType<typeof createSupabaseServerClient>;
 /**
  * Contexto del admin: sesión resuelta + business_id listo para mutaciones.
  * Se obtiene llamando a requireAdmin() y se pasa a las funciones de mutación.
+ *
+ * SEGURIDAD:
+ *   · Todas las mutaciones usan ctx.businessId en cláusulas .eq('business_id', ctx.businessId)
+ *   · Esto garantiza que un usuario nunca puede editar/eliminar data de otro negocio
+ *   · El middleware /admin/* restringe acceso a usuarios autenticados
+ *   · Cada mutation valida que el recurso pertenece al negocio (RLS en BD)
  */
 export interface AdminContext {
   /** UUID del negocio actual. En multi-tenant futuro: viene del subdominio o JWT claim. */

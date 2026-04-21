@@ -31,11 +31,25 @@ export type ProductUpdateInput = z.infer<typeof productUpdateSchema>;
  * Crea un producto nuevo para el negocio del contexto.
  * El slug se genera automáticamente desde el nombre.
  * image_url y tags quedan en null hasta que se implemente subida de archivos.
+ *
+ * Validación:
+ *   - Verifica que la categoría existe y pertenece al negocio (RLS en DB).
+ *   - Rechaza si el slug ya existe en el negocio.
  */
 export async function createProduct(
   ctx: AdminContext,
   input: ProductCreateInput,
 ): Promise<MutationResult<Product>> {
+  // Validar que la categoría existe y pertenece al negocio
+  const { data: category } = await ctx.supabase
+    .from('categories')
+    .select('id')
+    .eq('id', input.categoryId)
+    .eq('business_id', ctx.businessId)
+    .single();
+
+  if (!category) return fail('La categoría seleccionada no existe.', 'categoryId');
+
   const { data, error } = await ctx.supabase
     .from('products')
     .insert({
@@ -60,7 +74,7 @@ export async function createProduct(
     if (error.code === '23505') {
       return fail('Ya existe un producto con ese nombre.', 'name');
     }
-    return fail(error.message);
+    return fail('No se pudo crear el producto. Por favor, intenta de nuevo.');
   }
 
   return ok(rowToProduct(data));
@@ -69,12 +83,27 @@ export async function createProduct(
 /**
  * Actualiza los campos indicados de un producto existente.
  * El slug NO se modifica para preservar URLs del catálogo público.
+ *
+ * RLS: el .eq('business_id', ctx.businessId) garantiza que solo se actualiza
+ * si el producto pertenece al negocio autenticado.
  */
 export async function updateProduct(
   ctx: AdminContext,
   id: string,
   input: ProductUpdateInput,
 ): Promise<MutationResult<Product>> {
+  // Validar que la categoría existe si se intenta cambiar
+  if (input.categoryId !== undefined) {
+    const { data: category } = await ctx.supabase
+      .from('categories')
+      .select('id')
+      .eq('id', input.categoryId)
+      .eq('business_id', ctx.businessId)
+      .single();
+
+    if (!category) return fail('La categoría seleccionada no existe.', 'categoryId');
+  }
+
   const patch: Record<string, unknown> = {};
   if (input.name          !== undefined) patch.name           = input.name;
   if (input.description   !== undefined) patch.description    = input.description;
@@ -94,13 +123,20 @@ export async function updateProduct(
     .select()
     .single();
 
-  if (error) return fail(error.message);
+  if (error) {
+    return fail('No se pudo actualizar el producto. Por favor, intenta de nuevo.');
+  }
   if (!data)  return fail('Producto no encontrado');
 
   return ok(rowToProduct(data));
 }
 
-/** Elimina un producto por ID. */
+/**
+ * Elimina un producto por ID.
+ *
+ * RLS: el .eq('business_id', ctx.businessId) garantiza que solo se elimina
+ * si el producto pertenece al negocio autenticado.
+ */
 export async function deleteProduct(
   ctx: AdminContext,
   id: string,
@@ -111,7 +147,9 @@ export async function deleteProduct(
     .eq('id', id)
     .eq('business_id', ctx.businessId); // RLS: solo el negocio propietario
 
-  if (error) return fail(error.message);
+  if (error) {
+    return fail('No se pudo eliminar el producto. Por favor, intenta de nuevo.');
+  }
 
   return ok({ id });
 }
